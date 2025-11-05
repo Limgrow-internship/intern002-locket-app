@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.keepinwidget.locket"
+    namespace = "com.keepinwidget.locketapp"
     compileSdk {
         version = release(36)
     }

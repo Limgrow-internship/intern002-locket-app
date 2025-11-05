@@ -1,4 +1,4 @@
-package com.keepinwidget.locket
+package com.keepinwidget.locketapp
 
 import org.junit.Test
 

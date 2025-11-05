@@ -1,11 +1,11 @@
-package com.keepinwidget.locket.ui
+package com.keepinwidget.locketapp.ui
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.keepinwidget.locket.R
+import com.keepinwidget.locketapp.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,4 +1,4 @@
-package com.keepinwidget.locket.di
+package com.keepinwidget.locketapp.di
 
 import android.content.Context
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
