@@ -16,3 +16,5 @@ local.properties
 
 # Kotlin/Linter/IDE Temporary Files
 .kotlin/
+
+.idea/
