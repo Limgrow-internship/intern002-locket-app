@@ -1,7 +1,8 @@
-package com.keepinwidget.locketapp
+package com.intern002.locketapp
 
-import org.junit.Assert.assertEquals
 import org.junit.Test
+
+import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).

@@ -1,10 +1,11 @@
-package com.keepinwidget.locketapp.di
+package com.intern002.locketapp.di
 
 import android.content.Context
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -30,5 +31,5 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAppContext(app: Context): Context = app.applicationContext
+    fun provideAppContext(@ApplicationContext context: Context): Context = context
 }

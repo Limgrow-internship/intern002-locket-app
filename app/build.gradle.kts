@@ -8,15 +8,18 @@ plugins {
 }
 
 android {
-    namespace = "com.keepinwidget.locketapp"
-    compileSdk {
-        version = release(36)
+    namespace = "com.intern002.locketapp"
+    compileSdk = 34
+
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
     }
 
     defaultConfig {
-        applicationId = "com.keepinwidget.locket"
+        applicationId = "com.intern002.locketapp"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -69,10 +72,17 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
+    // Ads
+    implementation(libs.play.services.ads)
+
     // Firebase
 //    implementation(platform(libs.firebase.bom))
 //    implementation(libs.firebase.messaging)
 //    implementation(libs.firebase.storage)
+
+    // Coroutines
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
 
     // Tests
     testImplementation(libs.junit)

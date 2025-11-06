@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.Intern002LocketApp" parent="Base.Theme.Intern002LocketApp" />
+
+    <style name="LoadingDot">
+        <item name="android:layout_width">8dp</item>
+        <item name="android:layout_height">8dp</item>
+        <item name="android:background">@drawable/dot_active</item>
+    </style>
 </resources>
