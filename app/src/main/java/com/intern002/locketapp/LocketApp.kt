@@ -1,4 +1,4 @@
-package com.keepinwidget.locketapp
+package com.intern002.locketapp
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
