@@ -8,13 +8,17 @@ plugins {
 }
 
 android {
-    namespace = "com.keepinwidget.locketapp"
+    namespace = "com.intern002.locketapp"
     compileSdk {
         version = release(36)
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     defaultConfig {
-        applicationId = "com.keepinwidget.locket"
+        applicationId = "com.intern002.locketapp"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
