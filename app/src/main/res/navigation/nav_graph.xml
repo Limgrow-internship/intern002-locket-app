@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.intern002.locketapp.ui.screen.splash.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_splashFragment_to_languageFragment"
+            app:destination="@id/languageFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/languageFragment"
+        android:name="com.intern002.locketapp.ui.screen.language.LanguageFragment"
+        android:label="fragment_language"
+        tools:layout="@layout/fragment_language">
+        <action
+            android:id="@+id/action_languageFragment_to_nativeAdFragment"
+            app:destination="@id/nativeAdFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nativeAdFragment"
+        android:name="com.intern002.locketapp.ads.NativeAdFragment"
+        android:label="fragment_native_ad"
+        tools:layout="@layout/fragment_native_ad_full" >
+        <action
+            android:id="@+id/action_nativeAdFragment_to_onboardingFlow"
+            app:destination="@id/onboardingFragment1"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/onboardingFragment1"
+        android:name="com.intern002.locketapp.ui.screen.onboarding.OnboardingFragment1"
+        android:label="OnboardingFragment1"
+        tools:layout="@layout/fragment_onboarding1">
+        <action
+            android:id="@+id/action_onboarding1_to_onboarding2"
+            app:destination="@id/onboardingFragment2" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/onboardingFragment2"
+        android:name="com.intern002.locketapp.ui.screen.onboarding.OnboardingFragment2"
+        android:label="OnboardingFragment2"
+        tools:layout="@layout/fragment_onboarding2" >
+        <action
+            android:id="@+id/action_onboarding2_to_onboarding3"
+            app:destination="@id/onboardingFragment3" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/onboardingFragment3"
+        android:name="com.intern002.locketapp.ui.screen.onboarding.OnboardingFragment3"
+        android:label="OnboardingFragment3"
+        tools:layout="@layout/fragment_onboarding3" />
+
+</navigation>

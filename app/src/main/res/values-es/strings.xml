@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Aplicación Locket</string>
+    <string name="language_screen_title">Elige el idioma</string>
+    <string name="language_screen_subtitle">Selecciona tu idioma preferido a continuación.\nEsto nos ayuda a servirte mejor.</string>
+    <string name="you_selected">Seleccionaste</string>
+    <string name="no_language_selected">Aún no se ha seleccionado ningún idioma</string>
+    <string name="all_languages">Todos los idiomas</string>
+    <string name="search_hint">Buscar</string>
+    <string name="no_results_for">No hay resultados para \"%1$s\"</string>
+    <string name="get_started">Comenzar</string>
+</resources>

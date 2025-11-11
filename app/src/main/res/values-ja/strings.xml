@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ロケットアプリ</string>
+    <string name="language_screen_title">言語を選択</string>
+    <string name="language_screen_subtitle">以下から希望の言語を選択してください。\nより良いサービスを提供するためです。</string>
+    <string name="you_selected">選択済み</string>
+    <string name="no_language_selected">まだ言語が選択されていません</string>
+    <string name="all_languages">すべての言語</string>
+    <string name="search_hint">検索</string>
+    <string name="no_results_for">\"%1$s\"の結果はありません</string>
+    <string name="get_started">始める</string>
+</resources>

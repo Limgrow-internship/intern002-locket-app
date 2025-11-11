@@ -1,26 +1,38 @@
 package com.intern002.locketapp.ui
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.intern002.locketapp.R
+import com.google.android.gms.ads.MobileAds
+import com.intern002.locketapp.ads.AdManager
 import com.intern002.locketapp.databinding.ActivityMainBinding
+import com.intern002.locketapp.ui.screen.language.LanguageFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        applySavedLanguage()
+
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+
+        MobileAds.initialize(this) {}
+
+        AdManager.prefetchNativeAd(applicationContext)
+        AdManager.prefetchInterstitialAd(applicationContext)
+
+        AdManager.prefetchNativeAdSmall(applicationContext)
     }
+
+    private fun applySavedLanguage() {
+        val prefs = getSharedPreferences(LanguageFragment.LANGUAGE_PREFS, MODE_PRIVATE)
+        val languageCode = prefs.getString(LanguageFragment.SELECTED_LANGUAGE, "th")
+
+        val localeList = androidx.core.os.LocaleListCompat.forLanguageTags(languageCode)
+        androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(localeList)
+    }
+
 }

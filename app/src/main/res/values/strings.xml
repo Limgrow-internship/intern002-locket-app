@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Intern002 Locket App</string>
+
+    <!-- Language Screen -->
+    <string name="language_screen_title">Choose the language</string>
+    <string name="language_screen_subtitle">Select your preferred language below.\nThis helps us serve you better.</string>
+    <string name="you_selected">You Selected</string>
+    <string name="no_language_selected">No language selected yet</string>
+    <string name="all_languages">All Languages</string>
+    <string name="search_hint">Search</string>
+    <string name="no_results_for">No results for \"%1$s\"</string>
+    <string name="get_started">Get Started</string>
 </resources>

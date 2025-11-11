@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.hilt)
 //    alias(libs.plugins.google.services)
     alias(libs.plugins.ktlint)
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -65,12 +65,12 @@ dependencies {
 
     // Room
     implementation(libs.room.runtime)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
     implementation(libs.room.ktx)
 
     // Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     // Ads
     implementation(libs.play.services.ads)
@@ -88,6 +88,13 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // Glide
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    ksp("com.github.bumptech.glide:compiler:4.16.0")
+
+    // Converter
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 }
 
 ktlint {

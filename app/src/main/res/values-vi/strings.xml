@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ứng dụng Locket</string>
+    <string name="language_screen_title">Chọn ngôn ngữ</string>
+    <string name="language_screen_subtitle">Chọn ngôn ngữ ưa thích của bạn bên dưới.\nĐiều này giúp chúng tôi phục vụ bạn tốt hơn.</string>
+    <string name="you_selected">Bạn đã chọn</string>
+    <string name="no_language_selected">Chưa chọn ngôn ngữ</string>
+    <string name="all_languages">Tất cả ngôn ngữ</string>
+    <string name="search_hint">Tìm kiếm</string>
+    <string name="no_results_for">Không có kết quả cho \"%1$s\"</string>
+    <string name="get_started">Bắt đầu</string>
+</resources>

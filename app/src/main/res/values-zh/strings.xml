@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Locket 应用</string>
+    <string name="language_screen_title">选择语言</string>
+    <string name="language_screen_subtitle">请在下方选择您的首选语言。\n这有助于我们更好地为您服务。</string>
+    <string name="you_selected">您选择了</string>
+    <string name="no_language_selected">尚未选择语言</string>
+    <string name="all_languages">所有语言</string>
+    <string name="search_hint">搜索</string>
+    <string name="no_results_for">未找到 \"%1$s\" 的结果</string>
+    <string name="get_started">开始</string>
+</resources>
