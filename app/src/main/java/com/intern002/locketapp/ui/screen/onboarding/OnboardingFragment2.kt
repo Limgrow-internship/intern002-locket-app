@@ -11,7 +11,6 @@ import com.intern002.locketapp.databinding.FragmentOnboarding2Binding
 
 class OnboardingFragment2 : Fragment() {
 
-    // Khai báo View Binding
     private var _binding: FragmentOnboarding2Binding? = null
     private val binding get() = _binding!!
 
@@ -26,23 +25,23 @@ class OnboardingFragment2 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupNextButton()
+        binding.ivOnboarding.setImageResource(R.drawable.img_onboarding2)
 
-//        setupSkipButton()
+        setupNextButton()
+        setupPreviousButton()
     }
 
     private fun setupNextButton() {
-        //  nằm trong indicatorLayout của fragment_onboarding_2.xml
         binding.indicatorLayout.findViewById<View>(R.id.btnNext).setOnClickListener {
             findNavController().navigate(R.id.action_onboarding2_to_onboarding3)
         }
     }
 
-//    private fun setupSkipButton() {
-//        binding.indicatorLayout.findViewById<View>(R.id.btnSkip).setOnClickListener {
-//
-//        }
-//    }
+    private fun setupPreviousButton() {
+        binding.indicatorLayout.findViewById<View>(R.id.btnPre)?.setOnClickListener {
+            findNavController().popBackStack()
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

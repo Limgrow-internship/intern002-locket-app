@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Ứng dụng Locket</string>
+    <!-- Language -->
     <string name="language_screen_title">Chọn ngôn ngữ</string>
     <string name="language_screen_subtitle">Chọn ngôn ngữ ưa thích của bạn bên dưới.\nĐiều này giúp chúng tôi phục vụ bạn tốt hơn.</string>
     <string name="you_selected">Bạn đã chọn</string>
@@ -9,4 +10,14 @@
     <string name="search_hint">Tìm kiếm</string>
     <string name="no_results_for">Không có kết quả cho \"%1$s\"</string>
     <string name="get_started">Bắt đầu</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding1_title">Chào mừng đến HushCam 💕</string>
+    <string name="onboarding1_subtitle">Chia sẻ ảnh thời gian thực với những người bạn yêu thích — ngay trên màn hình chính.</string>
+    <string name="onboarding2_title">Gần hơn bạn nghĩ 💫</string>
+    <string name="onboarding2_subtitle">Dù cách xa hàng dặm, một khoảnh khắc có thể khiến trái tim gần nhau.</string>
+    <string name="onboarding3_title">Khoảnh khắc nói lên tất cả 💬</string>
+    <string name="onboarding3_subtitle">Gửi tin nhắn hoặc emoji nhanh chóng để giữ khoảnh khắc sống động và vui vẻ.</string>
+    <string name="next">Tiếp</string>
+    <string name="previous">Trước</string>
 </resources>

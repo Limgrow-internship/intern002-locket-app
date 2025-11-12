@@ -32,7 +32,7 @@ object NativeAdBindingHelper {
 
         (adView.headlineView as? TextView)?.text = nativeAd.headline
         (adView.bodyView as? TextView)?.text = nativeAd.body
-        (adView.callToActionView as? TextView)?.text = nativeAd.callToAction // CTA là TextView
+        (adView.callToActionView as? TextView)?.text = nativeAd.callToAction
 
         nativeAd.mediaContent?.let { adView.mediaView?.setMediaContent(it) }
 
@@ -52,16 +52,6 @@ object NativeAdBindingHelper {
     }
 
     fun bindNativeAdInline(adView: NativeAdView, nativeAd: NativeAd) {
-        adView.setNativeAd(nativeAd)
-
-        val mediaView = adView.findViewById<com.google.android.gms.ads.nativead.MediaView>(R.id.ad_media)
-        mediaView?.visibility = View.GONE
-
-        val closeButton = adView.findViewById<ImageView>(R.id.ad_close)
-        closeButton?.visibility = View.GONE
-
-
-        // Icon
         val iconView = adView.findViewById<ImageView>(R.id.ad_icon)
         if (nativeAd.icon != null) {
             iconView?.setImageDrawable(nativeAd.icon?.drawable)
@@ -71,38 +61,44 @@ object NativeAdBindingHelper {
             iconView?.visibility = View.GONE
         }
 
-        // Headline
         val headlineView = adView.findViewById<TextView>(R.id.ad_headline)
         if (nativeAd.headline != null) {
-            headlineView.text = nativeAd.headline
+            headlineView?.text = nativeAd.headline
             adView.headlineView = headlineView
         }
 
-        // Body
         val bodyView = adView.findViewById<TextView>(R.id.ad_body)
         if (nativeAd.body != null) {
-            bodyView.text = nativeAd.body
+            bodyView?.text = nativeAd.body
             adView.bodyView = bodyView
+        }
+
+        val mediaView = adView.findViewById<com.google.android.gms.ads.nativead.MediaView>(R.id.ad_media)
+        if (nativeAd.mediaContent != null && mediaView != null) {
+            mediaView.setMediaContent(nativeAd.mediaContent!!)
+            mediaView.visibility = View.VISIBLE
+            adView.mediaView = mediaView
+        } else {
+            mediaView?.visibility = View.GONE
         }
 
         val ctaView = adView.findViewById<TextView>(R.id.ad_call_to_action)
         if (nativeAd.callToAction != null) {
-            ctaView.text = nativeAd.callToAction
+            ctaView?.text = nativeAd.callToAction
             adView.callToActionView = ctaView
-            ctaView.visibility = View.VISIBLE
+            ctaView?.visibility = View.VISIBLE
 
-
-            val ctaLp = ctaView.layoutParams as RelativeLayout.LayoutParams
-
-            ctaLp.addRule(RelativeLayout.BELOW, R.id.ad_attribution)
-
-            ctaLp.topMargin = 8
-            ctaView.layoutParams = ctaLp
-
+            val ctaLp = ctaView?.layoutParams as? RelativeLayout.LayoutParams
+            ctaLp?.addRule(RelativeLayout.BELOW, R.id.ad_media)
+            ctaLp?.topMargin = 15
+            ctaView?.layoutParams = ctaLp
         } else {
-            ctaView.visibility = View.INVISIBLE
+            ctaView?.visibility = View.INVISIBLE
         }
 
         adView.findViewById<ImageView>(R.id.ad_label_icon)?.visibility = View.VISIBLE
+        adView.findViewById<ImageView>(R.id.ad_close)?.visibility = View.VISIBLE
+
+        adView.setNativeAd(nativeAd)
     }
 }

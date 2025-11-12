@@ -1,7 +1,6 @@
 package com.intern002.locketapp.ui.screen.onboarding
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,34 +29,45 @@ class OnboardingFragment3 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        displayNativeAd()
+        binding.ivOnboarding.setImageResource(R.drawable.img_onboarding3)
+
+        showNativeAdIfAvailable()
+
+        AdManager.prefetchNativeAdSmall(requireContext().applicationContext)
+
         setupGetStartedButton()
         setupPreviousButton()
 
-        binding.indicatorLayout.findViewById<TextView>(R.id.btnNext)?.text = "GET STARTED"
+        binding.indicatorLayout.findViewById<TextView>(R.id.btnNext)?.text = getString(R.string.get_started)
     }
 
-    private fun displayNativeAd() {
-        val nativeAd = AdManager.nativeAdFull
-        val adPlaceholder = binding.adPlaceholder
+    private fun showNativeAdIfAvailable() {
+        val nativeAd = AdManager.nativeAdSmall
 
         if (nativeAd != null) {
-            Log.d("OnboardingFragment3", "Displaying Native Ad Full...")
-            adPlaceholder.visibility = View.VISIBLE
-            NativeAdBindingHelper.bindNativeAdFull(adPlaceholder, nativeAd) { adView: NativeAdView ->
-                // Optional: set up events on the AdView if needed
+            val adView = layoutInflater.inflate(
+                R.layout.layout_native_ad,
+                binding.adPlaceholder,
+                false
+            ) as NativeAdView
+
+            NativeAdBindingHelper.bindNativeAdInline(adView, nativeAd)
+
+            adView.findViewById<android.widget.ImageView>(R.id.ad_close)?.setOnClickListener {
+                binding.adPlaceholder.visibility = View.GONE
+                AdManager.destroyNativeAdSmall()
             }
 
-            AdManager.prefetchNativeAd(requireContext().applicationContext)
+            binding.adPlaceholder.removeAllViews()
+            binding.adPlaceholder.addView(adView)
+            binding.adPlaceholder.visibility = View.VISIBLE
         } else {
-            Log.d("OnboardingFragment3", "Native Ad Full not ready. Hiding placeholder.")
-            adPlaceholder.visibility = View.GONE
-            AdManager.prefetchNativeAd(requireContext().applicationContext)
+            binding.adPlaceholder.visibility = View.GONE
         }
     }
 
     private fun navigateToHomeScreen() {
-        AdManager.destroyNativeAd()
+        AdManager.destroyNativeAdSmall()
         if (isAdded) {
             // findNavController().navigate(R.id.action_onboarding3_to_homeScreen)
         }

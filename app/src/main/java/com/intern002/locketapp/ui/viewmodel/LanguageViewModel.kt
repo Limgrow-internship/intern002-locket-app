@@ -1,6 +1,5 @@
 package com.intern002.locketapp.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.intern002.locketapp.data.remote.model.Language
@@ -54,14 +53,12 @@ class LanguageViewModel @Inject constructor(private val repo: LanguageRepository
             _error.value = null
             try {
                 val data = repo.fetchLanguages()
-                Log.d("LanguageViewModel", "Successfully fetched ${data.size} languages")
                 _allLanguages.value = data
 
                 if (data.isEmpty()) {
                     _error.value = "No languages available"
                 }
             } catch (e: Exception) {
-                Log.e("LanguageViewModel", "Error fetching languages", e)
                 _error.value = "Failed to load languages: ${e.message}"
             } finally {
                 _isLoading.value = false

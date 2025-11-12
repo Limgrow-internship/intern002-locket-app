@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Aplicación Locket</string>
+    <!-- Language -->
     <string name="language_screen_title">Elige el idioma</string>
     <string name="language_screen_subtitle">Selecciona tu idioma preferido a continuación.\nEsto nos ayuda a servirte mejor.</string>
     <string name="you_selected">Seleccionaste</string>
@@ -8,4 +10,14 @@
     <string name="search_hint">Buscar</string>
     <string name="no_results_for">No hay resultados para \"%1$s\"</string>
     <string name="get_started">Comenzar</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding1_title">Bienvenido a HushCam 💕</string>
+    <string name="onboarding1_subtitle">Comparte fotos en tiempo real con tus personas favoritas — directamente en tu pantalla de inicio.</string>
+    <string name="onboarding2_title">Más cerca de lo que piensas 💫</string>
+    <string name="onboarding2_subtitle">Incluso a kilómetros de distancia, un solo momento puede hacer que los corazones se sientan cerca.</string>
+    <string name="onboarding3_title">Momentos que hablan 💬</string>
+    <string name="onboarding3_subtitle">Envía un mensaje rápido o un emoji para mantener el momento vivo y divertido.</string>
+    <string name="next">Siguiente</string>
+    <string name="previous">Anterior</string>
 </resources>

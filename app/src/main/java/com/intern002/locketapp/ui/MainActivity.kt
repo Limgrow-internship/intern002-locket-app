@@ -13,8 +13,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        applySavedLanguage()
-
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -26,13 +24,4 @@ class MainActivity : AppCompatActivity() {
 
         AdManager.prefetchNativeAdSmall(applicationContext)
     }
-
-    private fun applySavedLanguage() {
-        val prefs = getSharedPreferences(LanguageFragment.LANGUAGE_PREFS, MODE_PRIVATE)
-        val languageCode = prefs.getString(LanguageFragment.SELECTED_LANGUAGE, "th")
-
-        val localeList = androidx.core.os.LocaleListCompat.forLanguageTags(languageCode)
-        androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(localeList)
-    }
-
 }

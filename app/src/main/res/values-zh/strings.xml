@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Locket 应用</string>
+    <!-- Language -->
     <string name="language_screen_title">选择语言</string>
     <string name="language_screen_subtitle">请在下方选择您的首选语言。\n这有助于我们更好地为您服务。</string>
     <string name="you_selected">您选择了</string>
@@ -9,4 +10,14 @@
     <string name="search_hint">搜索</string>
     <string name="no_results_for">未找到 \"%1$s\" 的结果</string>
     <string name="get_started">开始</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding1_title">欢迎来到 HushCam 💕</string>
+    <string name="onboarding1_subtitle">与您最喜欢的人实时分享照片 — 就在您的主屏幕上。</string>
+    <string name="onboarding2_title">比你想象的更近 💫</string>
+    <string name="onboarding2_subtitle">即使相隔千里，一个瞬间也能让心灵贴近。</string>
+    <string name="onboarding3_title">会说话的瞬间 💬</string>
+    <string name="onboarding3_subtitle">发送快速消息或表情符号，让瞬间保持生动有趣。</string>
+    <string name="next">下一步</string>
+    <string name="previous">上一步</string>
 </resources>

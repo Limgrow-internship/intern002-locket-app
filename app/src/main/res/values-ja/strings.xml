@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ロケットアプリ</string>
+    <!-- Language -->
     <string name="language_screen_title">言語を選択</string>
     <string name="language_screen_subtitle">以下から希望の言語を選択してください。\nより良いサービスを提供するためです。</string>
     <string name="you_selected">選択済み</string>
@@ -8,4 +10,14 @@
     <string name="search_hint">検索</string>
     <string name="no_results_for">\"%1$s\"の結果はありません</string>
     <string name="get_started">始める</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding1_title">HushCamへようこそ 💕</string>
+    <string name="onboarding1_subtitle">お気に入りの人々とリアルタイムで写真を共有 — ホーム画面で直接。</string>
+    <string name="onboarding2_title">思ったより近い 💫</string>
+    <string name="onboarding2_subtitle">何マイルも離れていても、一瞬が心を近づけることができます。</string>
+    <string name="onboarding3_title">語りかける瞬間 💬</string>
+    <string name="onboarding3_subtitle">クイックメッセージや絵文字を送って、瞬間を生き生きと楽しく保ちましょう。</string>
+    <string name="next">次へ</string>
+    <string name="previous">前へ</string>
 </resources>

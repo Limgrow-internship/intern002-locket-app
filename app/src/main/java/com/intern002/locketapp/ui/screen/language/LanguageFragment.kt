@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +52,8 @@ class LanguageFragment : Fragment(), LanguageAdapter.OnLanguageClickListener {
         setupSearchListener()
         observeViewModel()
 
+        restoreSavedLanguage()
+
         binding.btnGetStarted.setOnClickListener {
             val selectedCode = viewModel.selectedLanguageCode.value
 
@@ -87,6 +88,42 @@ class LanguageFragment : Fragment(), LanguageAdapter.OnLanguageClickListener {
         })
     }
 
+
+    private fun restoreSavedLanguage() {
+        val prefs = requireActivity().getSharedPreferences(LANGUAGE_PREFS, Context.MODE_PRIVATE)
+        val savedLanguageCode = prefs.getString(SELECTED_LANGUAGE, null)
+
+        if (!savedLanguageCode.isNullOrBlank()) {
+            viewModel.setSelectedLanguageCode(savedLanguageCode)
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.languages.collect { languages ->
+                    val savedLanguage = languages.find { it.code == savedLanguageCode }
+                    if (savedLanguage != null) {
+                        updateSelectedLanguageUI(savedLanguage)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateSelectedLanguageUI(language: Language) {
+        binding.tvSelectedLanguage.text = language.name
+        binding.tvSelectedLanguage.setTextColor(
+            ContextCompat.getColor(requireContext(), R.color.white)
+        )
+
+        Glide.with(requireContext())
+            .load(language.flagUrl)
+            .error(R.drawable.ic_flag_placeholder)
+            .into(binding.ivSelectedFlag)
+
+        binding.ivSelectedFlag.isVisible = true
+        binding.ivCheck.isVisible = true
+        binding.btnGetStarted.isEnabled = true
+        binding.btnGetStarted.alpha = 1.0f
+    }
+
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             launch {
@@ -98,7 +135,7 @@ class LanguageFragment : Fragment(), LanguageAdapter.OnLanguageClickListener {
 
             launch {
                 viewModel.error.collectLatest { error ->
-                    error?.let { Log.e("LanguageFragment", "Error: $it") }
+                    error?.let { }
                 }
             }
 

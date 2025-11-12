@@ -1,7 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Intern002 Locket App</string>
-
-    <!-- Language Screen -->
+    <!-- Language -->
     <string name="language_screen_title">Choose the language</string>
     <string name="language_screen_subtitle">Select your preferred language below.\nThis helps us serve you better.</string>
     <string name="you_selected">You Selected</string>
@@ -10,4 +10,14 @@
     <string name="search_hint">Search</string>
     <string name="no_results_for">No results for \"%1$s\"</string>
     <string name="get_started">Get Started</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding1_title">Welcome to HushCam 💕</string>
+    <string name="onboarding1_subtitle">Share real time photos with your favorite people — right on your home screen.</string>
+    <string name="onboarding2_title">Closer Than You Think 💫</string>
+    <string name="onboarding2_subtitle">Even miles apart, a single moment can make hearts feel near.</string>
+    <string name="onboarding3_title">Moments That Speak 💬</string>
+    <string name="onboarding3_subtitle">Send a quick message or emoji to keep the moment alive and fun.</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
 </resources>

@@ -25,6 +25,8 @@ class NativeAdFragment : Fragment() {
         val adContainer = view.findViewById<ViewGroup>(R.id.nativeAdContainer)
         val nativeAd = AdManager.nativeAdFull
 
+        AdManager.prefetchNativeAd(requireContext().applicationContext)
+
         val navigateToOnboarding = {
             if (isAdded) {
                 findNavController().navigate(R.id.action_nativeAdFragment_to_onboardingFlow)
@@ -36,7 +38,6 @@ class NativeAdFragment : Fragment() {
                 val closeAction = {
                     AdManager.destroyNativeAd()
                     navigateToOnboarding()
-                    AdManager.prefetchNativeAd(requireContext().applicationContext)
                 }
 
                 adView.findViewById<ImageView>(R.id.ad_close)?.setOnClickListener { closeAction() }

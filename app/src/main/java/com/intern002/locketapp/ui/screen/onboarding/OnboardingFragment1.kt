@@ -4,15 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.intern002.locketapp.R
 import com.intern002.locketapp.ads.AdManager
 import com.intern002.locketapp.ads.NativeAdBindingHelper
 import com.intern002.locketapp.databinding.FragmentOnboarding1Binding
-import com.google.android.gms.ads.nativead.NativeAdView
-import android.widget.FrameLayout
 
 class OnboardingFragment1 : Fragment() {
 
@@ -30,27 +28,37 @@ class OnboardingFragment1 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loadAndDisplayNativeAd()
+        binding.imgBackground.setImageResource(R.drawable.img_onboarding1)
+
+        showNativeAdIfAvailable()
+
+        AdManager.prefetchNativeAdSmall(requireContext().applicationContext)
 
         setupNextButton()
     }
 
-    private fun loadAndDisplayNativeAd() {
-        val adContainer = binding.adPlaceholder
-        val nativeAd = AdManager.nativeAdFull
+    private fun showNativeAdIfAvailable() {
+        val nativeAd = AdManager.nativeAdSmall
 
         if (nativeAd != null) {
-            adContainer.visibility = View.VISIBLE
+            val adView = layoutInflater.inflate(
+                R.layout.layout_native_ad,
+                binding.adPlaceholder,
+                false
+            ) as NativeAdView
 
-            NativeAdBindingHelper.bindNativeAdFull(adContainer, nativeAd) { adView: NativeAdView ->
-                // Tùy chọn: thiết lập các sự kiện trên AdView nếu cần
+            NativeAdBindingHelper.bindNativeAdInline(adView, nativeAd)
+
+            adView.findViewById<android.widget.ImageView>(R.id.ad_close)?.setOnClickListener {
+                binding.adPlaceholder.visibility = View.GONE
+                AdManager.destroyNativeAdSmall()
             }
 
-            AdManager.prefetchNativeAd(requireContext().applicationContext)
+            binding.adPlaceholder.removeAllViews()
+            binding.adPlaceholder.addView(adView)
+            binding.adPlaceholder.visibility = View.VISIBLE
         } else {
-            // Ẩn FrameLayout nếu không có quảng cáo (hoặc thử tải lại)
-            adContainer.visibility = View.GONE
-            AdManager.prefetchNativeAd(requireContext().applicationContext)
+            binding.adPlaceholder.visibility = View.GONE
         }
     }
 
