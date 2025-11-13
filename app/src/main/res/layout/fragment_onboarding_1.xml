@@ -95,6 +95,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:text="@string/onboarding1_title"
         android:textSize="28sp"
         android:textStyle="bold"

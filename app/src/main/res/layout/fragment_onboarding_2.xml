@@ -12,15 +12,15 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.77" /> <ImageView
-    android:id="@+id/iv_onboarding"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    android:scaleType="centerCrop"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    tools:src="@drawable/img_onboarding2" />
+        android:id="@+id/iv_onboarding"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/guideLineHorizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:src="@drawable/img_onboarding2" />
 
     <View
         android:id="@+id/gradientOverlay"
@@ -111,6 +111,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
+        android:gravity="center"
         android:text="@string/onboarding2_subtitle"
         android:textAlignment="center"
         android:textColor="@android:color/white"
@@ -125,6 +126,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/onboarding2_title"
+        android:layout_gravity="center"
         android:textColor="@android:color/white"
         android:textSize="24sp"
         android:textStyle="bold"
