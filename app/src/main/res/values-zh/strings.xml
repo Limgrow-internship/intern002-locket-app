@@ -20,4 +20,33 @@
     <string name="onboarding3_subtitle">发送快速消息或表情符号，让瞬间保持生动有趣。</string>
     <string name="next">下一步</string>
     <string name="previous">上一步</string>
+
+    <!-- Settings -->
+    <string name="settings">设置</string>
+    <string name="extensions">扩展功能</string>
+    <string name="everyone">所有人</string>
+    <string name="edit">编辑</string>
+    <string name="hushcam_premium">HushCam 高级版</string>
+    <string name="change_app_icon">更换应用图标</string>
+    <string name="premium">高级版</string>
+    <string name="camera_theme">相机主题</string>
+    <string name="app_settings">应用设置</string>
+    <string name="widget_setup_guide">小部件设置指南</string>
+    <string name="language">语言</string>
+    <string name="overview">概览</string>
+    <string name="change_birthday">更改生日</string>
+    <string name="change_name">更改姓名</string>
+    <string name="edit_profile_photo">编辑个人资料照片</string>
+    <string name="change_email_address">更改电子邮件地址</string>
+    <string name="privacy_security">隐私 &amp; 安全</string>
+    <string name="blocked_accounts">已屏蔽的账户</string>
+    <string name="send_read_receipts">发送已读回执</string>
+    <string name="show_activity_status">显示活动状态</string>
+    <string name="message_notifications">消息通知</string>
+    <string name="support">支持</string>
+    <string name="report_problem">报告问题</string>
+    <string name="send_feedback">发送反馈</string>
+    <string name="account_management">账户管理</string>
+    <string name="delete_account">删除账户</string>
+    <string name="log_out">退出登录</string>
 </resources>

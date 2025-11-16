@@ -88,7 +88,7 @@ class BirthdayFragment : Fragment(), NumberPickerDialogFragment.NumberPickerList
 
         binding.buttonContinue.setOnClickListener {
             if (selectedMonth != null && selectedDay != null) {
-                val birthday = "$selectedDay/$selectedMonth"
+//                val birthday = "$selectedDay/$selectedMonth"
                 findNavController().navigate(R.id.action_birthdayFragment_to_welcomeFragment)
             }
         }

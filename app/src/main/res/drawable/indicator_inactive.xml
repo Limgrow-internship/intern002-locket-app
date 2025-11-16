@@ -10,6 +10,6 @@
         android:radius="2dp" />
 
     <solid
-        android:color="#4DFFFFFF"/>
+        android:color="@color/white_30per_opacity"/>
 
 </shape>

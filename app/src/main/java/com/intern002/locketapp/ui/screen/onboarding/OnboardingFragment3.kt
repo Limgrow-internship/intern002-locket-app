@@ -53,11 +53,6 @@ class OnboardingFragment3 : Fragment() {
 
             NativeAdBindingHelper.bindNativeAdInline(adView, nativeAd)
 
-            adView.findViewById<android.widget.ImageView>(R.id.ad_close)?.setOnClickListener {
-                binding.adPlaceholder.visibility = View.GONE
-                AdManager.destroyNativeAdSmall()
-            }
-
             binding.adPlaceholder.removeAllViews()
             binding.adPlaceholder.addView(adView)
             binding.adPlaceholder.visibility = View.VISIBLE

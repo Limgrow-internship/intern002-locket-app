@@ -97,7 +97,6 @@ object NativeAdBindingHelper {
         }
 
         adView.findViewById<ImageView>(R.id.ad_label_icon)?.visibility = View.VISIBLE
-        adView.findViewById<ImageView>(R.id.ad_close)?.visibility = View.VISIBLE
 
         adView.setNativeAd(nativeAd)
     }

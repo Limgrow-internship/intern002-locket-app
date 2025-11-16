@@ -20,4 +20,33 @@
     <string name="onboarding3_subtitle">ส่งข้อความสั้นหรืออีโมจิเพื่อรักษาช่วงเวลาให้มีชีวิตชีวาและสนุกสนาน</string>
     <string name="next">ถัดไป</string>
     <string name="previous">ก่อนหน้า</string>
+
+    <!-- Settings -->
+    <string name="settings">การตั้งค่า</string>
+    <string name="extensions">ส่วนขยาย</string>
+    <string name="everyone">ทุกคน</string>
+    <string name="edit">แก้ไข</string>
+    <string name="hushcam_premium">HushCam พรีเมียม</string>
+    <string name="change_app_icon">เปลี่ยนไอคอนแอป</string>
+    <string name="premium">พรีเมียม</string>
+    <string name="camera_theme">ธีมกล้อง</string>
+    <string name="app_settings">การตั้งค่าแอป</string>
+    <string name="widget_setup_guide">คู่มือตั้งค่าวิดเจ็ต</string>
+    <string name="language">ภาษา</string>
+    <string name="overview">ภาพรวม</string>
+    <string name="change_birthday">เปลี่ยนวันเกิด</string>
+    <string name="change_name">เปลี่ยนชื่อ</string>
+    <string name="edit_profile_photo">แก้ไขรูปโปรไฟล์</string>
+    <string name="change_email_address">เปลี่ยนที่อยู่อีเมล</string>
+    <string name="privacy_security">ความเป็นส่วนตัว &amp; ความปลอดภัย</string>
+    <string name="blocked_accounts">บัญชีที่ถูกบล็อก</string>
+    <string name="send_read_receipts">ส่งการยืนยันการอ่าน</string>
+    <string name="show_activity_status">แสดงสถานะกิจกรรม</string>
+    <string name="message_notifications">การแจ้งเตือนข้อความ</string>
+    <string name="support">การสนับสนุน</string>
+    <string name="report_problem">รายงานปัญหา</string>
+    <string name="send_feedback">ส่งข้อเสนอแนะ</string>
+    <string name="account_management">การจัดการบัญชี</string>
+    <string name="delete_account">ลบบัญชี</string>
+    <string name="log_out">ออกจากระบบ</string>
 </resources>

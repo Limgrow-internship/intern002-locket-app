@@ -68,7 +68,7 @@
         android:letterSpacing="0.05"
         android:lineSpacingMultiplier="1.2"
         android:text="Sorry, this username is invalid."
-        android:textColor="@color/red"
+        android:textColor="@color/red_orange"
         android:textSize="14sp"
         android:visibility="gone"
         app:drawableStartCompat="@drawable/ic_error"

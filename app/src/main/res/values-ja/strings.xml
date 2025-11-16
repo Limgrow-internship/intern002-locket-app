@@ -20,4 +20,33 @@
     <string name="onboarding3_subtitle">クイックメッセージや絵文字を送って、瞬間を生き生きと楽しく保ちましょう。</string>
     <string name="next">次へ</string>
     <string name="previous">前へ</string>
+
+    <!-- Settings -->
+    <string name="settings">設定</string>
+    <string name="extensions">拡張機能</string>
+    <string name="everyone">全員</string>
+    <string name="edit">編集</string>
+    <string name="hushcam_premium">HushCam プレミアム</string>
+    <string name="change_app_icon">アプリアイコンを変更</string>
+    <string name="premium">プレミアム</string>
+    <string name="camera_theme">カメラテーマ</string>
+    <string name="app_settings">アプリ設定</string>
+    <string name="widget_setup_guide">ウィジェット設定ガイド</string>
+    <string name="language">言語</string>
+    <string name="overview">概要</string>
+    <string name="change_birthday">誕生日を変更</string>
+    <string name="change_name">名前を変更</string>
+    <string name="edit_profile_photo">プロフィール写真を編集</string>
+    <string name="change_email_address">メールアドレスを変更</string>
+    <string name="privacy_security">プライバシー &amp; セキュリティ</string>
+    <string name="blocked_accounts">ブロックしたアカウント</string>
+    <string name="send_read_receipts">開封確認を送信</string>
+    <string name="show_activity_status">アクティビティステータスを表示</string>
+    <string name="message_notifications">メッセージ通知</string>
+    <string name="support">サポート</string>
+    <string name="report_problem">問題を報告</string>
+    <string name="send_feedback">フィードバックを送信</string>
+    <string name="account_management">アカウント管理</string>
+    <string name="delete_account">アカウントを削除</string>
+    <string name="log_out">ログアウト</string>
 </resources>

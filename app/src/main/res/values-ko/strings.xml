@@ -21,4 +21,33 @@
     <string name="onboarding3_subtitle">빠른 메시지나 이모지를 보내 순간을 생생하고 재미있게 유지하세요.</string>
     <string name="next">다음</string>
     <string name="previous">이전</string>
+
+    <!-- Settings -->
+    <string name="settings">설정</string>
+    <string name="extensions">확장 기능</string>
+    <string name="everyone">모두</string>
+    <string name="edit">편집</string>
+    <string name="hushcam_premium">HushCam 프리미엄</string>
+    <string name="change_app_icon">앱 아이콘 변경</string>
+    <string name="premium">프리미엄</string>
+    <string name="camera_theme">카메라 테마</string>
+    <string name="app_settings">앱 설정</string>
+    <string name="widget_setup_guide">위젯 설정 가이드</string>
+    <string name="language">언어</string>
+    <string name="overview">개요</string>
+    <string name="change_birthday">생일 변경</string>
+    <string name="change_name">이름 변경</string>
+    <string name="edit_profile_photo">프로필 사진 편집</string>
+    <string name="change_email_address">이메일 주소 변경</string>
+    <string name="privacy_security">개인정보 보호 &amp; 보안</string>
+    <string name="blocked_accounts">차단된 계정</string>
+    <string name="send_read_receipts">읽음 확인 보내기</string>
+    <string name="show_activity_status">활동 상태 표시</string>
+    <string name="message_notifications">메시지 알림</string>
+    <string name="support">지원</string>
+    <string name="report_problem">문제 신고</string>
+    <string name="send_feedback">피드백 보내기</string>
+    <string name="account_management">계정 관리</string>
+    <string name="delete_account">계정 삭제</string>
+    <string name="log_out">로그아웃</string>
 </resources>

@@ -3,14 +3,11 @@
     android:id="@+id/adViewFull"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
-    android:paddingTop="12dp"
-    android:paddingBottom="16dp">
+    android:background="@android:color/black">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="30dp">
+        android:layout_height="match_parent">
 
 
         <ImageView
@@ -58,7 +55,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/black"
         android:layout_gravity="bottom"
-        android:paddingBottom="30dp">
+        android:paddingBottom="20dp">
 
 
         <RelativeLayout
@@ -67,31 +64,13 @@
 
             <ImageView
                 android:id="@+id/ad_label_icon"
-                android:layout_width="17dp"
-                android:layout_height="22dp"
+                android:layout_width="15dp"
+                android:layout_height="20dp"
                 android:src="@drawable/lb_ad"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="2dp"
                 android:layout_marginTop="2dp"/>
 
-            <ImageView
-                android:id="@+id/ad_info"
-                android:layout_width="18dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_info"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="2dp"/>
-
-            <ImageView
-                android:id="@+id/ad_close"
-                android:layout_width="18dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_close"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="2dp"
-                android:clickable="true"
-                android:focusable="true"/>
         </RelativeLayout>
 
         <LinearLayout

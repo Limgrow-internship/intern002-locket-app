@@ -3,12 +3,15 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="white_semitransparent">#99FFFFFF</color>
+    <color name="white_30per_opacity">#4DFFFFFF</color>
     <color name="brand_blue_dark">#2C69D1</color>
     <color name="brand_blue_light">#00BFFF</color>
+    <color name="faded_navy">#164C7B</color>
     <color name="blue_light">#2E8AE5</color>
-    <color name="red">#FF453A</color>
+    <color name="red_orange">#FF453A</color>
     <color name="green">#30D64E</color>
-    <color name="grey_medium">#1A1A1A</color>
+    <color name="near_black">#1A1A1A</color>
     <color name="grey_light">#424242</color>
-
+    <color name="grey_dark">#2C2C2E</color>
+    <color name="charcoal_gray">#2D2F2F</color>
 </resources>

@@ -20,4 +20,33 @@
     <string name="onboarding3_subtitle">Envía un mensaje rápido o un emoji para mantener el momento vivo y divertido.</string>
     <string name="next">Siguiente</string>
     <string name="previous">Anterior</string>
+
+    <!-- Settings -->
+    <string name="settings">Configuración</string>
+    <string name="extensions">Extensiones</string>
+    <string name="everyone">Todos</string>
+    <string name="edit">Editar</string>
+    <string name="hushcam_premium">HushCam Premium</string>
+    <string name="change_app_icon">Cambiar icono de la app</string>
+    <string name="premium">Premium</string>
+    <string name="camera_theme">Tema de cámara</string>
+    <string name="app_settings">Configuración de la app</string>
+    <string name="widget_setup_guide">Guía de configuración del widget</string>
+    <string name="language">Idioma</string>
+    <string name="overview">Resumen</string>
+    <string name="change_birthday">Cambiar fecha de nacimiento</string>
+    <string name="change_name">Cambiar nombre</string>
+    <string name="edit_profile_photo">Editar foto de perfil</string>
+    <string name="change_email_address">Cambiar dirección de correo</string>
+    <string name="privacy_security">Privacidad &amp; Seguridad</string>
+    <string name="blocked_accounts">Cuentas bloqueadas</string>
+    <string name="send_read_receipts">Enviar confirmaciones de lectura</string>
+    <string name="show_activity_status">Mostrar estado de actividad</string>
+    <string name="message_notifications">Notificaciones de mensajes</string>
+    <string name="support">Soporte</string>
+    <string name="report_problem">Reportar un problema</string>
+    <string name="send_feedback">Enviar comentarios</string>
+    <string name="account_management">Gestión de cuenta</string>
+    <string name="delete_account">Eliminar cuenta</string>
+    <string name="log_out">Cerrar sesión</string>
 </resources>

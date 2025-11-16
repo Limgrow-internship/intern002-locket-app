@@ -20,4 +20,33 @@
     <string name="onboarding3_subtitle">Gửi tin nhắn hoặc emoji nhanh chóng để giữ khoảnh khắc sống động và vui vẻ.</string>
     <string name="next">Tiếp</string>
     <string name="previous">Trước</string>
+
+    <!-- Settings -->
+    <string name="settings">Cài đặt</string>
+    <string name="extensions">Tiện ích mở rộng</string>
+    <string name="everyone">Mọi người</string>
+    <string name="edit">Chỉnh sửa</string>
+    <string name="hushcam_premium">HushCam Premium</string>
+    <string name="change_app_icon">Đổi biểu tượng ứng dụng</string>
+    <string name="premium">Premium</string>
+    <string name="camera_theme">Chủ đề camera</string>
+    <string name="app_settings">Cài đặt ứng dụng</string>
+    <string name="widget_setup_guide">Hướng dẫn cài đặt Widget</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="overview">Tổng quan</string>
+    <string name="change_birthday">Đổi ngày sinh</string>
+    <string name="change_name">Đổi tên</string>
+    <string name="edit_profile_photo">Chỉnh sửa ảnh hồ sơ</string>
+    <string name="change_email_address">Đổi địa chỉ Email</string>
+    <string name="privacy_security">Quyền riêng tư &amp; Bảo mật</string>
+    <string name="blocked_accounts">Tài khoản đã chặn</string>
+    <string name="send_read_receipts">Gửi xác nhận đã đọc</string>
+    <string name="show_activity_status">Hiển thị trạng thái hoạt động</string>
+    <string name="message_notifications">Thông báo tin nhắn</string>
+    <string name="support">Hỗ trợ</string>
+    <string name="report_problem">Báo cáo sự cố</string>
+    <string name="send_feedback">Gửi phản hồi</string>
+    <string name="account_management">Quản lý tài khoản</string>
+    <string name="delete_account">Xóa tài khoản</string>
+    <string name="log_out">Đăng xuất</string>
 </resources>

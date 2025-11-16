@@ -40,7 +40,6 @@ class NativeAdFragment : Fragment() {
                     navigateToOnboarding()
                 }
 
-                adView.findViewById<ImageView>(R.id.ad_close)?.setOnClickListener { closeAction() }
                 adView.findViewById<ImageView>(R.id.ad_close_1)?.setOnClickListener { closeAction() }
             }
         } else {

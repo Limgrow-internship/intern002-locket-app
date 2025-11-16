@@ -99,7 +99,7 @@
         android:letterSpacing="0.03"
         android:lineSpacingMultiplier="1.2"
         android:text="Please select the month before selecting the day!"
-        android:textColor="@color/red"
+        android:textColor="@color/red_orange"
         android:textSize="14sp"
         android:visibility="gone"
         app:drawableStartCompat="@drawable/ic_error"
