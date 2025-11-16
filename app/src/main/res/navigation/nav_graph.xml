@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/splashFragment"
@@ -43,7 +43,7 @@
         android:id="@+id/onboardingFragment1"
         android:name="com.intern002.locketapp.ui.screen.onboarding.OnboardingFragment1"
         android:label="OnboardingFragment1"
-        tools:layout="@layout/fragment_onboarding1">
+        tools:layout="@layout/fragment_onboarding_1">
         <action
             android:id="@+id/action_onboarding1_to_onboarding2"
             app:destination="@id/onboardingFragment2" />
@@ -53,7 +53,7 @@
         android:id="@+id/onboardingFragment2"
         android:name="com.intern002.locketapp.ui.screen.onboarding.OnboardingFragment2"
         android:label="OnboardingFragment2"
-        tools:layout="@layout/fragment_onboarding2" >
+        tools:layout="@layout/fragment_onboarding_2" >
         <action
             android:id="@+id/action_onboarding2_to_onboarding3"
             app:destination="@id/onboardingFragment3" />
@@ -63,6 +63,27 @@
         android:id="@+id/onboardingFragment3"
         android:name="com.intern002.locketapp.ui.screen.onboarding.OnboardingFragment3"
         android:label="OnboardingFragment3"
-        tools:layout="@layout/fragment_onboarding3" />
+        tools:layout="@layout/fragment_onboarding_3" />
+
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.intern002.locketapp.ui.screen.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+
+        <action
+            android:id="@+id/action_loginFragment_to_loginEmailFragment"
+            app:destination="@id/loginEmailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginEmailFragment"
+        android:name="com.intern002.locketapp.ui.screen.login.LoginEmailFragment"
+        android:label="LoginEmailFragment"
+        tools:layout="@layout/fragment_login_email">
+
+    </fragment>
+
 
 </navigation>

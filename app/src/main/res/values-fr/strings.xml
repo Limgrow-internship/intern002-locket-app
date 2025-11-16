@@ -8,4 +8,17 @@
     <string name="search_hint">Rechercher</string>
     <string name="no_results_for">Aucun résultat pour \"%1$s\"</string>
     <string name="get_started">Commencer</string>
+    <string name="login_headline">Commençons</string>
+    <string name="login_subhead">Entrez et commencez à partager vos moments</string>
+    <string name="login_button_facebook">Continuer avec Facebook</string>
+    <string name="login_button_google">Continuer avec Google</string>
+    <string name="login_prompt_text">Vous avez déjà un compte ?</string>
+    <string name="login_action_text">Connexion</string>
+    <string name="login_prompt_full">Vous avez déjà un compte ? Connexion</string>
+    <string name="login_footer_links">Conditions d\'utilisation | Politique de confidentialité | Restaurer</string>
+    <string name="email_headline">Saisissez votre e-mail</string>
+    <string name="email_hint">Adresse e-mail</string>
+    <string name="terms_and_privacy_notice">En appuyant sur Continuer, vous acceptez nos Conditions d\'utilisation et notre Politique de confidentialité.</string>
+    <string name="button_continue">Continuer</string>
+    <string name="content_desc_back_button">Retour</string>
 </resources>

@@ -10,4 +10,22 @@
     <string name="search_hint">Search</string>
     <string name="no_results_for">No results for \"%1$s\"</string>
     <string name="get_started">Get Started</string>
+
+    <string name="login_headline">Let\'s Get Started!</string>
+    <string name="login_subhead">Step in and start sharing your moments.</string>
+    <string name="login_button_facebook">Continue with Facebook</string>
+    <string name="login_button_google">Continue with Google</string>
+
+    <string name="login_prompt_text">Already have an account?</string>
+    <string name="login_action_text">Log in</string>
+    <string name="login_prompt_full">Already have an account? Log in</string>
+
+    <string name="login_footer_links">Terms of Use      |      Privacy Policy      |      Restore</string>
+
+    <string name="email_headline">Enter your email</string>
+    <string name="email_hint">Email address</string>
+    <string name="terms_and_privacy_notice">By tapping Continue, you agree to our Terms of Service and Privacy Policy.</string>
+    <string name="button_continue">Continue</string>
+
+    <string name="content_desc_back_button">Back</string>
 </resources>

@@ -9,4 +9,17 @@
     <string name="search_hint">搜索</string>
     <string name="no_results_for">未找到 \"%1$s\" 的结果</string>
     <string name="get_started">开始</string>
+    <string name="login_headline">让我们开始吧</string>
+    <string name="login_subhead">快来分享你的精彩瞬间吧</string>
+    <string name="login_button_facebook">使用 Facebook 继续</string>
+    <string name="login_button_google">使用 Google 继续</string>
+    <string name="login_prompt_text">已经有帐户了？</string>
+    <string name="login_action_text">登录</string>
+    <string name="login_prompt_full">已经有帐户了？ 登录</string>
+    <string name="login_footer_links">使用条款 | 隐私政策 | 恢复</string>
+    <string name="email_headline">输入您的电子邮件</string>
+    <string name="email_hint">电子邮件地址</string>
+    <string name="terms_and_privacy_notice">点击“继续”，即表示您同意我们的服务条款和隐私政策。</string>
+    <string name="button_continue">继续</string>
+    <string name="content_desc_back_button">返回</string>
 </resources>

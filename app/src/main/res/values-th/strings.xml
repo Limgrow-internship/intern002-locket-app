@@ -8,4 +8,17 @@
     <string name="search_hint">ค้นหา</string>
     <string name="no_results_for">ไม่พบผลลัพธ์สำหรับ \"%1$s\"</string>
     <string name="get_started">เริ่มต้น</string>
+    <string name="login_headline">เริ่มกันเลย</string>
+    <string name="login_subhead">เข้ามาแชร์ช่วงเวลาของคุณกันเถอะ</string>
+    <string name="login_button_facebook">ดำเนินการต่อด้วย Facebook</string>
+    <string name="login_button_google">ดำเนินการต่อด้วย Google</string>
+    <string name="login_prompt_text">มีบัญชีอยู่แล้วใช่ไหม</string>
+    <string name="login_action_text">เข้าสู่ระบบ</string>
+    <string name="login_prompt_full">มีบัญชีอยู่แล้วใช่ไหม เข้าสู่ระบบ</string>
+    <string name="login_footer_links">ข้อกำหนดการใช้งาน | นโยบายความเป็นส่วนตัว | กู้คืน</string>
+    <string name="email_headline">ป้อนอีเมลของคุณ</string>
+    <string name="email_hint">ที่อยู่อีเมล</string>
+    <string name="terms_and_privacy_notice">การแตะ \"ดำเนินการต่อ\" แสดงว่าคุณยอมรับข้อกำหนดในการให้บริการและนโยบายความเป็นส่วนตัวของเรา</string>
+    <string name="button_continue">ดำเนินการต่อ</string>
+    <string name="content_desc_back_button">กลับ</string>
 </resources>
