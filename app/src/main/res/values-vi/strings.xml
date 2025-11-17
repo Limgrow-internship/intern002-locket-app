@@ -49,4 +49,19 @@
     <string name="account_management">Quản lý tài khoản</string>
     <string name="delete_account">Xóa tài khoản</string>
     <string name="log_out">Đăng xuất</string>
+
+    <!-- Friends -->
+    <string name="friend_list">Danh sách bạn bè</string>
+    <string name="search_for_friends_to_add">Tìm kiếm bạn bè để thêm!</string>
+    <string name="add_a_new_friend">Thêm bạn mới</string>
+    <string name="find_friends_from_other_apps">Tìm bạn bè từ ứng dụng khác</string>
+    <string name="messenger">Messenger</string>
+    <string name="instagram">Instagram</string>
+    <string name="twitter">Twitter</string>
+    <string name="more">Thêm</string>
+    <string name="your_friends">Bạn bè của bạn (%1$d / %2$d)</string>
+    <string name="add_friends">Thêm bạn bè</string>
+    <string name="friends_added">Đã thêm %1$d / %2$d bạn</string>
+    <string name="suggestions">Gợi ý</string>
+    <string name="continue_button">Tiếp tục</string>
 </resources>

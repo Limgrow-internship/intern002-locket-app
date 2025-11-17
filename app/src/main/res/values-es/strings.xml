@@ -49,4 +49,19 @@
     <string name="account_management">Gestión de cuenta</string>
     <string name="delete_account">Eliminar cuenta</string>
     <string name="log_out">Cerrar sesión</string>
+
+    <!-- Friends -->
+    <string name="friend_list">Lista de amigos</string>
+    <string name="search_for_friends_to_add">¡Busca amigos para agregar!</string>
+    <string name="add_a_new_friend">Agregar un nuevo amigo</string>
+    <string name="find_friends_from_other_apps">Encuentra amigos de otras aplicaciones</string>
+    <string name="messenger">Messenger</string>
+    <string name="instagram">Instagram</string>
+    <string name="twitter">Twitter</string>
+    <string name="more">Más</string>
+    <string name="your_friends">Tus amigos (%1$d / %2$d)</string>
+    <string name="add_friends">Agregar amigos</string>
+    <string name="friends_added">%1$d / %2$d amigos agregados</string>
+    <string name="suggestions">Sugerencias</string>
+    <string name="continue_button">Continuar</string>
 </resources>

@@ -49,4 +49,19 @@
     <string name="account_management">Account Management</string>
     <string name="delete_account">Delete Account</string>
     <string name="log_out">Log Out</string>
+
+    <!-- Friends -->
+    <string name="friend_list">Friend List</string>
+    <string name="search_for_friends_to_add">Search for friends to add!</string>
+    <string name="add_a_new_friend">Add a new friend</string>
+    <string name="find_friends_from_other_apps">Find friends from other apps</string>
+    <string name="messenger">Messenger</string>
+    <string name="instagram">Instagram</string>
+    <string name="twitter">Twitter</string>
+    <string name="more">More</string>
+    <string name="your_friends">Your Friends (%1$d / %2$d)</string>
+    <string name="add_friends">Add Friends</string>
+    <string name="friends_added">%1$d / %2$d friends added</string>
+    <string name="suggestions">Suggestions</string>
+    <string name="continue_button">Continue</string>
 </resources>

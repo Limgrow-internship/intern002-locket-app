@@ -49,4 +49,19 @@
     <string name="account_management">アカウント管理</string>
     <string name="delete_account">アカウントを削除</string>
     <string name="log_out">ログアウト</string>
+
+    <!-- Friends -->
+    <string name="friend_list">友達リスト</string>
+    <string name="search_for_friends_to_add">追加する友達を検索！</string>
+    <string name="add_a_new_friend">新しい友達を追加</string>
+    <string name="find_friends_from_other_apps">他のアプリから友達を見つける</string>
+    <string name="messenger">メッセンジャー</string>
+    <string name="instagram">インスタグラム</string>
+    <string name="twitter">ツイッター</string>
+    <string name="more">もっと見る</string>
+    <string name="your_friends">あなたの友達 (%1$d / %2$d)</string>
+    <string name="add_friends">友達を追加</string>
+    <string name="friends_added">友達 %1$d人 / %2$d人 追加済み</string>
+    <string name="suggestions">おすすめ</string>
+    <string name="continue_button">続ける</string>
 </resources>

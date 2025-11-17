@@ -49,4 +49,19 @@
     <string name="account_management">การจัดการบัญชี</string>
     <string name="delete_account">ลบบัญชี</string>
     <string name="log_out">ออกจากระบบ</string>
+
+    <!-- Friends -->
+    <string name="friend_list">รายชื่อเพื่อน</string>
+    <string name="search_for_friends_to_add">ค้นหาเพื่อนที่จะเพิ่ม!</string>
+    <string name="add_a_new_friend">เพิ่มเพื่อนใหม่</string>
+    <string name="find_friends_from_other_apps">หาเพื่อนจากแอปอื่น</string>
+    <string name="messenger">Messenger</string>
+    <string name="instagram">Instagram</string>
+    <string name="twitter">Twitter</string>
+    <string name="more">เพิ่มเติม</string>
+    <string name="your_friends">เพื่อนของคุณ (%1$d / %2$d)</string>
+    <string name="add_friends">เพิ่มเพื่อน</string>
+    <string name="friends_added">เพิ่มเพื่อนแล้ว %1$d / %2$d</string>
+    <string name="suggestions">คำแนะนำ</string>
+    <string name="continue_button">ดำเนินการต่อ</string>
 </resources>

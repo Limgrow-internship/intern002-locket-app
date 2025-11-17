@@ -49,4 +49,19 @@
     <string name="account_management">账户管理</string>
     <string name="delete_account">删除账户</string>
     <string name="log_out">退出登录</string>
+
+    <!-- Friends -->
+    <string name="friend_list">好友列表</string>
+    <string name="search_for_friends_to_add">搜索要添加的朋友！</string>
+    <string name="add_a_new_friend">添加新朋友</string>
+    <string name="find_friends_from_other_apps">从其他应用查找朋友</string>
+    <string name="messenger">Messenger</string>
+    <string name="instagram">Instagram</string>
+    <string name="twitter">Twitter</string>
+    <string name="more">更多</string>
+    <string name="your_friends">你的朋友 (%1$d / %2$d)</string>
+    <string name="add_friends">添加好友</string>
+    <string name="friends_added">已添加 %1$d / %2$d 位好友</string>
+    <string name="suggestions">推荐</string>
+    <string name="continue_button">继续</string>
 </resources>
