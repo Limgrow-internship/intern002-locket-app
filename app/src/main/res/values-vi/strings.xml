@@ -49,4 +49,9 @@
     <string name="account_management">Quản lý tài khoản</string>
     <string name="delete_account">Xóa tài khoản</string>
     <string name="log_out">Đăng xuất</string>
+    <string name="title_app">HushCam</string>
+    <string name="text_friends_sample">10 Bạn bè</string>
+    <string name="text_zoom_1x">1x</string>
+    <string name="text_shutter_instruction">Chạm để chụp, giữ để quay</string>
+    <string name="text_history">Lịch sử</string>
 </resources>

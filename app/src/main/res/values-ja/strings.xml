@@ -49,4 +49,9 @@
     <string name="account_management">アカウント管理</string>
     <string name="delete_account">アカウントを削除</string>
     <string name="log_out">ログアウト</string>
+    <string name="title_app">HushCam</string>
+    <string name="text_friends_sample">10人の友達</string>
+    <string name="text_zoom_1x">1x</string>
+    <string name="text_shutter_instruction">タップで撮影、長押しで録画</string>
+    <string name="text_history">履歴</string>
 </resources>

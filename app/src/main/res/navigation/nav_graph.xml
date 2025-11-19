@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/settingsFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/settingsFragment"
@@ -107,6 +107,12 @@
         android:label="OnboardingFragment3"
         tools:layout="@layout/fragment_onboarding_3" />
 
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.intern002.locketapp.ui.screen.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home">
 
+    </fragment>
 
 </navigation>

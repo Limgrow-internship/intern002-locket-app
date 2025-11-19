@@ -49,4 +49,9 @@
     <string name="account_management">账户管理</string>
     <string name="delete_account">删除账户</string>
     <string name="log_out">退出登录</string>
+    <string name="title_app">HushCam</string>
+    <string name="text_friends_sample">10 位好友</string>
+    <string name="text_zoom_1x">1x</string>
+    <string name="text_shutter_instruction">轻触拍照，长按录像</string>
+    <string name="text_history">历史记录</string>
 </resources>

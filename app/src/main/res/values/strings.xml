@@ -49,4 +49,9 @@
     <string name="account_management">Account Management</string>
     <string name="delete_account">Delete Account</string>
     <string name="log_out">Log Out</string>
+    <string name="title_app">HushCam</string>
+    <string name="text_friends_sample">10 Friends</string>
+    <string name="text_zoom_1x">1x</string>
+    <string name="text_shutter_instruction">Tap for photo, hold for video</string>
+    <string name="text_history">History</string>
 </resources>
