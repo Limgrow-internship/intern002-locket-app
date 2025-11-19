@@ -113,6 +113,26 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
 
+        <action
+            android:id="@+id/action_homeFragment_to_editPreviewFragment"
+            app:destination="@id/editPreviewFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"/>
     </fragment>
 
+    <fragment
+        android:id="@+id/editPreviewFragment"
+        android:name="com.intern002.locketapp.ui.screen.edit.EditPreviewFragment"
+        android:label="EditPreviewFragment"
+        tools:layout="@layout/fragment_edit_preview">
+
+        <argument
+            android:name="mediaUri"
+            app:argType="string" />
+        <argument
+            android:name="isVideo"
+            app:argType="boolean" />
+    </fragment>
 </navigation>
