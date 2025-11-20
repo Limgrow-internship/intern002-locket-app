@@ -110,11 +110,13 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
-            android:id="@+id/button_grid_img"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:id="@+id/button_gallery"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="0dp"
+            android:scaleType="fitCenter"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_grid_img"
+            android:src="@drawable/ic_gallery"
             app:layout_constraintEnd_toStartOf="@id/button_shutter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/button_shutter"

@@ -5,6 +5,7 @@ plugins {
 //    alias(libs.plugins.google.services)
     alias(libs.plugins.ktlint)
     id("com.google.devtools.ksp")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -50,6 +51,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 
     // Lifecycle & Navigation
     implementation(libs.lifecycle.runtime.ktx)
