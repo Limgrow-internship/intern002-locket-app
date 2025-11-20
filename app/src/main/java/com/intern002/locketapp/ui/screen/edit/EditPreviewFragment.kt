@@ -100,6 +100,25 @@ class EditPreviewFragment: Fragment() {
                 MediaSaver.saveMediaToGallery(requireContext(), uri, isVideo)
             }
         }
+        binding.buttonEditTools.setOnClickListener {
+            showCaptionBottomSheet()
+        }
+    }
+
+    private fun showCaptionBottomSheet() {
+        val bottomSheet = CaptionBottomSheetFragment { selectedText ->
+
+            if (selectedText.isNotEmpty()) {
+                binding.editTextCaption.setText(selectedText)
+
+                binding.editTextCaption.setSelection(selectedText.length)
+            } else {
+                binding.editTextCaption.setText("")
+                binding.editTextCaption.requestFocus()
+            }
+        }
+
+        bottomSheet.show(parentFragmentManager, "CaptionBottomSheet")
     }
 
     override fun onDestroyView() {
