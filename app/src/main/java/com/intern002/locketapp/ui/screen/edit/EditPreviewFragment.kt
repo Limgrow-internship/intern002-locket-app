@@ -14,6 +14,7 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.intern002.locketapp.databinding.FragmentEditPreviewBinding
 import com.intern002.locketapp.utils.MediaSaver
+import com.intern002.locketapp.utils.setOnKeyboardVisibilityListener
 import kotlinx.coroutines.launch
 
 class EditPreviewFragment: Fragment() {
@@ -40,8 +41,16 @@ class EditPreviewFragment: Fragment() {
         } else {
             setupImage(mediaUri)
         }
+
         setupButtons(mediaUri, isVideo)
         setupFriendsList()
+        setupKeyboardHandling()
+        setupEditTextAction()
+
+        binding.imagePreview.setOnClickListener {
+            val imm = requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
+        }
     }
 
     private fun setupFriendsList() {
@@ -105,6 +114,46 @@ class EditPreviewFragment: Fragment() {
         }
     }
 
+    // 1. XỬ LÝ ẨN HIỆN KHI BÀN PHÍM LÊN/XUỐNG
+    private fun setupKeyboardHandling() {
+        val rootView = binding.root
+
+        rootView.viewTreeObserver.addOnGlobalLayoutListener {
+            val r = android.graphics.Rect()
+            rootView.getWindowVisibleDisplayFrame(r)
+
+            val screenHeight = rootView.rootView.height
+            val keypadHeight = screenHeight - r.bottom
+
+            if (keypadHeight > screenHeight * 0.15) {
+                binding.layoutEditControls.visibility = View.GONE
+                binding.recyclerFriends.visibility = View.GONE
+                binding.textHeaderSend.visibility = View.GONE
+                binding.buttonDownload.visibility = View.GONE
+
+            } else {
+                // === BÀN PHÍM TẮT ===
+                binding.layoutEditControls.visibility = View.VISIBLE
+                binding.recyclerFriends.visibility = View.VISIBLE
+                binding.textHeaderSend.visibility = View.VISIBLE
+                binding.buttonDownload.visibility = View.VISIBLE
+
+                binding.editTextCaption.clearFocus()
+            }
+        }
+    }
+
+
+    private fun setupEditTextAction() {
+        binding.editTextCaption.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE) {
+                val imm = requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                imm.hideSoftInputFromWindow(v.windowToken, 0)
+                return@setOnEditorActionListener true
+            }
+            false
+        }
+    }
     private fun showCaptionBottomSheet() {
         val bottomSheet = CaptionBottomSheetFragment { selectedText ->
 
