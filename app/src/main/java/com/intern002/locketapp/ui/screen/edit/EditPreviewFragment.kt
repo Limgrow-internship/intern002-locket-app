@@ -41,8 +41,29 @@ class EditPreviewFragment: Fragment() {
             setupImage(mediaUri)
         }
         setupButtons(mediaUri, isVideo)
+        setupFriendsList()
     }
 
+    private fun setupFriendsList() {
+        val mockData = arrayListOf(
+            FriendItem(0, "All", isSelected = true, isAllButton = true),
+            FriendItem(1, "Minh", avatarUrl = "https://i.pravatar.cc/150?img=1"),
+            FriendItem(2, "Trâm", avatarUrl = "https://i.pravatar.cc/150?img=5"),
+            FriendItem(3, "Long", avatarUrl = "https://i.pravatar.cc/150?img=8"),
+            FriendItem(4, "Vy", avatarUrl = "https://i.pravatar.cc/150?img=10"),
+            FriendItem(5, "Hùng", avatarUrl = "https://i.pravatar.cc/150?img=12")
+        )
+
+        val adapter = FriendsSelectAdapter(mockData)
+        binding.recyclerFriends.adapter = adapter
+
+        binding.buttonSend.setOnClickListener {
+            val selectedFriends = adapter.getSelectedFriends()
+            val names = selectedFriends.joinToString { it.name }
+
+            // TODO: Gọi API gửi ảnh
+        }
+    }
     private fun setupImage(uri : Uri) {
         binding.imagePreview.visibility = View.VISIBLE
         binding.videoPreview.visibility = View.GONE
