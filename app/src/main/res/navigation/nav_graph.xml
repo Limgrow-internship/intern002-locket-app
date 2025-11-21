@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/settingsFragment"
@@ -21,31 +21,23 @@
         android:label="fragment_username"
         tools:layout="@layout/fragment_username">
         <action
-            android:id="@+id/action_usernameFragment_to_birthdayFragment"
-            app:destination="@id/birthdayFragment" />
+            android:id="@+id/action_settingsFragment_to_loginFragment"
+            app:destination="@id/LoginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
-        android:id="@+id/birthdayFragment"
-        android:name="com.intern002.locketapp.ui.screen.auth.welcome.BirthdayFragment"
-        android:label="fragment_birthday"
-        tools:layout="@layout/fragment_birthday">
-        <action
-            android:id="@+id/action_birthdayFragment_to_welcomeFragment"
-            app:destination="@id/welcomeFragment"/>
-    </fragment>
+        android:id="@+id/FriendsFragment"
+        android:name="com.intern002.locketapp.ui.screen.friends.FriendsFragment"
+        android:label="fragment_friends"
+        tools:layout="@layout/fragment_friends" />
 
     <fragment
-        android:id="@+id/welcomeFragment"
-        android:name="com.intern002.locketapp.ui.screen.auth.welcome.WelcomeUsernameFragment"
-        android:label="fragment_welcome"
-        tools:layout="@layout/fragment_welcome_username">
-
-    </fragment>
-
-
-
-    ----
+        android:id="@+id/AddFriendsFragment"
+        android:name="com.intern002.locketapp.ui.screen.friends.AddFriendsFragment"
+        android:label="fragment_add_friends"
+        tools:layout="@layout/fragment_add_friends" />
 
     <fragment
         android:id="@+id/splashFragment"
@@ -55,6 +47,11 @@
         <action
             android:id="@+id/action_splashFragment_to_languageFragment"
             app:destination="@id/languageFragment"
+            app:popUpTo="@id/splashFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -73,7 +70,7 @@
         android:id="@+id/nativeAdFragment"
         android:name="com.intern002.locketapp.ads.NativeAdFragment"
         android:label="fragment_native_ad"
-        tools:layout="@layout/fragment_native_ad_full" >
+        tools:layout="@layout/fragment_native_ad_full">
         <action
             android:id="@+id/action_nativeAdFragment_to_onboardingFlow"
             app:destination="@id/onboardingFragment1"
@@ -95,7 +92,7 @@
         android:id="@+id/onboardingFragment2"
         android:name="com.intern002.locketapp.ui.screen.onboarding.OnboardingFragment2"
         android:label="OnboardingFragment2"
-        tools:layout="@layout/fragment_onboarding_2" >
+        tools:layout="@layout/fragment_onboarding_2">
         <action
             android:id="@+id/action_onboarding2_to_onboarding3"
             app:destination="@id/onboardingFragment3" />
@@ -105,13 +102,152 @@
         android:id="@+id/onboardingFragment3"
         android:name="com.intern002.locketapp.ui.screen.onboarding.OnboardingFragment3"
         android:label="OnboardingFragment3"
-        tools:layout="@layout/fragment_onboarding_3" />
+        tools:layout="@layout/fragment_onboarding_3">
+        <action
+            android:id="@+id/action_onboardingFragment3_to_LoginFragment"
+            app:destination="@id/LoginFragment"
+            app:popUpTo="@id/onboardingFragment1"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/LoginFragment"
+        android:name="com.intern002.locketapp.ui.screen.auth.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_LoginFragment_to_LoginEmailFragment"
+            app:destination="@id/LoginEmailFragment" />
+        <action
+            android:id="@+id/action_LoginFragment_to_SignupEmailFragment"
+            app:destination="@id/SignupEmailFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_usernameFragment"
+            app:destination="@id/usernameFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/LoginEmailFragment"
+        android:name="com.intern002.locketapp.ui.screen.auth.login.LoginEmailFragment"
+        android:label="fragment_login_email"
+        tools:layout="@layout/fragment_login_email">
+        <action
+            android:id="@+id/action_LoginEmailFragment_to_LoginPasswordFragment"
+            app:destination="@id/LoginPasswordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/LoginPasswordFragment"
+        android:name="com.intern002.locketapp.ui.screen.auth.login.LoginPasswordFragment"
+        android:label="fragment_login_password"
+        tools:layout="@layout/fragment_login_password">
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_LoginPasswordFragment_to_UsernameFragment"
+            app:destination="@id/usernameFragment" />
+        <action
+            android:id="@+id/action_LoginPasswordFragment_to_mainActivity"
+            app:destination="@id/main_activity" />
+        <action
+            android:id="@+id/action_LoginPasswordFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/SignupEmailFragment"
+        android:name="com.intern002.locketapp.ui.screen.auth.signup.SignupEmailFragment"
+        android:label="fragment_signup_email"
+        tools:layout="@layout/fragment_signup_email" >
+        <action
+            android:id="@+id/action_SignupEmailFragment_to_SignupPasswordFragment"
+            app:destination="@id/SignupPasswordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/SignupPasswordFragment"
+        android:name="com.intern002.locketapp.ui.screen.auth.signup.SignupPasswordFragment"
+        android:label="fragment_signup_password"
+        tools:layout="@layout/fragment_signup_password">
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_SignupPasswordFragment_to_UsernameFragment"
+            app:destination="@id/usernameFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/usernameFragment"
+        android:name="com.intern002.locketapp.ui.screen.auth.welcome.UsernameFragment"
+        android:label="fragment_username"
+        tools:layout="@layout/fragment_username">
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <argument
+            android:name="idToken"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="password"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="suggestedUsername"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_usernameFragment_to_birthdayFragment"
+            app:destination="@id/birthdayFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/birthdayFragment"
+        android:name="com.intern002.locketapp.ui.screen.auth.welcome.BirthdayFragment"
+        android:label="fragment_birthday"
+        tools:layout="@layout/fragment_birthday">
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="idToken"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="password"
+            app:argType="string"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_birthdayFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.intern002.locketapp.ui.screen.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.intern002.locketapp.ui.screen.auth.welcome.WelcomeUsernameFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome_username">
+        <argument
+            android:name="username"
+            app:argType="string" />
+    </fragment>
 
         <action
             android:id="@+id/action_homeFragment_to_editPreviewFragment"
@@ -120,6 +256,15 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out"/>
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.intern002.locketapp.ui.screen.home.HomeFragment"
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 
     <fragment
@@ -135,4 +280,14 @@
             android:name="isVideo"
             app:argType="boolean" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.intern002.locketapp.ui.screen.profile.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile" />
+
+    <activity
+        android:id="@+id/main_activity"
+        android:name="com.intern002.locketapp.ui.MainActivity"
+        tools:layout="@layout/activity_main" />
 </navigation>

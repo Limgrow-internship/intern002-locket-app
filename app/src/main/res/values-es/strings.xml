@@ -49,6 +49,42 @@
     <string name="account_management">Gestión de cuenta</string>
     <string name="delete_account">Eliminar cuenta</string>
     <string name="log_out">Cerrar sesión</string>
+
+    <!-- Friends -->
+    <string name="friend_list">Lista de amigos</string>
+    <string name="search_for_friends_to_add">¡Busca amigos para agregar!</string>
+    <string name="add_a_new_friend">Agregar un nuevo amigo</string>
+    <string name="find_friends_from_other_apps">Encuentra amigos de otras aplicaciones</string>
+    <string name="messenger">Messenger</string>
+    <string name="instagram">Instagram</string>
+    <string name="twitter">Twitter</string>
+    <string name="more">Más</string>
+    <string name="your_friends">Tus amigos (%1$d / %2$d)</string>
+    <string name="add_friends">Agregar amigos</string>
+    <string name="friends_added">%1$d / %2$d amigos agregados</string>
+    <string name="suggestions">Sugerencias</string>
+    <string name="continue_button">Continuar</string>
+
+    <!-- Login -->
+    <string name="login_headline">¡Empecemos!</string>
+    <string name="login_subhead">Entra y comienza a compartir tus momentos.</string>
+    <string name="login_button_facebook">Continuar con Facebook</string>
+    <string name="login_button_google">Continuar con Google</string>
+    <string name="login_prompt_text">¿Ya tienes una cuenta?</string>
+    <string name="login_action_text">Iniciar sesión</string>
+    <string name="login_prompt_full">¿Ya tienes una cuenta? Iniciar sesión</string>
+    <string name="login_footer_links">Términos de uso      |      Política de privacidad      |      Restaurar</string>
+    <string name="email_headline">Ingresa tu correo electrónico</string>
+    <string name="email_hint">Dirección de correo electrónico</string>
+    <string name="terms_and_privacy_notice">Al tocar Continuar, aceptas nuestros Términos de servicio y Política de privacidad.</string>
+    <string name="button_continue">Continuar</string>
+    <string name="pass_headline">Ingresa tu contraseña</string>
+    <string name="pass_hint">Contraseña</string>
+    <string name="avaivalable">¡Disponible!</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="content_desc_back_button">Atrás</string>
+    <string name="password_reset_email">Se ha enviado un correo de restablecimiento de contraseña.</string>
+    <string name="invalid_email_error">La dirección de correo electrónico no es válida.</string>
     <string name="title_app">HushCam</string>
     <string name="text_friends_sample">10 Amigos</string>
     <string name="text_zoom_1x">1x</string>

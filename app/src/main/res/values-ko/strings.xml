@@ -50,6 +50,42 @@
     <string name="account_management">계정 관리</string>
     <string name="delete_account">계정 삭제</string>
     <string name="log_out">로그아웃</string>
+
+    <!-- Friends -->
+    <string name="friend_list">친구 목록</string>
+    <string name="search_for_friends_to_add">추가할 친구를 검색하세요!</string>
+    <string name="add_a_new_friend">새 친구 추가</string>
+    <string name="find_friends_from_other_apps">다른 앱에서 친구 찾기</string>
+    <string name="messenger">메신저</string>
+    <string name="instagram">인스타그램</string>
+    <string name="twitter">트위터</string>
+    <string name="more">더보기</string>
+    <string name="your_friends">내 친구 (%1$d / %2$d)</string>
+    <string name="add_friends">친구 추가</string>
+    <string name="friends_added">친구 %1$d명 / %2$d명 추가</string>
+    <string name="suggestions">추천</string>
+    <string name="continue_button">계속</string>
+
+    <!-- Login -->
+    <string name="login_headline">시작해볼까요!</string>
+    <string name="login_subhead">들어와서 순간을 공유하기 시작하세요.</string>
+    <string name="login_button_facebook">Facebook으로 계속</string>
+    <string name="login_button_google">Google로 계속</string>
+    <string name="login_prompt_text">이미 계정이 있으신가요?</string>
+    <string name="login_action_text">로그인</string>
+    <string name="login_prompt_full">이미 계정이 있으신가요? 로그인</string>
+    <string name="login_footer_links">이용 약관      |      개인정보 처리방침      |      복원</string>
+    <string name="email_headline">이메일을 입력하세요</string>
+    <string name="email_hint">이메일 주소</string>
+    <string name="terms_and_privacy_notice">계속을 탭하면 서비스 약관 및 개인정보 처리방침에 동의하는 것입니다.</string>
+    <string name="button_continue">계속</string>
+    <string name="pass_headline">비밀번호를 입력하세요</string>
+    <string name="pass_hint">비밀번호</string>
+    <string name="avaivalable">사용 가능!</string>
+    <string name="forgot_password">비밀번호를 잊으셨나요?</string>
+    <string name="content_desc_back_button">뒤로</string>
+    <string name="password_reset_email">비밀번호 재설정 이메일이 전송되었습니다.</string>
+    <string name="invalid_email_error">이메일 주소가 올바르지 않습니다.</string>
     <string name="title_app">HushCam</string>
     <string name="text_friends_sample">친구 10명</string>
     <string name="text_zoom_1x">1x</string>

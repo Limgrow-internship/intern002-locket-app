@@ -49,6 +49,42 @@
     <string name="account_management">Gestion du compte</string>
     <string name="delete_account">Supprimer le compte</string>
     <string name="log_out">Se déconnecter</string>
+
+    <!-- Friends -->
+    <string name="friend_list">Liste d\'amis</string>
+    <string name="search_for_friends_to_add">Recherchez des amis à ajouter !</string>
+    <string name="add_a_new_friend">Ajouter un nouvel ami</string>
+    <string name="find_friends_from_other_apps">Trouvez des amis d\'autres applications</string>
+    <string name="messenger">Messenger</string>
+    <string name="instagram">Instagram</string>
+    <string name="twitter">Twitter</string>
+    <string name="more">Plus</string>
+    <string name="your_friends">Vos amis (%1$d / %2$d)</string>
+    <string name="add_friends">Ajouter des amis</string>
+    <string name="friends_added">%1$d / %2$d amis ajoutés</string>
+    <string name="suggestions">Suggestions</string>
+    <string name="continue_button">Continuer</string>
+
+    <!-- Login -->
+    <string name="login_headline">Commençons !</string>
+    <string name="login_subhead">Entrez et commencez à partager vos moments.</string>
+    <string name="login_button_facebook">Continuer avec Facebook</string>
+    <string name="login_button_google">Continuer avec Google</string>
+    <string name="login_prompt_text">Vous avez déjà un compte ?</string>
+    <string name="login_action_text">Se connecter</string>
+    <string name="login_prompt_full">Vous avez déjà un compte ? Se connecter</string>
+    <string name="login_footer_links">Conditions d\'utilisation      |      Politique de confidentialité      |      Restaurer</string>
+    <string name="email_headline">Entrez votre e-mail</string>
+    <string name="email_hint">Adresse e-mail</string>
+    <string name="terms_and_privacy_notice">En appuyant sur Continuer, vous acceptez nos Conditions d\'utilisation et notre Politique de confidentialité.</string>
+    <string name="button_continue">Continuer</string>
+    <string name="pass_headline">Entrez votre mot de passe</string>
+    <string name="pass_hint">Mot de passe</string>
+    <string name="avaivalable">Disponible !</string>
+    <string name="forgot_password">Mot de passe oublié ?</string>
+    <string name="content_desc_back_button">Retour</string>
+    <string name="password_reset_email">Un e-mail de réinitialisation du mot de passe a été envoyé.</string>
+    <string name="invalid_email_error">L\'adresse e-mail n\'est pas valide.</string>
     <string name="title_app">HushCam</string>
     <string name="text_friends_sample">10 Amis</string>
     <string name="text_zoom_1x">1x</string>

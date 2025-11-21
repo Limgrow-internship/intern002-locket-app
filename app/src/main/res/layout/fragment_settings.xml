@@ -23,7 +23,6 @@
             android:layout_gravity="center_horizontal"
             android:paddingBottom="16dp"/>
 
-        <!-- Extensions Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,85 +33,90 @@
             android:layout_marginBottom="10dp"/>
 
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="#1A1A1A"
+            android:id="@+id/card_extension"
+            android:layout_width="170dp"
+            android:layout_height="190dp"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="24dp">
+            app:cardBackgroundColor="@android:color/transparent"
+            android:clipToPadding="true"
+            android:clipChildren="true">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp"
-                android:gravity="center">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipChildren="true"
+                android:clipToPadding="true">
 
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp">
+                <!-- Nền -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_extension"/>
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/iv_avatar1"
-                        android:layout_width="50dp"
+                <LinearLayout
+                    android:id="@+id/ly_extensions"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="12dp">
+
+                    <FrameLayout
+                        android:layout_width="120dp"
                         android:layout_height="50dp"
-                        android:layout_marginEnd="32dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/avatar_placeholder"
-                        app:strokeWidth="2dp"
-                        app:strokeColor="#007AFF"
-                        app:shapeAppearanceOverlay="@style/CircleImageView"/>
+                        android:layout_marginBottom="8dp">
 
-                    <!-- Avatar 2 (Center - Larger) -->
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/iv_avatar2"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_gravity="center"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/avatar_placeholder"
-                        app:strokeWidth="2dp"
-                        app:strokeColor="#007AFF"
-                        app:shapeAppearanceOverlay="@style/CircleImageView"
-                        android:elevation="2dp"/>
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="42dp"
+                            android:layout_gravity="start|center_vertical"
+                            android:background="@drawable/bg_circle_border_blue"
+                            android:src="@drawable/avatar_placeholder"/>
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/iv_avatar3"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="end"
-                        android:layout_marginStart="32dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/avatar_placeholder"
-                        app:strokeWidth="2dp"
-                        app:strokeColor="#007AFF"
-                        app:shapeAppearanceOverlay="@style/CircleImageView"/>
-                </FrameLayout>
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="42dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bg_circle_border_blue"
+                            android:src="@drawable/avatar_placeholder"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/everyone"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:layout_marginBottom="12dp"/>
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="42dp"
+                            android:layout_gravity="end|center_vertical"
+                            android:background="@drawable/bg_circle_border_blue"
+                            android:src="@drawable/avatar_placeholder"/>
 
-                <!-- Edit Button -->
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/tv_everyone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/everyone"
+                        android:textColor="@android:color/white"
+                        android:layout_marginBottom="18dp"
+                        android:textSize="13sp"/>
+                </LinearLayout>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_edit_extension"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
+                    android:layout_width="170dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="bottom|center_horizontal"
                     android:text="@string/edit"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp"
                     android:textAllCaps="false"
-                    app:backgroundTint="#007AFF"
+                    app:backgroundTint="@null"
+                    android:background="@drawable/bg_button"
                     app:cornerRadius="12dp"
-                    app:elevation="0dp"/>
-            </LinearLayout>
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"/>
+            </FrameLayout>
+
         </androidx.cardview.widget.CardView>
+
 
 
         <!-- HushCam Premium Section -->
@@ -266,6 +270,7 @@
                     android:layout_marginStart="56dp"/>
 
                 <RelativeLayout
+                    android:id="@+id/btnLanguage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="14dp">
@@ -285,7 +290,6 @@
                         android:textColor="@android:color/white"
                         android:textSize="16sp"/>
                     <ImageView
-                        android:id="@+id/btnLanguage"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_forward"
@@ -508,6 +512,7 @@
                         android:layout_height="24dp"
                         android:layout_centerVertical="true"
                         android:src="@drawable/ic_send_read" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -517,13 +522,15 @@
                         android:text="@string/send_read_receipts"
                         android:textColor="@android:color/white"
                         android:textSize="16sp"/>
+
                     <androidx.appcompat.widget.SwitchCompat
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:checked="true"/>
-                </RelativeLayout>
+                        android:checked="true"
+                        app:trackTint="@color/switch_track_color_selector"
+                        app:thumbTint="@color/switch_thumb_color_selector"/>                </RelativeLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -550,6 +557,7 @@
                         android:text="@string/show_activity_status"
                         android:textColor="@android:color/white"
                         android:textSize="16sp"/>
+
                     <androidx.appcompat.widget.SwitchCompat
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -583,12 +591,17 @@
                         android:text="@string/message_notifications"
                         android:textColor="@android:color/white"
                         android:textSize="16sp"/>
+
                     <androidx.appcompat.widget.SwitchCompat
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:checked="true"/>
+                        android:checked="true"
+
+                        app:trackTint="@color/switch_track_color_selector"
+
+                        app:thumbTint="@color/switch_thumb_color_selector"/>
                 </RelativeLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -752,6 +765,7 @@
                         android:textColor="@android:color/white"
                         android:textSize="16sp"/>
                     <ImageView
+                        android:id="@+id/btnLogout"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_forward"

@@ -12,7 +12,20 @@
           "package_name": "com.intern002.locketapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "683081082714-bngk8j8rmbiaglhc00gajtqik9b113gq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.intern002.locketapp",
+            "certificate_hash": "18ac987b3254f9d2e54df72453ab899b75d9347f"
+          }
+        },
+        {
+          "client_id": "683081082714-d723ft186ec0cuaicioqrn2jd6tgqeqf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCYuMtvkvhGPXFZADyAiUCXZZBmevTgBaE"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "683081082714-d723ft186ec0cuaicioqrn2jd6tgqeqf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

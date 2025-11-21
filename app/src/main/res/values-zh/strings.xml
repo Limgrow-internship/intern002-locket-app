@@ -49,6 +49,42 @@
     <string name="account_management">账户管理</string>
     <string name="delete_account">删除账户</string>
     <string name="log_out">退出登录</string>
+
+    <!-- Friends -->
+    <string name="friend_list">好友列表</string>
+    <string name="search_for_friends_to_add">搜索要添加的朋友！</string>
+    <string name="add_a_new_friend">添加新朋友</string>
+    <string name="find_friends_from_other_apps">从其他应用查找朋友</string>
+    <string name="messenger">Messenger</string>
+    <string name="instagram">Instagram</string>
+    <string name="twitter">Twitter</string>
+    <string name="more">更多</string>
+    <string name="your_friends">你的朋友 (%1$d / %2$d)</string>
+    <string name="add_friends">添加好友</string>
+    <string name="friends_added">已添加 %1$d / %2$d 位好友</string>
+    <string name="suggestions">推荐</string>
+    <string name="continue_button">继续</string>
+
+    <!-- Login -->
+    <string name="login_headline">开始吧！</string>
+    <string name="login_subhead">进入并开始分享您的时刻。</string>
+    <string name="login_button_facebook">使用 Facebook 继续</string>
+    <string name="login_button_google">使用 Google 继续</string>
+    <string name="login_prompt_text">已有账户？</string>
+    <string name="login_action_text">登录</string>
+    <string name="login_prompt_full">已有账户？登录</string>
+    <string name="login_footer_links">使用条款      |      隐私政策      |      恢复</string>
+    <string name="email_headline">输入您的电子邮件</string>
+    <string name="email_hint">电子邮件地址</string>
+    <string name="terms_and_privacy_notice">点击继续即表示您同意我们的服务条款和隐私政策。</string>
+    <string name="button_continue">继续</string>
+    <string name="pass_headline">输入您的密码</string>
+    <string name="pass_hint">密码</string>
+    <string name="avaivalable">可用！</string>
+    <string name="forgot_password">忘记密码？</string>
+    <string name="content_desc_back_button">返回</string>
+    <string name="password_reset_email">密码重置邮件已发送。</string>
+    <string name="invalid_email_error">电子邮件地址无效。</string>
     <string name="title_app">HushCam</string>
     <string name="text_friends_sample">10 位好友</string>
     <string name="text_zoom_1x">1x</string>

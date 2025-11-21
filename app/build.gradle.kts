@@ -1,11 +1,23 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.hilt)
-//    alias(libs.plugins.google.services)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.navigation.safeargs)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.google.services)
     id("com.google.devtools.ksp")
-    id("androidx.navigation.safeargs.kotlin")
+}
+
+fun getLocalProperty(key: String, project: Project): String? {
+    val properties = Properties()
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        properties.load(localPropertiesFile.inputStream())
+    }
+    return properties.getProperty(key)
 }
 
 android {
@@ -13,6 +25,7 @@ android {
     compileSdk = 34
 
     buildFeatures {
+        buildConfig = true
         viewBinding = true
         dataBinding = true
     }
@@ -28,12 +41,17 @@ android {
     }
 
     buildTypes {
+        debug {
+            val baseUrl = getLocalProperty("base.url", project) ?: "http://10.0.2.2:8080"
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
+            buildConfigField("String", "BASE_URL", "\"https://your.production.server.com/\"")
         }
     }
     compileOptions {
@@ -54,13 +72,25 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
 
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
     // Lifecycle & Navigation
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
 
-    // Network (Retrofit + JSON)
+    // Ktor Client
+    implementation("io.ktor:ktor-client-android:2.3.10")
+    implementation("io.ktor:ktor-client-core:2.3.10")
+    implementation("io.ktor:ktor-client-cio:2.3.10")
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.10")
+    implementation("io.ktor:ktor-client-logging:2.3.10")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.10")
+    implementation("io.ktor:ktor-client-auth:2.3.10")
+
+    // Network
     implementation(libs.serialization.json)
     implementation(libs.retrofit)
     implementation(libs.retrofit.serialization)
@@ -74,6 +104,11 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    // Firebase & Google
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth)
 
     // Ads
     implementation(libs.play.services.ads)
@@ -100,7 +135,9 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
 
     implementation(libs.billing)
+
     implementation("com.google.guava:guava:31.1-android")
+
     //Camera
     implementation("androidx.camera:camera-video:1.3.3")
     implementation("androidx.concurrent:concurrent-futures:1.1.0")
@@ -114,3 +151,5 @@ ktlint {
     android.set(true)
     ignoreFailures.set(false)
 }
+
+apply(plugin = "com.google.gms.google-services")

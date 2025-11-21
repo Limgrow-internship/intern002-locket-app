@@ -7,18 +7,29 @@
     android:background="@android:color/black"
     tools:context="com.intern002.locketapp.ui.screen.auth.welcome.UsernameFragment">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:contentDescription="@string/content_desc_back_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_back" />
+
     <TextView
         android:id="@+id/tv_add_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="230dp"
+        android:layout_marginTop="150dp"
         android:text="Add a username"
         android:textColor="@android:color/white"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <EditText
         android:id="@+id/et_username"
@@ -49,7 +60,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="40dp"
         android:gravity="center"
-        android:letterSpacing="0.05"
+        android:letterSpacing="0.03"
         android:lineSpacingMultiplier="1.2"
         android:text="This will help your friends find you on HushCam!"
         android:textColor="@color/white_semitransparent"
@@ -64,7 +75,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:drawablePadding="12dp"
-        android:gravity="center"
+        android.gravity="center"
         android:letterSpacing="0.05"
         android:lineSpacingMultiplier="1.2"
         android:text="Sorry, this username is invalid."

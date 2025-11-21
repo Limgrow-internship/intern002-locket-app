@@ -161,8 +161,8 @@ class HomeFragment: Fragment() {
             val preview = Preview.Builder()
                 .setResolutionSelector(resolutionSelector)
                 .build().also {
-                it.setSurfaceProvider( binding.cameraPreview.surfaceProvider)
-            }
+                    it.setSurfaceProvider( binding.cameraPreview.surfaceProvider)
+                }
 
             imageCapture = ImageCapture.Builder().build()
 

@@ -61,16 +61,16 @@ class OnboardingFragment3 : Fragment() {
         }
     }
 
-    private fun navigateToHomeScreen() {
+    private fun navigateToLoginScreen() {
         AdManager.destroyNativeAdSmall()
         if (isAdded) {
-            // findNavController().navigate(R.id.action_onboarding3_to_homeScreen)
+            findNavController().navigate(R.id.action_onboardingFragment3_to_LoginFragment)
         }
     }
 
     private fun setupGetStartedButton() {
         binding.indicatorLayout.findViewById<View>(R.id.btnNext).setOnClickListener {
-            navigateToHomeScreen()
+            navigateToLoginScreen()
         }
     }
 

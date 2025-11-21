@@ -49,6 +49,42 @@
     <string name="account_management">アカウント管理</string>
     <string name="delete_account">アカウントを削除</string>
     <string name="log_out">ログアウト</string>
+
+    <!-- Friends -->
+    <string name="friend_list">友達リスト</string>
+    <string name="search_for_friends_to_add">追加する友達を検索！</string>
+    <string name="add_a_new_friend">新しい友達を追加</string>
+    <string name="find_friends_from_other_apps">他のアプリから友達を見つける</string>
+    <string name="messenger">メッセンジャー</string>
+    <string name="instagram">インスタグラム</string>
+    <string name="twitter">ツイッター</string>
+    <string name="more">もっと見る</string>
+    <string name="your_friends">あなたの友達 (%1$d / %2$d)</string>
+    <string name="add_friends">友達を追加</string>
+    <string name="friends_added">友達 %1$d人 / %2$d人 追加済み</string>
+    <string name="suggestions">おすすめ</string>
+    <string name="continue_button">続ける</string>
+
+    <!-- Login -->
+    <string name="login_headline">始めましょう！</string>
+    <string name="login_subhead">ログインして、あなたの瞬間を共有しましょう。</string>
+    <string name="login_button_facebook">Facebookで続ける</string>
+    <string name="login_button_google">Googleで続ける</string>
+    <string name="login_prompt_text">アカウントをお持ちですか？</string>
+    <string name="login_action_text">ログイン</string>
+    <string name="login_prompt_full">アカウントをお持ちですか？ログイン</string>
+    <string name="login_footer_links">利用規約      |      プライバシーポリシー      |      復元</string>
+    <string name="email_headline">メールアドレスを入力</string>
+    <string name="email_hint">メールアドレス</string>
+    <string name="terms_and_privacy_notice">続けるをタップすると、利用規約とプライバシーポリシーに同意したことになります。</string>
+    <string name="button_continue">続ける</string>
+    <string name="pass_headline">パスワードを入力</string>
+    <string name="pass_hint">パスワード</string>
+    <string name="avaivalable">利用可能！</string>
+    <string name="forgot_password">パスワードをお忘れですか？</string>
+    <string name="content_desc_back_button">戻る</string>
+    <string name="password_reset_email">パスワードリセットメールが送信されました。</string>
+    <string name="invalid_email_error">メールアドレスが無効です。</string>
     <string name="title_app">HushCam</string>
     <string name="text_friends_sample">10人の友達</string>
     <string name="text_zoom_1x">1x</string>

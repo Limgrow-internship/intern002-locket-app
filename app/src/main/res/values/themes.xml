@@ -13,6 +13,85 @@
         <item name="android:background">@drawable/dot_active</item>
     </style>
 
+    <style name="Widget.Intern002LocketApp.Button.SocialLogin" parent="Widget.Material3.Button">
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="iconTint">@null</item>
+        <item name="iconSize">22dp</item>
+        <item name="elevation">10dp</item>
+        <item name="android:textSize">17dp</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodyLarge</item>
+        <item name="android:textStyle">bold</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Material3.Corner.Full</item>
+        <item name="android:paddingTop">17dp</item>
+        <item name="android:layout_marginStart">45dp</item>
+        <item name="android:layout_marginEnd">45dp</item>
+        <item name="android:paddingBottom">17dp</item>
+    </style>
+
+    <style name="Widget.Intern002LocketApp.TextView.FooterLink" parent="">
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodySmall</item>
+        <item name="android:paddingStart">4dp</item>
+        <item name="android:paddingEnd">4dp</item>
+    </style>
+
+    <style name="Widget.Intern002LocketApp.TextInputLayout.Email" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="android:textColorHint">?attr/colorOnSurfaceVariant</item>
+        <item name="boxStrokeColor">?attr/colorOnSurfaceVariant</item>
+        <item name="boxStrokeWidth">1.5dp</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Intern002LocketApp.EditText.Rounded</item>
+    </style>
+
+    <style name="ShapeAppearance.Intern002LocketApp.EditText.Rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="Widget.Intern002LocketApp.Button.Continue" parent="Widget.Material3.Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_button</item>
+        <item name="android:textColor">#D8D8D8</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:minHeight">60dp</item>
+        <item name="iconTint">#D8D8D8</item>
+        <item name="iconSize">18dp</item>
+        <item name="iconPadding">8dp</item>
+        <item name="cornerRadius">50dp</item>
+        <item name="backgroundTint">@null</item>
+    </style>
+
+    <style name="AlertDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorSurface">@color/black</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.Title.Text</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/MaterialAlertDialog.Body.Text</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+    </style>
+
+    <style name="MaterialAlertDialog.Title.Text" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="MaterialAlertDialog.Body.Text" parent="MaterialAlertDialog.Material3.Body.Text">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="NegativeButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="PositiveButtonStyle" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/red_orange</item>
+    </style>
+
+
     <style name="CircleImageView">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
