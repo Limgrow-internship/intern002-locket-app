@@ -54,4 +54,12 @@
     <string name="text_zoom_1x">1x</string>
     <string name="text_shutter_instruction">Appuyez pour photo, maintenez pour vidéo</string>
     <string name="text_history">Historique</string>
+    <string name="edit_header_send_to">Envoyer à…</string>
+    <string name="edit_caption_hint">Ajouter un message..</string>
+    <string name="caption_sheet_title">Légende</string>
+    <string name="caption_section_general">Général</string>
+    <string name="caption_option_text">Texte</string>
+    <string name="caption_option_weather">Météo</string>
+    <string name="caption_option_location">Lieu</string>
+    <string name="caption_option_time_placeholder">13:40</string>
 </resources>

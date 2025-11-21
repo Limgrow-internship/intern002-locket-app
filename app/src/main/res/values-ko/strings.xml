@@ -55,4 +55,12 @@
     <string name="text_zoom_1x">1x</string>
     <string name="text_shutter_instruction">탭하여 사진, 길게 눌러 동영상</string>
     <string name="text_history">기록</string>
+    <string name="edit_header_send_to">…에게 보내기</string>
+    <string name="edit_caption_hint">메시지 추가..</string>
+    <string name="caption_sheet_title">캡션</string>
+    <string name="caption_section_general">일반</string>
+    <string name="caption_option_text">텍스트</string>
+    <string name="caption_option_weather">날씨</string>
+    <string name="caption_option_location">위치</string>
+    <string name="caption_option_time_placeholder">오후 1:40</string>
 </resources>

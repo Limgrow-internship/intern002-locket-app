@@ -54,4 +54,12 @@
     <string name="text_zoom_1x">1x</string>
     <string name="text_shutter_instruction">แตะเพื่อถ่ายรูป กดค้างเพื่อถ่ายวิดีโอ</string>
     <string name="text_history">ประวัติ</string>
+    <string name="edit_header_send_to">ส่งไปที่…</string>
+    <string name="edit_caption_hint">เพิ่มข้อความ..</string>
+    <string name="caption_sheet_title">คำบรรยาย</string>
+    <string name="caption_section_general">ทั่วไป</string>
+    <string name="caption_option_text">ข้อความ</string>
+    <string name="caption_option_weather">สภาพอากาศ</string>
+    <string name="caption_option_location">ตำแหน่ง</string>
+    <string name="caption_option_time_placeholder">13:40 น.</string>
 </resources>

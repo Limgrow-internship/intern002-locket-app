@@ -54,4 +54,12 @@
     <string name="text_zoom_1x">1x</string>
     <string name="text_shutter_instruction">タップで撮影、長押しで録画</string>
     <string name="text_history">履歴</string>
+    <string name="edit_header_send_to">送信先…</string>
+    <string name="edit_caption_hint">メッセージを追加..</string>
+    <string name="caption_sheet_title">キャプション</string>
+    <string name="caption_section_general">一般</string>
+    <string name="caption_option_text">テキスト</string>
+    <string name="caption_option_weather">天気</string>
+    <string name="caption_option_location">位置情報</string>
+    <string name="caption_option_time_placeholder">午後 1:40</string>
 </resources>

@@ -9,7 +9,7 @@
     android:id="@+id/text_title"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Caption"
+    android:text="@string/caption_sheet_title"
     android:textColor="@color/white"
     android:textStyle="bold"
     android:textSize="18sp"
@@ -33,7 +33,7 @@
         android:id="@+id/text_general"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="General"
+        android:text="@string/caption_section_general"
         android:textColor="#80FFFFFF"
         android:textSize="14sp"
         android:layout_marginStart="20dp"
@@ -52,25 +52,25 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_option_text"
             style="@style/Widget.KeepinWidget.Button.CaptionOption"
-            android:text="Text"
+            android:text="@string/caption_option_text"
             app:icon="@drawable/ic_chat_bubble" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_option_time"
             style="@style/Widget.KeepinWidget.Button.CaptionOption"
-            android:text="1:40 PM"
+            android:text="@string/caption_option_time_placeholder"
             app:icon="@drawable/ic_clock" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_option_weather"
             style="@style/Widget.KeepinWidget.Button.CaptionOption"
-            android:text="Weather"
+            android:text="@string/caption_option_weather"
             app:icon="@drawable/ic_start_caption"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_option_location"
             style="@style/Widget.KeepinWidget.Button.CaptionOption"
-            android:text="Location"
+            android:text="@string/caption_option_weather"
             app:icon="@drawable/ic_location_pin" />
     </GridLayout>
 
