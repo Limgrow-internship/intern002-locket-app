@@ -16,18 +16,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/usernameFragment"
-        android:name="com.intern002.locketapp.ui.screen.auth.welcome.UsernameFragment"
-        android:label="fragment_username"
-        tools:layout="@layout/fragment_username">
-        <action
-            android:id="@+id/action_settingsFragment_to_loginFragment"
-            app:destination="@id/LoginFragment"
-            app:popUpTo="@id/nav_graph"
-            app:popUpToInclusive="true" />
-    </fragment>
-
-    <fragment
         android:id="@+id/FriendsFragment"
         android:name="com.intern002.locketapp.ui.screen.friends.FriendsFragment"
         android:label="fragment_friends"
@@ -206,6 +194,12 @@
             app:argType="string"
             app:nullable="true" />
         <action
+            android:id="@+id/action_settingsFragment_to_loginFragment"
+            app:destination="@id/LoginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+
+        <action
             android:id="@+id/action_usernameFragment_to_birthdayFragment"
             app:destination="@id/birthdayFragment" />
     </fragment>
@@ -239,16 +233,6 @@
         android:name="com.intern002.locketapp.ui.screen.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
-    <fragment
-        android:id="@+id/welcomeFragment"
-        android:name="com.intern002.locketapp.ui.screen.auth.welcome.WelcomeUsernameFragment"
-        android:label="fragment_welcome"
-        tools:layout="@layout/fragment_welcome_username">
-        <argument
-            android:name="username"
-            app:argType="string" />
-    </fragment>
-
         <action
             android:id="@+id/action_homeFragment_to_editPreviewFragment"
             app:destination="@id/editPreviewFragment"
@@ -257,14 +241,15 @@
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out"/>
     </fragment>
+
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.intern002.locketapp.ui.screen.home.HomeFragment"
-        android:label="HomeFragment"
-        tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_homeFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
+        android:id="@+id/welcomeFragment"
+        android:name="com.intern002.locketapp.ui.screen.auth.welcome.WelcomeUsernameFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome_username">
+        <argument
+            android:name="username"
+            app:argType="string" />
     </fragment>
 
     <fragment
