@@ -4,17 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentSettingsBinding
+import com.intern002.locketapp.ui.viewmodel.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: SettingsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,8 +37,41 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupClickListeners()
+        observeViewModel()
+    }
+
+    private fun setupClickListeners() {
         binding.btnLanguage.setOnClickListener {
             findNavController().navigate(R.id.action_settingsFragment_to_languageFragment)
+        }
+
+        binding.btnLogout.setOnClickListener {
+            showLogoutConfirmationDialog()
+        }
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle(getString(R.string.logout_dialog_title))
+            .setMessage(getString(R.string.logout_dialog_message))
+            .setNegativeButton(getString(R.string.logout_dialog_cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton(getString(R.string.logout_dialog_ok)) { dialog, _ ->
+                viewModel.onLogoutClicked()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.logoutEvent.collect {
+                    findNavController().navigate(R.id.action_settingsFragment_to_loginFragment)
+                }
+            }
         }
     }
 

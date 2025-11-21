@@ -7,16 +7,13 @@ import android.widget.Button
 import android.widget.NumberPicker
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.setFragmentResult
 import com.intern002.locketapp.R
 
 class NumberPickerDialogFragment : DialogFragment() {
 
-    interface NumberPickerListener {
-        fun onNumberSelected(tag: String, value: Int)
-    }
-
-    private var listener: NumberPickerListener? = null
     private var title: String = "Select Value"
     private var minValue: Int = 1
     private var maxValue: Int = 31
@@ -25,6 +22,7 @@ class NumberPickerDialogFragment : DialogFragment() {
     companion object {
         const val TAG_MONTH = "month_picker"
         const val TAG_DAY = "day_picker"
+        const val SELECTED_VALUE = "selected_value"
 
         fun newInstance(tag: String, title: String, min: Int, max: Int, current: Int): NumberPickerDialogFragment {
             val fragment = NumberPickerDialogFragment()
@@ -48,13 +46,10 @@ class NumberPickerDialogFragment : DialogFragment() {
             maxValue = it.getInt("max", 31)
             currentValue = it.getInt("current", 1)
         }
-
-        listener = parentFragment as? NumberPickerListener
-            ?: (activity as? NumberPickerListener)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_number_picker, null)
+        val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_number_picker, null)
         val numberPicker: NumberPicker = view.findViewById(R.id.number_picker)
         val titleTextView: TextView = view.findViewById(R.id.dialog_title)
         val okButton: Button = view.findViewById(R.id.btn_ok)
@@ -70,7 +65,8 @@ class NumberPickerDialogFragment : DialogFragment() {
 
         okButton.setOnClickListener {
             val selectedValue = numberPicker.value
-            listener?.onNumberSelected(tag!!, selectedValue)
+            val requestKey = requireArguments().getString("tag") ?: ""
+            setFragmentResult(requestKey, bundleOf(SELECTED_VALUE to selectedValue))
             dismiss()
         }
 

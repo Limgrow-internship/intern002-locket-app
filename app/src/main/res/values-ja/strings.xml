@@ -64,4 +64,25 @@
     <string name="friends_added">友達 %1$d人 / %2$d人 追加済み</string>
     <string name="suggestions">おすすめ</string>
     <string name="continue_button">続ける</string>
+
+    <!-- Login -->
+    <string name="login_headline">始めましょう！</string>
+    <string name="login_subhead">ログインして、あなたの瞬間を共有しましょう。</string>
+    <string name="login_button_facebook">Facebookで続ける</string>
+    <string name="login_button_google">Googleで続ける</string>
+    <string name="login_prompt_text">アカウントをお持ちですか？</string>
+    <string name="login_action_text">ログイン</string>
+    <string name="login_prompt_full">アカウントをお持ちですか？ログイン</string>
+    <string name="login_footer_links">利用規約      |      プライバシーポリシー      |      復元</string>
+    <string name="email_headline">メールアドレスを入力</string>
+    <string name="email_hint">メールアドレス</string>
+    <string name="terms_and_privacy_notice">続けるをタップすると、利用規約とプライバシーポリシーに同意したことになります。</string>
+    <string name="button_continue">続ける</string>
+    <string name="pass_headline">パスワードを入力</string>
+    <string name="pass_hint">パスワード</string>
+    <string name="avaivalable">利用可能！</string>
+    <string name="forgot_password">パスワードをお忘れですか？</string>
+    <string name="content_desc_back_button">戻る</string>
+    <string name="password_reset_email">パスワードリセットメールが送信されました。</string>
+    <string name="invalid_email_error">メールアドレスが無効です。</string>
 </resources>

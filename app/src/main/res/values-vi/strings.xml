@@ -64,4 +64,25 @@
     <string name="friends_added">Đã thêm %1$d / %2$d bạn</string>
     <string name="suggestions">Gợi ý</string>
     <string name="continue_button">Tiếp tục</string>
+
+    <!-- Login -->
+    <string name="login_headline">Bắt đầu thôi!</string>
+    <string name="login_subhead">Bước vào và bắt đầu chia sẻ khoảnh khắc của bạn.</string>
+    <string name="login_button_facebook">Tiếp tục với Facebook</string>
+    <string name="login_button_google">Tiếp tục với Google</string>
+    <string name="login_prompt_text">Đã có tài khoản?</string>
+    <string name="login_action_text">Đăng nhập</string>
+    <string name="login_prompt_full">Đã có tài khoản? Đăng nhập</string>
+    <string name="login_footer_links">Điều khoản sử dụng      |      Chính sách bảo mật      |      Khôi phục</string>
+    <string name="email_headline">Nhập email của bạn</string>
+    <string name="email_hint">Địa chỉ email</string>
+    <string name="terms_and_privacy_notice">Bằng cách nhấn Tiếp tục, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của chúng tôi.</string>
+    <string name="button_continue">Tiếp tục</string>
+    <string name="pass_headline">Nhập mật khẩu của bạn</string>
+    <string name="pass_hint">Mật khẩu</string>
+    <string name="avaivalable">Có sẵn!</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+    <string name="content_desc_back_button">Quay lại</string>
+    <string name="password_reset_email">Email đặt lại mật khẩu đã được gửi.</string>
+    <string name="invalid_email_error">Địa chỉ email không hợp lệ.</string>
 </resources>

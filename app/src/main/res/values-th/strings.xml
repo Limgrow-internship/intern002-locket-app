@@ -64,4 +64,25 @@
     <string name="friends_added">เพิ่มเพื่อนแล้ว %1$d / %2$d</string>
     <string name="suggestions">คำแนะนำ</string>
     <string name="continue_button">ดำเนินการต่อ</string>
+
+    <!-- Login -->
+    <string name="login_headline">มาเริ่มกันเลย!</string>
+    <string name="login_subhead">เข้ามาและเริ่มแชร์ช่วงเวลาของคุณ</string>
+    <string name="login_button_facebook">ดำเนินการต่อด้วย Facebook</string>
+    <string name="login_button_google">ดำเนินการต่อด้วย Google</string>
+    <string name="login_prompt_text">มีบัญชีอยู่แล้ว?</string>
+    <string name="login_action_text">เข้าสู่ระบบ</string>
+    <string name="login_prompt_full">มีบัญชีอยู่แล้ว? เข้าสู่ระบบ</string>
+    <string name="login_footer_links">เงื่อนไขการใช้งาน      |      นโยบายความเป็นส่วนตัว      |      กู้คืน</string>
+    <string name="email_headline">ป้อนอีเมลของคุณ</string>
+    <string name="email_hint">ที่อยู่อีเมล</string>
+    <string name="terms_and_privacy_notice">การแตะดำเนินการต่อ คุณยอมรับข้อกำหนดการให้บริการและนโยบายความเป็นส่วนตัวของเรา</string>
+    <string name="button_continue">ดำเนินการต่อ</string>
+    <string name="pass_headline">ป้อนรหัสผ่านของคุณ</string>
+    <string name="pass_hint">รหัสผ่าน</string>
+    <string name="avaivalable">ใช้ได้!</string>
+    <string name="forgot_password">ลืมรหัสผ่าน?</string>
+    <string name="content_desc_back_button">กลับ</string>
+    <string name="password_reset_email">ส่งอีเมลรีเซ็ตรหัสผ่านแล้ว</string>
+    <string name="invalid_email_error">ที่อยู่อีเมลไม่ถูกต้อง</string>
 </resources>

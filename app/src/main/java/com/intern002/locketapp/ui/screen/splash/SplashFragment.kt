@@ -5,22 +5,31 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.intern002.locketapp.R
-import com.intern002.locketapp.databinding.FragmentSplashBinding
 import com.intern002.locketapp.ads.AdManager
+import com.intern002.locketapp.databinding.FragmentSplashBinding
+import com.intern002.locketapp.ui.viewmodel.SplashState
+import com.intern002.locketapp.ui.viewmodel.SplashViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SplashFragment : Fragment() {
 
     private var _binding: FragmentSplashBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: SplashViewModel by viewModels()
 
     private var rootAnimator: AnimatorSet? = null
     private val dots by lazy {
@@ -46,12 +55,29 @@ class SplashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         startJumpingAnimation()
+        observeViewModel()
+    }
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (isAdded) {
-                showInterstitialAd()
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.splashState.collect { state ->
+                    if (view?.isAttachedToWindow == true) {
+                        when (state) {
+                            is SplashState.Authenticated -> {
+                                findNavController().navigate(R.id.action_splashFragment_to_settingsFragment)
+                            }
+                            is SplashState.Unauthenticated -> {
+                                showInterstitialAd()
+                            }
+                            is SplashState.Loading -> {
+                                // Animation is running while in this state
+                            }
+                        }
+                    }
+                }
             }
-        }, 3000)
+        }
     }
 
     private fun showInterstitialAd() {

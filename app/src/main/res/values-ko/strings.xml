@@ -65,4 +65,25 @@
     <string name="friends_added">친구 %1$d명 / %2$d명 추가</string>
     <string name="suggestions">추천</string>
     <string name="continue_button">계속</string>
+
+    <!-- Login -->
+    <string name="login_headline">시작해볼까요!</string>
+    <string name="login_subhead">들어와서 순간을 공유하기 시작하세요.</string>
+    <string name="login_button_facebook">Facebook으로 계속</string>
+    <string name="login_button_google">Google로 계속</string>
+    <string name="login_prompt_text">이미 계정이 있으신가요?</string>
+    <string name="login_action_text">로그인</string>
+    <string name="login_prompt_full">이미 계정이 있으신가요? 로그인</string>
+    <string name="login_footer_links">이용 약관      |      개인정보 처리방침      |      복원</string>
+    <string name="email_headline">이메일을 입력하세요</string>
+    <string name="email_hint">이메일 주소</string>
+    <string name="terms_and_privacy_notice">계속을 탭하면 서비스 약관 및 개인정보 처리방침에 동의하는 것입니다.</string>
+    <string name="button_continue">계속</string>
+    <string name="pass_headline">비밀번호를 입력하세요</string>
+    <string name="pass_hint">비밀번호</string>
+    <string name="avaivalable">사용 가능!</string>
+    <string name="forgot_password">비밀번호를 잊으셨나요?</string>
+    <string name="content_desc_back_button">뒤로</string>
+    <string name="password_reset_email">비밀번호 재설정 이메일이 전송되었습니다.</string>
+    <string name="invalid_email_error">이메일 주소가 올바르지 않습니다.</string>
 </resources>

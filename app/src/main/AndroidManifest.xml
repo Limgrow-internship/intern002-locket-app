@@ -7,10 +7,14 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" tools:ignore="UnusedAttribute" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
 
     <application
         android:name=".LocketApplication"
         android:allowBackup="true"
+        android:usesCleartextTraffic="true"
         android:localeConfig="@xml/locales_config"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
