@@ -85,4 +85,17 @@
     <string name="content_desc_back_button">Quay lại</string>
     <string name="password_reset_email">Email đặt lại mật khẩu đã được gửi.</string>
     <string name="invalid_email_error">Địa chỉ email không hợp lệ.</string>
+    <string name="title_app">HushCam</string>
+    <string name="text_friends_sample">10 Bạn bè</string>
+    <string name="text_zoom_1x">1x</string>
+    <string name="text_shutter_instruction">Chạm để chụp, giữ để quay</string>
+    <string name="text_history">Lịch sử</string>
+    <string name="edit_header_send_to">Gửi đến…</string>
+    <string name="edit_caption_hint">Thêm tin nhắn..</string>
+    <string name="caption_sheet_title">Chú thích</string>
+    <string name="caption_section_general">Chung</string>
+    <string name="caption_option_text">Văn bản</string>
+    <string name="caption_option_weather">Thời tiết</string>
+    <string name="caption_option_location">Vị trí</string>
+    <string name="caption_option_time_placeholder">13:40</string>
 </resources>

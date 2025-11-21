@@ -102,4 +102,12 @@
     <string name="default_web_client_id" translatable="false">
         683081082714-hko4tbl5sdd8uu85hb5sq7hmsu87jneg.apps.googleusercontent.com
     </string>
+    <string name="edit_header_send_to">Send to…</string>
+    <string name="edit_caption_hint">Add a message..</string>
+    <string name="caption_sheet_title">Caption</string>
+    <string name="caption_section_general">General</string>
+    <string name="caption_option_text">Text</string>
+    <string name="caption_option_weather">Weather</string>
+    <string name="caption_option_location">Location</string>
+    <string name="caption_option_time_placeholder">1:40 PM</string>
 </resources>

@@ -69,6 +69,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
@@ -110,6 +112,11 @@ dependencies {
 
     // Ads
     implementation(libs.play.services.ads)
+
+    // Firebase
+//    implementation(platform(libs.firebase.bom))
+//    implementation(libs.firebase.messaging)
+//    implementation(libs.firebase.storage)
 
     // Coroutines
     implementation(libs.coroutines.core)

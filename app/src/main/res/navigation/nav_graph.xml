@@ -13,6 +13,13 @@
         <action
             android:id="@+id/action_settingsFragment_to_languageFragment"
             app:destination="@id/languageFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/usernameFragment"
+        android:name="com.intern002.locketapp.ui.screen.auth.welcome.UsernameFragment"
+        android:label="fragment_username"
+        tools:layout="@layout/fragment_username">
         <action
             android:id="@+id/action_settingsFragment_to_loginFragment"
             app:destination="@id/LoginFragment"
@@ -228,6 +235,11 @@
     </fragment>
 
     <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.intern002.locketapp.ui.screen.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home">
+    <fragment
         android:id="@+id/welcomeFragment"
         android:name="com.intern002.locketapp.ui.screen.auth.welcome.WelcomeUsernameFragment"
         android:label="fragment_welcome"
@@ -237,6 +249,14 @@
             app:argType="string" />
     </fragment>
 
+        <action
+            android:id="@+id/action_homeFragment_to_editPreviewFragment"
+            app:destination="@id/editPreviewFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"/>
+    </fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.intern002.locketapp.ui.screen.home.HomeFragment"
@@ -247,6 +267,19 @@
             app:destination="@id/profileFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/editPreviewFragment"
+        android:name="com.intern002.locketapp.ui.screen.edit.EditPreviewFragment"
+        android:label="EditPreviewFragment"
+        tools:layout="@layout/fragment_edit_preview">
+
+        <argument
+            android:name="mediaUri"
+            app:argType="string" />
+        <argument
+            android:name="isVideo"
+            app:argType="boolean" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.intern002.locketapp.ui.screen.profile.ProfileFragment"

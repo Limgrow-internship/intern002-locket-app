@@ -85,4 +85,17 @@
     <string name="content_desc_back_button">Atrás</string>
     <string name="password_reset_email">Se ha enviado un correo de restablecimiento de contraseña.</string>
     <string name="invalid_email_error">La dirección de correo electrónico no es válida.</string>
+    <string name="title_app">HushCam</string>
+    <string name="text_friends_sample">10 Amigos</string>
+    <string name="text_zoom_1x">1x</string>
+    <string name="text_shutter_instruction">Toca para foto, mantén para video</string>
+    <string name="text_history">Historial</string>
+    <string name="edit_header_send_to">Enviar a…</string>
+    <string name="edit_caption_hint">Añadir mensaje..</string>
+    <string name="caption_sheet_title">Título</string>
+    <string name="caption_section_general">General</string>
+    <string name="caption_option_text">Texto</string>
+    <string name="caption_option_weather">Clima</string>
+    <string name="caption_option_location">Ubicación</string>
+    <string name="caption_option_time_placeholder">13:40</string>
 </resources>

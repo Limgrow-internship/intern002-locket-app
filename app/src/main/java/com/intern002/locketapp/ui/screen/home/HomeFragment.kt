@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -37,6 +38,7 @@ import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentHomeBinding
 import java.io.File
@@ -99,6 +101,23 @@ class HomeFragment: Fragment() {
                 Toast.makeText(context, "Need permisson to use app!!", Toast.LENGTH_SHORT).show()
             }
         }
+
+    private val pickMediaLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if(uri != null) {
+            Log.d("HomeFragment", "Selected URI: $uri")
+
+            val mimeType = requireContext().contentResolver.getType(uri)
+            val isVideo = mimeType?.startsWith("VID/") == true
+
+            val action = HomeFragmentDirections.actionHomeFragmentToEditPreviewFragment(
+                mediaUri = uri.toString(),
+                isVideo = isVideo
+            )
+            findNavController().navigate(action)
+        }else {
+            Log.d("HomeFragment", "No media selected")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -203,6 +222,11 @@ class HomeFragment: Fragment() {
             }
         }
 
+        //Feature: Gallery
+        binding.buttonGallery.setOnClickListener {
+            pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+        }
+
         //Feature: Capture and Recording(Touch and hold)
         binding.buttonShutter.setOnTouchListener { view, event ->
             when(event.action){
@@ -304,8 +328,12 @@ class HomeFragment: Fragment() {
                     val msg = "Saved photo to $savedUri"
                     Log.d("HomeFragment", msg)
 
-                    // TODO: Can navigator to edit fragment
-                    // showEditMode(savedUri)
+                    val action = HomeFragmentDirections.actionHomeFragmentToEditPreviewFragment(
+                        mediaUri = savedUri.toString(),
+                        isVideo = false
+                    )
+                    findNavController().navigate(action)
+
                     Toast.makeText(requireContext(), "Capture!", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -352,8 +380,11 @@ class HomeFragment: Fragment() {
                             Log.d("HomeFragment", msg)
                             Toast.makeText(requireContext(), "Complete Record", Toast.LENGTH_SHORT).show()
 
-                            // TODO: Can navigator to edit fragment
-                            // showEditMode(savedUri)
+                            val action = HomeFragmentDirections.actionHomeFragmentToEditPreviewFragment(
+                                mediaUri = savedUri.toString(),
+                                isVideo = true
+                            )
+                            findNavController().navigate(action)
 
                         } else {
                             recording?.close()
