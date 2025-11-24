@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:background="@color/black">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -56,57 +54,88 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/avatar" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/camera_preview_container"
-        android:layout_width="0dp"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_posts"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
-        app:cardCornerRadius="32dp"
-        app:layout_constraintDimensionRatio="2:2"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="50dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_friends" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_chat_input"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_friends">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layout_controls">
 
-        <androidx.camera.view.PreviewView
-            android:id="@+id/camera_preview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:background="#121212" />
+        <EditText
+            android:id="@+id/edt_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="Send message.."
+            android:textColorHint="#B0B0B0"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:maxLines="4" />
 
-    </com.google.android.material.card.MaterialCardView>
+        <ImageView
+            android:id="@+id/btn_react_love"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_heart_emoji"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp" />
 
-    <ImageButton
-        android:id="@+id/button_flash"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="17dp"
-        android:background="@drawable/bg_flash_circle"
-        android:padding="10dp"
-        android:src="@drawable/ic_flash_on"
-        app:layout_constraintStart_toStartOf="@id/camera_preview_container"
-        app:layout_constraintTop_toTopOf="@id/camera_preview_container" />
+        <ImageView
+            android:id="@+id/btn_react_haha"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_haha_emoji"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp" />
 
-    <TextView
-        android:id="@+id/text_zoom"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/background_circle_transparent"
-        android:gravity="center"
-        android:text="@string/text_zoom_1x"
-        android:textColor="#FFFFFf"
-        app:layout_constraintEnd_toEndOf="@id/camera_preview_container"
-        app:layout_constraintTop_toTopOf="@id/camera_preview_container" />
+        <ImageView
+            android:id="@+id/btn_react_like"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_thumb_up"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp" />
+
+        <ImageView
+            android:id="@+id/btn_more"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_add"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp" />
+
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_controls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="10dp"
         android:animateLayoutChanges="true"
-        android:paddingBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
@@ -158,55 +187,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/button_shutter" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_history_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="12dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toStartOf="@+id/text_history"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_controls">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/history_img" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <TextView
-        android:id="@+id/text_history"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_history"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/card_history_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/card_history_image"
-        app:layout_constraintTop_toTopOf="@id/card_history_image" />
-
-    <ImageButton
-        android:id="@+id/ic_history"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#00FFFFFF"
-        android:src="@drawable/ic_down_vector"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_history" />
-
-    <View
-        android:id="@+id/view_flash_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0"
-        android:background="#FFFFFF"
-        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
