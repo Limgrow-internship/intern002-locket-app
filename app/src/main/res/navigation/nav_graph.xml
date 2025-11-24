@@ -3,7 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/mainContainerFragment">
+
+    <fragment
+        android:id="@+id/mainContainerFragment"
+        android:name="com.intern002.locketapp.ui.screen.main.MainContainerFragment"
+        android:label="MainContainerFragment"
+        tools:layout="@layout/fragment_main_container" />
 
     <fragment
         android:id="@+id/settingsFragment"
@@ -154,7 +160,7 @@
         android:id="@+id/SignupEmailFragment"
         android:name="com.intern002.locketapp.ui.screen.auth.signup.SignupEmailFragment"
         android:label="fragment_signup_email"
-        tools:layout="@layout/fragment_signup_email" >
+        tools:layout="@layout/fragment_signup_email">
         <action
             android:id="@+id/action_SignupEmailFragment_to_SignupPasswordFragment"
             app:destination="@id/SignupPasswordFragment" />
@@ -239,7 +245,7 @@
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"/>
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment

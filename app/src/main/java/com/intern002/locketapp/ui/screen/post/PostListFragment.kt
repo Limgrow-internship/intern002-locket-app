@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.PagerSnapHelper
 import com.intern002.locketapp.data.remote.model.Post
 import com.intern002.locketapp.databinding.FragmentPostListBinding
 import java.util.UUID
@@ -52,7 +53,21 @@ class PostListFragment : Fragment() {
 
         // 2. GẮN ADAPTER
         val adapter = PostAdapter(mockPosts)
-        binding.rvPosts.adapter = adapter
+        binding.recyclerViewPosts.adapter = adapter
+
+        val snapHelper = PagerSnapHelper()
+        snapHelper.attachToRecyclerView(binding.recyclerViewPosts)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        // KHI RỜI KHỎI MÀN HÌNH FEED (Về Camera hoặc tắt app)
+        // -> Reset cuộn về vị trí đầu tiên (0) ngay lập tức
+        // Lần sau quay lại nó sẽ ở sẵn vị trí 0 rồi.
+        binding.recyclerViewPosts.scrollToPosition(0)
+
+        // (Optional) Nếu đang phát video thì nhớ pause video ở đây luôn
     }
 
     override fun onDestroyView() {
