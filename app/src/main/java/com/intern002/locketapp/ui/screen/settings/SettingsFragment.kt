@@ -13,10 +13,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.intern002.locketapp.R
+import com.intern002.locketapp.data.prefs.AuthManager
 import com.intern002.locketapp.databinding.FragmentSettingsBinding
 import com.intern002.locketapp.ui.viewmodel.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -25,6 +27,9 @@ class SettingsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: SettingsViewModel by viewModels()
+
+    @Inject
+    lateinit var authManager: AuthManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,8 +47,24 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        binding.ivChangeApp.setOnClickListener {
+            ChangeAppIconFragment().show(childFragmentManager, ChangeAppIconFragment.TAG)
+        }
+
+        binding.btnWidget.setOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_addWidgetFragment)
+        }
+
         binding.btnLanguage.setOnClickListener {
             findNavController().navigate(R.id.action_settingsFragment_to_languageFragment)
+        }
+
+        binding.btnEditExtension.setOnClickListener {
+            ExtensionsFragment().show(childFragmentManager, ExtensionsFragment.TAG)
         }
 
         binding.btnLogout.setOnClickListener {
@@ -59,6 +80,11 @@ class SettingsFragment : Fragment() {
                 dialog.dismiss()
             }
             .setPositiveButton(getString(R.string.logout_dialog_ok)) { dialog, _ ->
+                // Clear local tokens FIRST
+                viewLifecycleOwner.lifecycleScope.launch {
+                    authManager.clearTokens()
+                }
+                // Then notify the server
                 viewModel.onLogoutClicked()
                 dialog.dismiss()
             }

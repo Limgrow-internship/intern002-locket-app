@@ -114,13 +114,16 @@ dependencies {
     implementation(libs.play.services.ads)
 
     // Firebase
-//    implementation(platform(libs.firebase.bom))
-//    implementation(libs.firebase.messaging)
-//    implementation(libs.firebase.storage)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.storage)
 
     // Coroutines
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
+
+    // Circle ImageView
+    implementation("de.hdodenhof:circleimageview:3.1.0")
 
     // Tests
     testImplementation(libs.junit)

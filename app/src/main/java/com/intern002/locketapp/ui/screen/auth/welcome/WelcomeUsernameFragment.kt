@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentWelcomeUsernameBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,11 +41,8 @@ class WelcomeUsernameFragment : Fragment() {
         }
 
         binding.buttonContinue.setOnClickListener {
-            // TODO: Navigate to the main screen of the app
-            // For example:
-            // val action = WelcomeUsernameFragmentDirections.actionWelcomeFragmentToMainActivity()
-            // findNavController().navigate(action)
-            Toast.makeText(requireContext(), "Navigate to Main Screen!", Toast.LENGTH_SHORT).show()
+            val action = WelcomeUsernameFragmentDirections.actionWelcomeFragmentToAddFriendsFragment()
+            findNavController().navigate(action)
         }
     }
 

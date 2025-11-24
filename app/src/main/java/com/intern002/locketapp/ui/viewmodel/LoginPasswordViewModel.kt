@@ -41,17 +41,13 @@ class LoginPasswordViewModel @Inject constructor(
                     }
                 }
                 is Result.Error -> {
-                    if (result.message?.contains("Invalid credentials", ignoreCase = true) == true) {
-                        _loginState.value = PasswordLoginState.NeedsRegistration(email, password)
-                    } else {
-                        _loginState.value = PasswordLoginState.Error(result.message ?: "An unknown error occurred")
-                    }
+                    _loginState.value = PasswordLoginState.Error(result.message ?: "An unknown error occurred")
                 }
                 is Result.Loading -> {
-                    // Already handled by setting the state before the call, do nothing.
+                    // Already handled
                 }
                 else -> {
-                    _loginState.value = PasswordLoginState.Error("An unexpected error occurred")
+                    _loginState.value = PasswordLoginState.Error("An unexpected state occurred during login.")
                 }
             }
         }

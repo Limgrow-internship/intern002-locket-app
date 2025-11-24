@@ -91,6 +91,10 @@
         <item name="android:textColor">@color/red_orange</item>
     </style>
 
+    <style name="RoundedCornerImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
 
     <style name="CircleImageView">
         <item name="cornerFamily">rounded</item>

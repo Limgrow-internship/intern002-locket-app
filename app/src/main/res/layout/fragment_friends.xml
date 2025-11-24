@@ -21,7 +21,7 @@
             android:layout_marginBottom="8dp">
 
             <ImageView
-                android:id="@+id/iv_back_button"
+                android:id="@+id/btnBack"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
                 android:src="@drawable/ic_arrow_back"
@@ -85,8 +85,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_messenger"
                     android:layout_marginBottom="5dp"/>
 
@@ -106,8 +106,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_instagram"
                     android:layout_marginBottom="5dp"/>
 
@@ -127,8 +127,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_twitter"
                     android:layout_marginBottom="5dp"/>
 
@@ -147,8 +147,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_more"
                     android:layout_marginBottom="5dp"/>
 
@@ -162,6 +162,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tv_your_friends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/your_friends"

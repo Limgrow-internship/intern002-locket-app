@@ -35,7 +35,6 @@ class CaptionBottomSheetFragment(
             dismiss()
         }
 
-        // TODO: Sau này gọi API Weather ở đây
         val mockWeather = "28°C Sunny ☀️"
         binding.btnOptionWeather.text = "28°C Sunny ☀"
         binding.btnOptionWeather.setOnClickListener {
@@ -43,20 +42,17 @@ class CaptionBottomSheetFragment(
             dismiss()
         }
 
-        // TODO: Sau này gọi Geocoder ở đây
         val mockLocation = "Da Nang, Vietnam 📍"
         binding.btnOptionLocation.setOnClickListener {
             onCaptionSelected(mockLocation)
             dismiss()
         }
 
-        // 4. SETUP NÚT TEXT (Reset)
         binding.btnOptionText.setOnClickListener {
             onCaptionSelected("")
             dismiss()
         }
 
-        // Nút Đóng
         binding.buttonClose.setOnClickListener {
             dismiss()
         }

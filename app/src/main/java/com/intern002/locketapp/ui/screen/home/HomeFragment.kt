@@ -198,6 +198,14 @@ class HomeFragment: Fragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupControls() {
+        binding.btnChat.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_chatListFragment)
+        }
+
+        binding.avatar.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
+        }
+
         //Feature: Flip Camera
         binding.buttonFlipCamera.setOnClickListener {
             cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA){

@@ -14,13 +14,13 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="32dp"
-        app:backgroundTint="@null"
+        android:layout_marginBottom="33dp"
         android:background="@drawable/bg_button"
         android:text="@string/continue_button"
         android:textAllCaps="false"
         android:textColor="@android:color/white"
         android:textSize="18sp"
+        app:backgroundTint="@null"
         app:cornerRadius="28dp" />
 
     <ScrollView
@@ -47,9 +47,10 @@
             android:layout_gravity="center_horizontal"/>
 
         <TextView
+            android:id="@+id/tv_friend_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/friends_added"
+            tools:text="0 / 20 friends added"
             android:textColor="@android:color/white"
             android:textSize="18sp"
             android:layout_gravity="start"
@@ -89,8 +90,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_messenger"
                     android:layout_marginBottom="5dp"/>
 
@@ -110,8 +111,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_instagram"
                     android:layout_marginBottom="5dp"/>
 
@@ -131,8 +132,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_twitter"
                     android:layout_marginBottom="5dp"/>
 
@@ -151,8 +152,8 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/ic_more"
                     android:layout_marginBottom="5dp"/>
 

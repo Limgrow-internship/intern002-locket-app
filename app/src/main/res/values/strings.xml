@@ -70,9 +70,9 @@
     <string name="instagram">Instagram</string>
     <string name="twitter">Twitter</string>
     <string name="more">More</string>
-    <string name="your_friends">Your Friends (%1$d / %2$d)</string>
+    <string name="your_friends">Your Friends (06 / 20)</string>
     <string name="add_friends">Add Friends</string>
-    <string name="friends_added">%1$d / %2$d friends added</string>
+    <string name="friends_added_count">%1$d / %2$d friends added</string>
     <string name="suggestions">Suggestions</string>
     <string name="continue_button">Continue</string>
 
@@ -100,8 +100,8 @@
     <string name="password_length_error">Password must be between 8 and 18 characters.</string>
 
     <string name="default_web_client_id" translatable="false">
-        683081082714-hko4tbl5sdd8uu85hb5sq7hmsu87jneg.apps.googleusercontent.com
-    </string>
+         683081082714-hko4tbl5sdd8uu85hb5sq7hmsu87jneg.apps.googleusercontent.com
+     </string>
     <string name="edit_header_send_to">Send to…</string>
     <string name="edit_caption_hint">Add a message..</string>
     <string name="caption_sheet_title">Caption</string>

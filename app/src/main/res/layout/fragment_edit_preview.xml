@@ -103,13 +103,13 @@
         android:id="@+id/layout_edit_controls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@id/recycler_friends">
 
         <ImageButton
             android:id="@+id/button_cancel"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:padding="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_x"
@@ -122,8 +122,8 @@
 
         <ImageButton
             android:id="@+id/button_send"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:src="@drawable/ic_send_plane"
             android:background="@drawable/background_shutter_blue"
             android:padding="22dp"
@@ -136,8 +136,8 @@
 
         <ImageButton
             android:id="@+id/button_edit_tools"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:padding="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_start"
@@ -154,10 +154,9 @@
         android:id="@+id/recycler_friends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         android:orientation="horizontal"
         android:clipToPadding="false"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="14dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_friend_select"
