@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="40dp"
+    android:background="@drawable/background_bottom_sheet_dark">
+
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share to..."
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageButton
+        android:id="@+id/button_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_x"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="16dp"
+        app:tint="#80FFFFFF"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/layout_share_icons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/text_title">
+
+        <include
+            android:id="@+id/item_share_system"
+            layout="@layout/item_share_icon" />
+
+        <include
+            android:id="@+id/item_share_messenger"
+            layout="@layout/item_message_icon" />
+
+        <include
+            android:id="@+id/item_share_instagram"
+            layout="@layout/item_ins_icon" />
+
+        <include
+            android:id="@+id/item_share_twitter"
+            layout="@layout/item_twiter_icon" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_share_icons">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_save"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_button_gradient_blue"
+            android:text="Save"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:drawableStart="@drawable/ic_download"
+            android:drawableTint="@color/white"
+            android:paddingHorizontal="24dp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_delete"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_button_outline_dark"
+            android:text="Delete"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:drawableStart="@drawable/ic_trash"
+            android:drawableTint="@color/white"
+            android:paddingHorizontal="24dp" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

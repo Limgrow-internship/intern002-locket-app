@@ -79,7 +79,15 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
 
         // Nút Share
         binding.buttonShare.setOnClickListener {
-            Toast.makeText(context, "Share Feed", Toast.LENGTH_SHORT).show()
+            val bottomSheet = ShareBottomSheetFragment(
+                onDeleteClick = {
+                    Toast.makeText(context, "Đã xoá bài viết!", Toast.LENGTH_SHORT).show()
+                },
+                onSaveClick = {
+                    Toast.makeText(context, "Đang lưu ảnh...", Toast.LENGTH_SHORT).show()
+                }
+            )
+            bottomSheet.show(parentFragmentManager, "ShareBottomSheet")
         }
     }
 
