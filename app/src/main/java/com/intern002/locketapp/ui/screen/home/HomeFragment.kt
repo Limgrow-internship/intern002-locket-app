@@ -3,8 +3,6 @@ package com.intern002.locketapp.ui.screen.home
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -47,10 +45,10 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-class HomeFragment: Fragment() {
+class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-    private val binding get() =_binding!!
+    private val binding get() = _binding!!
 
     // CameraX variables
     private var cameraProvider: ProcessCameraProvider? = null
@@ -60,15 +58,18 @@ class HomeFragment: Fragment() {
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
     private var imageCapture: ImageCapture? = null
+
     // Flash state (0: Off, 1: On)
     private var isFlashOn = false
 
+    private var isCameraIconState = true
     private val handler = Handler(Looper.getMainLooper())
     private var isRecording = false
+
     //Time to know touch and hold
     private val LONG_PRESS_DURATION = 350L
     private var isLongPressTriggered = false
-    private val longPressRunnable = Runnable{
+    private val longPressRunnable = Runnable {
         isLongPressTriggered = true
         isRecording = true
         startRecording()
@@ -86,6 +87,7 @@ class HomeFragment: Fragment() {
             binding.buttonShutter.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS)
         }
     }
+
     //Permission for camera
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -95,29 +97,31 @@ class HomeFragment: Fragment() {
             if (cameraGranted && audioGranted) {
                 startCamera()
             } else if (cameraGranted) {
-                Toast.makeText(context, "Need permission for recording audio!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Need permission for recording audio!", Toast.LENGTH_SHORT)
+                    .show()
                 startCamera()
             } else {
                 Toast.makeText(context, "Need permisson to use app!!", Toast.LENGTH_SHORT).show()
             }
         }
 
-    private val pickMediaLauncher = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-        if(uri != null) {
-            Log.d("HomeFragment", "Selected URI: $uri")
+    private val pickMediaLauncher =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                Log.d("HomeFragment", "Selected URI: $uri")
 
-            val mimeType = requireContext().contentResolver.getType(uri)
-            val isVideo = mimeType?.startsWith("VID/") == true
+                val mimeType = requireContext().contentResolver.getType(uri)
+                val isVideo = mimeType?.startsWith("VID/") == true
 
-            val action = HomeFragmentDirections.actionHomeFragmentToEditPreviewFragment(
-                mediaUri = uri.toString(),
-                isVideo = isVideo
-            )
-            findNavController().navigate(action)
-        }else {
-            Log.d("HomeFragment", "No media selected")
+                val action = HomeFragmentDirections.actionHomeFragmentToEditPreviewFragment(
+                    mediaUri = uri.toString(),
+                    isVideo = isVideo
+                )
+                findNavController().navigate(action)
+            } else {
+                Log.d("HomeFragment", "No media selected")
+            }
         }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -136,8 +140,10 @@ class HomeFragment: Fragment() {
     }
 
     private fun checkPermissionAndStart() {
-        val cameraPermission = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
-        val audioPermission = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO)
+        val cameraPermission =
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+        val audioPermission =
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO)
 
         if (cameraPermission == PackageManager.PERMISSION_GRANTED && audioPermission == PackageManager.PERMISSION_GRANTED) {
             startCamera()
@@ -146,6 +152,23 @@ class HomeFragment: Fragment() {
                 arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
             )
         }
+    }
+
+    fun performCapture() {
+        takePhoto() // Gọi lại hàm nội bộ cũ
+    }
+
+    fun performFlip() {
+        cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+            CameraSelector.DEFAULT_FRONT_CAMERA
+        } else {
+            CameraSelector.DEFAULT_BACK_CAMERA
+        }
+        startCamera()
+    }
+
+    fun performOpenGallery() {
+        pickMediaLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
     }
 
     private fun startCamera() {
@@ -161,7 +184,7 @@ class HomeFragment: Fragment() {
             val preview = Preview.Builder()
                 .setResolutionSelector(resolutionSelector)
                 .build().also {
-                    it.setSurfaceProvider( binding.cameraPreview.surfaceProvider)
+                    it.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
                 }
 
             imageCapture = ImageCapture.Builder().build()
@@ -189,20 +212,19 @@ class HomeFragment: Fragment() {
                 )
 
                 setupZoomGesture()
-            }
-            catch (exc: Exception) {
+            } catch (exc: Exception) {
                 Log.e("HomeFragment", "Use case binding failed", exc)
             }
-        },ContextCompat.getMainExecutor(requireContext()))
+        }, ContextCompat.getMainExecutor(requireContext()))
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupControls() {
         //Feature: Flip Camera
         binding.buttonFlipCamera.setOnClickListener {
-            cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA){
+            cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
                 CameraSelector.DEFAULT_FRONT_CAMERA
-            }else {
+            } else {
                 CameraSelector.DEFAULT_BACK_CAMERA
             }
 
@@ -213,11 +235,11 @@ class HomeFragment: Fragment() {
 
         //Feature: Flash
         binding.buttonFlash.setOnClickListener {
-            if(camera?.cameraInfo?.hasFlashUnit() == true) {
+            if (camera?.cameraInfo?.hasFlashUnit() == true) {
                 isFlashOn = !isFlashOn
                 camera?.cameraControl?.enableTorch(isFlashOn)
                 updateFlashUI()
-            }else {
+            } else {
                 Toast.makeText(context, "This camera hasn't the flash", Toast.LENGTH_SHORT).show()
             }
         }
@@ -229,7 +251,7 @@ class HomeFragment: Fragment() {
 
         //Feature: Capture and Recording(Touch and hold)
         binding.buttonShutter.setOnTouchListener { view, event ->
-            when(event.action){
+            when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     isRecording = false
                     isLongPressTriggered = false
@@ -262,19 +284,20 @@ class HomeFragment: Fragment() {
     }
 
     private fun updateFlashUI() {
-        if(isFlashOn) {
+        if (isFlashOn) {
             binding.buttonFlash.setImageResource(R.drawable.ic_flash_on)
             binding.buttonFlash.alpha = 1.0f
-        }else {
+        } else {
             binding.buttonFlash.setImageResource(R.drawable.ic_flash_off)
             binding.buttonFlash.alpha = 0.7f
         }
     }
+
     //Feature: Zoom Camera
     private fun setupZoomGesture() {
 
         //ScaleGestureDetector is Android's class can listen when user touch more than one finger
-        val listener = object: ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
                 val currentZoomRatio = camera?.cameraInfo?.zoomState?.value?.zoomRatio ?: 1f
                 val delta = detector.scaleFactor
@@ -302,7 +325,7 @@ class HomeFragment: Fragment() {
             .format(System.currentTimeMillis())
 
         // Save photo in external cache directory
-        val photoFile = File(requireContext().externalCacheDir,"$name.jpg")
+        val photoFile = File(requireContext().externalCacheDir, "$name.jpg")
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
         // Animation
         binding.viewFlashOverlay.alpha = 0.8f
@@ -318,12 +341,12 @@ class HomeFragment: Fragment() {
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(requireContext()),
-            object: ImageCapture.OnImageSavedCallback{
+            object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e("HomeFragment", "Chụp ảnh thất bại: ${exc.message}", exc)
                 }
 
-                override fun onImageSaved(output: ImageCapture.OutputFileResults){
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = output.savedUri ?: Uri.fromFile(photoFile)
                     val msg = "Saved photo to $savedUri"
                     Log.d("HomeFragment", msg)
@@ -340,6 +363,7 @@ class HomeFragment: Fragment() {
 
         )
     }
+
     private fun startRecording() {
         val videoCapture = this.videoCapture ?: return
 
@@ -356,14 +380,14 @@ class HomeFragment: Fragment() {
         ) == PackageManager.PERMISSION_GRANTED
 
         recording = videoCapture.output
-            .prepareRecording(requireContext(),outputOptions )
+            .prepareRecording(requireContext(), outputOptions)
             .apply {
                 if (hasAudioPermission) {
                     withAudioEnabled()
                 }
             }
             .start(ContextCompat.getMainExecutor(requireContext())) { recordEvent ->
-                when(recordEvent) {
+                when (recordEvent) {
                     is VideoRecordEvent.Start -> {
                         binding.buttonShutter.setImageResource(R.drawable.ic_recording_red)
                         handler.postDelayed(autoStopRunnable, MAX_VIDEO_DURATION)
@@ -378,12 +402,14 @@ class HomeFragment: Fragment() {
                             val savedUri = recordEvent.outputResults.outputUri
                             val msg = "Video saved at: $savedUri"
                             Log.d("HomeFragment", msg)
-                            Toast.makeText(requireContext(), "Complete Record", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Complete Record", Toast.LENGTH_SHORT)
+                                .show()
 
-                            val action = HomeFragmentDirections.actionHomeFragmentToEditPreviewFragment(
-                                mediaUri = savedUri.toString(),
-                                isVideo = true
-                            )
+                            val action =
+                                HomeFragmentDirections.actionHomeFragmentToEditPreviewFragment(
+                                    mediaUri = savedUri.toString(),
+                                    isVideo = true
+                                )
                             findNavController().navigate(action)
 
                         } else {
@@ -396,6 +422,7 @@ class HomeFragment: Fragment() {
 
             }
     }
+
     private fun stopRecording() {
         if (recording != null) {
             recording?.stop()

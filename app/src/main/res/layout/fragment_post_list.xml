@@ -59,9 +59,6 @@
         android:id="@+id/recycler_view_posts"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:clipToPadding="false"
-        android:paddingBottom="50dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_friends" />
@@ -76,9 +73,10 @@
         android:paddingEnd="8dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
+        android:layout_marginBottom="180dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/layout_controls">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <EditText
             android:id="@+id/edt_message"
@@ -130,62 +128,5 @@
 
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_controls"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:animateLayoutChanges="true"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <ImageButton
-            android:id="@+id/button_gallery"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="0dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_gallery"
-            app:layout_constraintBottom_toBottomOf="@id/button_shutter"
-            app:layout_constraintEnd_toStartOf="@id/button_shutter"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/button_shutter"
-            app:tint="@color/white" />
-
-        <ImageButton
-            android:id="@+id/button_shutter"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_shutter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/button_flip_camera"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_flip_camera"
-            app:layout_constraintBottom_toBottomOf="@id/button_shutter"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/button_shutter"
-            app:layout_constraintTop_toTopOf="@id/button_shutter"
-            app:tint="@color/white" />
-
-        <TextView
-            android:id="@+id/tv_info_shutter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/text_shutter_instruction"
-            android:textColor="@color/white"
-            android:textSize="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/button_shutter" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
