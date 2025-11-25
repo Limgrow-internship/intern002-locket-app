@@ -6,6 +6,41 @@
     app:startDestination="@id/splashFragment">
 
     <fragment
+        android:id="@+id/mainContainerFragment"
+        android:name="com.intern002.locketapp.ui.screen.main.MainContainerFragment"
+        android:label="MainContainerFragment"
+        tools:layout="@layout/fragment_main_container">
+
+        <action
+            android:id="@+id/action_mainContainerFragment_to_gridPostFragment"
+            app:destination="@id/gridPostFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_mainContainerFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mainContainerFragment_to_chatListFragment"
+            app:destination="@id/chatListFragment" />
+        <action
+            android:id="@+id/action_mainContainerFragment_to_editPreviewFragment"
+            app:destination="@id/editPreviewFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/gridPostFragment"
+        android:name="com.intern002.locketapp.ui.screen.grid.GridPostFragment"
+        android:label="GridPostFragment"
+        tools:layout="@layout/fragment_grid_post" />
+
+
+    <fragment
         android:id="@+id/splashFragment"
         android:name="com.intern002.locketapp.ui.screen.splash.SplashFragment"
         android:label="fragment_splash"
@@ -16,8 +51,8 @@
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_splashFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
+            android:id="@+id/action_splashFragment_to_mainContainerFragment"
+            app:destination="@id/mainContainerFragment"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -91,8 +126,8 @@
             android:id="@+id/action_loginFragment_to_usernameFragment"
             app:destination="@id/usernameFragment" />
         <action
-            android:id="@+id/action_loginFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
+            android:id="@+id/action_loginFragment_to_mainContainerFragment"
+            app:destination="@id/mainContainerFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
@@ -122,8 +157,8 @@
             android:id="@+id/action_LoginPasswordFragment_to_mainActivity"
             app:destination="@id/main_activity" />
         <action
-            android:id="@+id/action_LoginPasswordFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
+            android:id="@+id/action_LoginPasswordFragment_to_mainContainerFragment"
+            app:destination="@id/mainContainerFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
@@ -210,21 +245,7 @@
         android:id="@+id/homeFragment"
         android:name="com.intern002.locketapp.ui.screen.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_homeFragment_to_editPreviewFragment"
-            app:destination="@id/editPreviewFragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"/>
-        <action
-            android:id="@+id/action_homeFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_chatListFragment"
-            app:destination="@id/chatListFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/welcomeFragment"
@@ -351,8 +372,8 @@
         android:label="fragment_add_friends"
         tools:layout="@layout/fragment_add_friends" >
         <action
-            android:id="@+id/action_addFriendsFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
+            android:id="@+id/action_addFriendsFragment_to_mainContainerFragment"
+            app:destination="@id/mainContainerFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>

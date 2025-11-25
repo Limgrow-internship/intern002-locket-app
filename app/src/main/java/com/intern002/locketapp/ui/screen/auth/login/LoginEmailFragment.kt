@@ -108,7 +108,7 @@ class LoginEmailFragment: Fragment() {
 
 
         when(state) {
-            is EmailLoginState.Loading -> { /* Đã xử lý enabled/alpha bên trên */ }
+            is EmailLoginState.Loading -> {  }
             is EmailLoginState.Success -> {
                 val email = binding.emailEditText.text.toString().trim()
                 val action = LoginEmailFragmentDirections.actionLoginEmailFragmentToLoginPasswordFragment(email)

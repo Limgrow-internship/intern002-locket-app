@@ -163,7 +163,7 @@ class LoginFragment : Fragment() {
 
         when (state) {
             is LoginState.Success -> {
-                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+                findNavController().navigate(R.id.action_loginFragment_to_mainContainerFragment)
             }
             is LoginState.Error -> {
                 Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()

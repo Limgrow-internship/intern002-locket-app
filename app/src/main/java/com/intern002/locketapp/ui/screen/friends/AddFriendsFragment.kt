@@ -37,7 +37,7 @@ class AddFriendsFragment : Fragment() {
         updateFriendCount()
 
         binding.btnContinue.setOnClickListener {
-            val action = AddFriendsFragmentDirections.actionAddFriendsFragmentToHomeFragment()
+            val action = AddFriendsFragmentDirections.actionAddFriendsFragmentToMainContainerFragment()
             findNavController().navigate(action)
         }
     }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/black">
 
@@ -14,36 +14,36 @@
         android:layout_marginStart="25dp"
         android:layout_marginTop="25dp"
         android:src="@drawable/avt_sample"
-        app:shapeAppearanceOverlay="@style/CircleImageView"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:shapeAppearanceOverlay="@style/CircleImageView" />
 
     <TextView
         android:id="@+id/text_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
         android:text="@string/title_app"
         android:textAppearance="?attr/textAppearanceHeadline6"
-        app:layout_constraintTop_toTopOf="@id/avatar"
-        app:layout_constraintVertical_chainStyle="packed"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/avatar"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
         android:id="@+id/text_friends"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:drawableStart="@drawable/ic_user_group"
         android:drawablePadding="4dp"
-        android:layout_marginTop="10dp"
-        android:textColor="#FFFFFF"
-        android:textSize="16dp"
         android:text="@string/text_friends_sample"
         android:textAppearance="?attr/textAppearanceBody2"
-        app:layout_constraintTop_toBottomOf="@id/text_app_name"
+        android:textColor="#FFFFFF"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/text_app_name" />
 
     <ImageButton
         android:id="@+id/btnChat"
@@ -52,9 +52,9 @@
         android:layout_marginEnd="25dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_chat_bubble"
+        app:layout_constraintBottom_toBottomOf="@id/avatar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/avatar"
-        app:layout_constraintBottom_toBottomOf="@id/avatar"/>
+        app:layout_constraintTop_toTopOf="@id/avatar" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/camera_preview_container"
@@ -62,16 +62,16 @@
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="32dp"
-        app:layout_constraintTop_toBottomOf="@id/text_friends"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintDimensionRatio="2:2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintDimensionRatio="2:2">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_friends">
 
         <androidx.camera.view.PreviewView
             android:id="@+id/camera_preview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:background="#121212"/>
+            tools:background="#121212" />
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -89,13 +89,14 @@
 
     <TextView
         android:id="@+id/text_zoom"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="24dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginTop="17dp"
+        android:layout_marginEnd="24dp"
         android:background="@drawable/background_circle_transparent"
-        android:text="@string/text_zoom_1x"
         android:gravity="center"
+        android:text="@string/text_zoom_1x"
+        android:padding="4dp"
         android:textColor="#FFFFFf"
         app:layout_constraintEnd_toEndOf="@id/camera_preview_container"
         app:layout_constraintTop_toTopOf="@id/camera_preview_container" />
@@ -104,24 +105,24 @@
         android:id="@+id/layout_controls"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="20dp"
         android:layout_marginBottom="80dp"
         android:animateLayoutChanges="true"
+        android:paddingBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
             android:id="@+id/button_gallery"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="0dp"
             android:scaleType="fitCenter"
-            android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_gallery"
+            app:layout_constraintBottom_toBottomOf="@id/button_shutter"
             app:layout_constraintEnd_toStartOf="@id/button_shutter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/button_shutter"
-            app:layout_constraintBottom_toBottomOf="@id/button_shutter"
-            app:tint="@color/white"/>
+            app:tint="@color/white" />
 
         <ImageButton
             android:id="@+id/button_shutter"
@@ -129,51 +130,53 @@
             android:layout_height="80dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_shutter"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageButton
             android:id="@+id/button_flip_camera"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_flip_camera"
-            app:layout_constraintStart_toEndOf="@id/button_shutter"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/button_shutter"
             app:layout_constraintBottom_toBottomOf="@id/button_shutter"
-            app:tint="@color/white"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/button_shutter"
+            app:layout_constraintTop_toTopOf="@id/button_shutter"
+            app:tint="@color/white" />
 
         <TextView
             android:id="@+id/tv_info_shutter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
             android:text="@string/text_shutter_instruction"
             android:textColor="@color/white"
             android:textSize="12dp"
-            android:layout_marginTop="5dp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/button_shutter"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button_shutter" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_history_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginEnd="12dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
-        android:layout_marginEnd="12dp"
-        app:layout_constraintTop_toBottomOf="@id/layout_controls"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/text_history"
-        app:layout_constraintHorizontal_chainStyle="packed">
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_controls">
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/history_img"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/history_img" />
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
@@ -182,29 +185,29 @@
         android:layout_height="wrap_content"
         android:text="@string/text_history"
         android:textColor="@color/white"
-        android:textStyle="bold"
         android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="@id/card_history_image"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/card_history_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/card_history_image"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/card_history_image" />
 
     <ImageButton
         android:id="@+id/ic_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_down_vector"
         android:backgroundTint="#00FFFFFF"
+        android:src="@drawable/ic_down_vector"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_history"/>
+        app:layout_constraintTop_toBottomOf="@id/text_history" />
 
     <View
         android:id="@+id/view_flash_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:alpha="0"
         android:background="#FFFFFF"
-        android:visibility="gone"
-        android:alpha="0" />
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

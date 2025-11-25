@@ -53,7 +53,7 @@ class WelcomeUsernameFragment : Fragment() {
                         // Use Glide to load the image
                         Glide.with(requireContext())
                             .load(userProfile.avatarUrl)
-                            .placeholder(R.drawable.bg_selected) // Optional placeholder
+                            .placeholder(R.drawable.bg_selected)
                             .into(binding.imageAvatar)
                     }
 

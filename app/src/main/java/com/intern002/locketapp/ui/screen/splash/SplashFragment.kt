@@ -65,7 +65,7 @@ class SplashFragment : Fragment() {
                     if (view?.isAttachedToWindow == true) {
                         when (state) {
                             is SplashState.Authenticated -> {
-                                findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
+                                findNavController().navigate(R.id.action_splashFragment_to_mainContainerFragment)
                             }
                             is SplashState.Unauthenticated -> {
                                 showInterstitialAd()

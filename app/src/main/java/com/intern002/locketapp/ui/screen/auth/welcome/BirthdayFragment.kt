@@ -40,7 +40,7 @@ class BirthdayFragment : Fragment() {
         return when (month) {
             1, 3, 5, 7, 8, 10, 12 -> 31
             4, 6, 9, 11 -> 30
-            2 -> 29 // Simple leap year handling for now
+            2 -> 29
             else -> 31
         }
     }
@@ -105,7 +105,7 @@ class BirthdayFragment : Fragment() {
 
         binding.buttonContinue.setOnClickListener {
             if (selectedMonth != null && selectedDay != null) {
-                val year = Calendar.getInstance().get(Calendar.YEAR) - 20 // Defaulting to 20 years old
+                val year = Calendar.getInstance().get(Calendar.YEAR) - 20
                 val birthdayString = String.format("%d-%02d-%02d", year, selectedMonth, selectedDay)
 
                 if (args.idToken != null) {

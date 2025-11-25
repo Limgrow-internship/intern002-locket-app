@@ -109,13 +109,13 @@ class LoginPasswordFragment : Fragment() {
 
         when (state) {
             is PasswordLoginState.Success -> {
-                val action = LoginPasswordFragmentDirections.actionLoginPasswordFragmentToHomeFragment()
+                val action = LoginPasswordFragmentDirections.actionLoginPasswordFragmentToMainContainerFragment()
                 findNavController().navigate(action)
             }
             is PasswordLoginState.Error -> {
                 showErrorDialog(state.message)
             }
-            else -> { /* Do nothing for Idle and Loading states */ }
+            else -> { }
         }
     }
 

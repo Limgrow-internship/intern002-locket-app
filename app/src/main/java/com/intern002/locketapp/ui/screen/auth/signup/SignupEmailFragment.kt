@@ -70,7 +70,6 @@ class SignupEmailFragment: Fragment() {
 
                 if (!isValid && email.isNotEmpty()) {
                     binding.tvErrorMessage.isVisible = true
-                    // You can add a specific error message for invalid format here if you want
                 } else {
                     binding.tvErrorMessage.isVisible = false
                 }

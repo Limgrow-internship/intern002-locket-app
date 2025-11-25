@@ -79,8 +79,8 @@ class SignupPasswordFragment : Fragment() {
             val action = SignupPasswordFragmentDirections.actionSignupPasswordFragmentToUsernameFragment(
                 email = args.email,
                 password = password,
-                idToken = null, // Not used in email signup flow
-                suggestedUsername = null // Not used in email signup flow
+                idToken = null,
+                suggestedUsername = null
             )
             findNavController().navigate(action)
         }
