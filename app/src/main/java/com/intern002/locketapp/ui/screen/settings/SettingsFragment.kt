@@ -64,7 +64,7 @@ class SettingsFragment : Fragment() {
         }
 
         binding.btnEditExtension.setOnClickListener {
-            ExtensionsFragment().show(childFragmentManager, ExtensionsFragment.TAG)
+            findNavController().navigate(R.id.action_settingsFragment_to_extensionsFragment)
         }
 
         binding.btnLogout.setOnClickListener {

@@ -88,13 +88,13 @@
             android:id="@+id/action_LoginFragment_to_SignupEmailFragment"
             app:destination="@id/SignupEmailFragment" />
         <action
-            android:id="@+id/action_loginFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment"
-            app:popUpTo="@id/nav_graph"
-            app:popUpToInclusive="true" />
-        <action
             android:id="@+id/action_loginFragment_to_usernameFragment"
             app:destination="@id/usernameFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -284,6 +284,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_addWidgetFragment"
             app:destination="@id/addWidgetFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_extensionsFragment"
+            app:destination="@id/ExtensionFragment" />
     </fragment>
 
     <fragment

@@ -25,31 +25,49 @@
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintVertical_bias="0.4">
 
-        <ImageView
-            android:id="@+id/icon_placeholder"
+        <FrameLayout
+            android:id="@+id/avatar_container"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:background="@drawable/bg_selected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            android:background="@drawable/bg_selected"/>
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/image_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/text_avatar_initial"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                tools:text="T" />
+        </FrameLayout>
 
         <TextView
-        android:id="@+id/text_username"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="thienvi123"
-        android:layout_marginStart="12dp"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/icon_placeholder"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/text_username"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:textColor="@android:color/white"
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/avatar_container"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="thienvi123#0001" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/text_title"
@@ -91,7 +109,7 @@
         android:id="@+id/button_share_username"
         android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="40dp"
         app:backgroundTint="@null"
         android:background="@drawable/bg_share_username"
         android:drawableStart="@drawable/ic_share"
@@ -105,9 +123,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button_continue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_description" />
-
-    <com.google.android.material.button.MaterialButton
+        app:layout_constraintTop_toBottomOf="@+id/text_description" /> <com.google.android.material.button.MaterialButton
         android:id="@+id/button_continue"
         android:layout_width="0dp"
         android:layout_height="56dp"

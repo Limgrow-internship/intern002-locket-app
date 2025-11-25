@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.model.WidgetFrame
 import com.intern002.locketapp.databinding.FragmentExtensionsBinding
 import com.intern002.locketapp.ui.adapter.WidgetFrameAdapter
 
-class ExtensionsFragment : BottomSheetDialogFragment() {
+class ExtensionsFragment : Fragment() {
 
     private var _binding: FragmentExtensionsBinding? = null
     private val binding get() = _binding!!
@@ -34,7 +35,7 @@ class ExtensionsFragment : BottomSheetDialogFragment() {
         setupRecyclerView()
 
         binding.ivClose.setOnClickListener {
-            dismiss()
+            findNavController().popBackStack()
         }
     }
 

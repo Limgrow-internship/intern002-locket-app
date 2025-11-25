@@ -36,7 +36,7 @@ class ProfileFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.btnPremium.setOnClickListener {
-            // findNavController().navigate(R.id.action_profileFragment_to_premiumFragment)
+            findNavController().navigate(R.id.action_profileFragment_to_premiumFragment)
         }
         binding.icSetting.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_settingsFragment)

@@ -30,6 +30,8 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentLoginBinding
 import com.intern002.locketapp.ui.viewmodel.LoginState
@@ -46,13 +48,19 @@ class LoginFragment : Fragment() {
     private val viewModel: LoginViewModel by viewModels()
     private lateinit var oneTapClient: SignInClient
     private lateinit var signInRequest: BeginSignInRequest
+    private lateinit var firebaseAuth: FirebaseAuth
 
     private val oneTapSignInLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             try {
                 val credential = oneTapClient.getSignInCredentialFromIntent(result.data)
-                val idToken = credential.googleIdToken
-                viewModel.onGoogleLoginResult(idToken)
+                val googleIdToken = credential.googleIdToken
+                if (googleIdToken != null) {
+                    handleGoogleIdToken(googleIdToken)
+                } else {
+                    Log.e("LoginFragment", "Google ID Token was null.")
+                    viewModel.onGoogleLoginResult(null)
+                }
             } catch (e: ApiException) {
                 Log.e("LoginFragment", "Google Sign-In failed with ApiException", e)
                 viewModel.onGoogleLoginResult(null)
@@ -72,10 +80,38 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        firebaseAuth = FirebaseAuth.getInstance()
+
         setupGoogleOneTap()
         setupClickListeners()
         setupLoginLink()
         observeLoginState()
+    }
+
+    private fun handleGoogleIdToken(googleIdToken: String) {
+        val credential = GoogleAuthProvider.getCredential(googleIdToken, null)
+        firebaseAuth.signInWithCredential(credential)
+            .addOnSuccessListener { authResult ->
+                val firebaseUser = authResult.user
+                firebaseUser?.getIdToken(true)
+                    ?.addOnSuccessListener { result ->
+                        val firebaseIdToken = result.token
+                        if (firebaseIdToken != null) {
+                            viewModel.onGoogleLoginResult(firebaseIdToken)
+                        } else {
+                            Log.e("LoginFragment", "Firebase ID Token was null.")
+                            viewModel.onGoogleLoginResult(null)
+                        }
+                    }
+                    ?.addOnFailureListener { e ->
+                        Log.e("LoginFragment", "Failed to get Firebase ID Token", e)
+                        viewModel.onGoogleLoginResult(null)
+                    }
+            }
+            .addOnFailureListener { e ->
+                Log.e("LoginFragment", "Firebase Sign-In failed", e)
+                viewModel.onGoogleLoginResult(null)
+            }
     }
 
     private fun setupGoogleOneTap() {
@@ -127,7 +163,7 @@ class LoginFragment : Fragment() {
 
         when (state) {
             is LoginState.Success -> {
-                findNavController().navigate(R.id.action_loginFragment_to_settingsFragment)
+                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
             }
             is LoginState.Error -> {
                 Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()

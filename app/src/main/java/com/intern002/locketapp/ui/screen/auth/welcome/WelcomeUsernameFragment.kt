@@ -5,19 +5,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentWelcomeUsernameBinding
+import com.intern002.locketapp.ui.viewmodel.WelcomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class WelcomeUsernameFragment : Fragment() {
     private var _binding: FragmentWelcomeUsernameBinding? = null
     private val binding get() = _binding!!
 
-    private val args: WelcomeUsernameFragmentArgs by navArgs()
+    private val viewModel: WelcomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,14 +35,36 @@ class WelcomeUsernameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val username = args.username
-        binding.textUsername.text = username
+        viewModel.fetchUserProfile()
 
-        binding.buttonShareUsername.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.type = "text/plain"
-            shareIntent.putExtra(Intent.EXTRA_TEXT, "Hey, check out my new username on Locket: $username")
-            startActivity(Intent.createChooser(shareIntent, "Share username via"))
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.userProfile.collect { userProfile ->
+                if (userProfile != null) {
+                    val fullUsername = "${userProfile.username}#${String.format("%04d", userProfile.discriminator)}"
+                    binding.textUsername.text = fullUsername
+
+                    if (userProfile.avatarUrl.isNullOrEmpty()) {
+                        binding.imageAvatar.isVisible = false
+                        binding.textAvatarInitial.isVisible = true
+                        binding.textAvatarInitial.text = userProfile.username.first().uppercase()
+                    } else {
+                        binding.imageAvatar.isVisible = true
+                        binding.textAvatarInitial.isVisible = false
+                        // Use Glide to load the image
+                        Glide.with(requireContext())
+                            .load(userProfile.avatarUrl)
+                            .placeholder(R.drawable.bg_selected) // Optional placeholder
+                            .into(binding.imageAvatar)
+                    }
+
+                    binding.buttonShareUsername.setOnClickListener {
+                        val shareIntent = Intent(Intent.ACTION_SEND)
+                        shareIntent.type = "text/plain"
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, "Hey, check out my new username on Locket: $fullUsername")
+                        startActivity(Intent.createChooser(shareIntent, "Share username via"))
+                    }
+                }
+            }
         }
 
         binding.buttonContinue.setOnClickListener {
