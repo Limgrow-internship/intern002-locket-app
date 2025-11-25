@@ -3,7 +3,6 @@ package com.intern002.locketapp.ui.screen.auth.login
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,10 +17,13 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentLoginPasswordBinding
-import com.intern002.locketapp.ui.viewmodel.PasswordLoginState
-import com.intern002.locketapp.ui.viewmodel.LoginPasswordViewModel
+import com.intern002.locketapp.ui.viewmodel.login.PasswordLoginState
+import com.intern002.locketapp.ui.viewmodel.login.LoginPasswordViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 
 @AndroidEntryPoint
 class LoginPasswordFragment : Fragment() {
@@ -31,6 +33,10 @@ class LoginPasswordFragment : Fragment() {
 
     private val viewModel: LoginPasswordViewModel by viewModels()
     private val args: LoginPasswordFragmentArgs by navArgs()
+
+    private val initialMarginTopDp = 170
+    private val keyboardVisibleMarginTopDp = 50
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,9 +49,30 @@ class LoginPasswordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupKeyboardAdjustment()
+
         setupViews()
         setupClickListeners()
         observeViewModel()
+    }
+
+    private fun setupKeyboardAdjustment() {
+        val initialMarginTopPx = (initialMarginTopDp * resources.displayMetrics.density).toInt()
+        val keyboardVisibleMarginTopPx = (keyboardVisibleMarginTopDp * resources.displayMetrics.density).toInt()
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+
+            val isImeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+
+            binding.textHeadline.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = if (isImeVisible) {
+                    keyboardVisibleMarginTopPx
+                } else {
+                    initialMarginTopPx
+                }
+            }
+            insets
+        }
     }
 
     private fun setupViews() {

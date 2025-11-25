@@ -45,7 +45,6 @@ class AddFriendsFragment : Fragment() {
     private fun setupRecyclerView() {
         suggestions.addAll(createMockSuggestions())
         suggestionAdapter = SuggestionAdapter(suggestions) { suggestion ->
-            // Handle Add button click
             suggestion.status = FriendStatus.INVITED
             invitedCount++
             updateFriendCount()

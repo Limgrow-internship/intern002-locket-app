@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentWelcomeUsernameBinding
-import com.intern002.locketapp.ui.viewmodel.WelcomeViewModel
+import com.intern002.locketapp.ui.viewmodel.register.WelcomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

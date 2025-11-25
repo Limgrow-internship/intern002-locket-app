@@ -14,8 +14,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.intern002.locketapp.databinding.FragmentBirthdayBinding
-import com.intern002.locketapp.ui.viewmodel.RegisterState
-import com.intern002.locketapp.ui.viewmodel.RegisterViewModel
+import com.intern002.locketapp.ui.viewmodel.register.RegisterState
+import com.intern002.locketapp.ui.viewmodel.register.RegisterViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*

@@ -22,8 +22,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.intern002.locketapp.databinding.FragmentLoginEmailBinding
-import com.intern002.locketapp.ui.viewmodel.EmailLoginState
-import com.intern002.locketapp.ui.viewmodel.LoginEmailViewModel
+import com.intern002.locketapp.ui.viewmodel.login.EmailLoginState
+import com.intern002.locketapp.ui.viewmodel.login.LoginEmailViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 

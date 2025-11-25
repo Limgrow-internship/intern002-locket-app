@@ -75,6 +75,7 @@
     <string name="friends_added_count">%1$d / %2$d friends added</string>
     <string name="suggestions">Suggestions</string>
     <string name="continue_button">Continue</string>
+    <string name="button_save">Save</string>
 
     <!-- Login -->
     <string name="login_headline">Let\'s Get Started!</string>
@@ -91,12 +92,13 @@
     <string name="terms_and_privacy_notice">By tapping Continue, you agree to our Terms of Service and Privacy Policy.</string>
     <string name="button_continue">Continue</string>
     <string name="pass_headline">Enter your password</string>
-    <string name="pass_hint">password</string>
+    <string name="pass_hint"> Enter your password here</string>
     <string name="avaivalable">Avaivalable!</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="content_desc_back_button">Back</string>
     <string name="password_reset_email">A password reset email has been sent.</string>
-    <string name="invalid_email_error">The email address is invalid.</string>
+    <string name="invalid_email_error">Email address already exists.</string>
+    <string name="password_incorrect_error">Incorrect password.</string>
     <string name="password_length_error">Password must be between 8 and 18 characters.</string>
 
     <string name="default_web_client_id" translatable="false">
@@ -110,4 +112,6 @@
     <string name="caption_option_weather">Weather</string>
     <string name="caption_option_location">Location</string>
     <string name="caption_option_time_placeholder">1:40 PM</string>
+
+
 </resources>

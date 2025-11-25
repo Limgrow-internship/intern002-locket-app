@@ -1,5 +1,6 @@
-package com.intern002.locketapp.ui.viewmodel
+package com.intern002.locketapp.ui.viewmodel.register
 
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.intern002.locketapp.data.repository.AuthRepository
@@ -27,7 +28,7 @@ class SignupEmailViewModel @Inject constructor(
     val validationState = _validationState.asStateFlow()
 
     fun validateEmail(email: String) {
-        if (email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (email.isBlank() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             _validationState.value = EmailValidationState.Invalid("Invalid email format.")
             return
         }

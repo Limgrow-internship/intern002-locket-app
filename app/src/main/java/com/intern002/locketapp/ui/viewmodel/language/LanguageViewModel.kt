@@ -1,4 +1,4 @@
-package com.intern002.locketapp.ui.viewmodel
+package com.intern002.locketapp.ui.viewmodel.language
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,7 +39,7 @@ class LanguageViewModel @Inject constructor(private val repo: LanguageRepository
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.Companion.WhileSubscribed(5000),
             initialValue = _allLanguages.value
         )
 

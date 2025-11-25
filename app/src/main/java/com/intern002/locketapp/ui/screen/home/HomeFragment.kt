@@ -35,23 +35,32 @@ import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentHomeBinding
 import com.intern002.locketapp.ui.screen.main.MainContainerFragmentDirections
+import com.intern002.locketapp.ui.viewmodel.home.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    // CameraX variables
+    private val viewModel: HomeViewModel by viewModels()
+
     private var cameraProvider: ProcessCameraProvider? = null
     private var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private var camera: Camera? = null
@@ -136,8 +145,32 @@ class HomeFragment : Fragment() {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
+        observeViewModel()
         checkPermissionAndStart()
         setupControls()
+    }
+
+    private fun observeViewModel() {
+        viewModel.fetchUserProfile()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.userProfile.collect { userProfile ->
+                if (userProfile != null) {
+                    if (userProfile.avatarUrl.isNullOrEmpty()) {
+                        binding.avatar.isVisible = false
+                        binding.textAvatarInitial.isVisible = true
+                        binding.textAvatarInitial.text = userProfile.username.first().uppercase()
+                    } else {
+                        binding.avatar.isVisible = true
+                        binding.textAvatarInitial.isVisible = false
+                        Glide.with(requireContext())
+                            .load(userProfile.avatarUrl)
+                            .placeholder(R.drawable.avt_sample)
+                            .error(R.drawable.avt_sample)
+                            .into(binding.avatar)
+                    }
+                }
+            }
+        }
     }
 
     private fun checkPermissionAndStart() {
@@ -156,7 +189,7 @@ class HomeFragment : Fragment() {
     }
 
     fun performCapture() {
-        takePhoto() // Gọi lại hàm nội bộ cũ
+        takePhoto()
     }
 
     fun performFlip() {
@@ -225,7 +258,7 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_mainContainerFragment_to_chatListFragment)
         }
 
-        binding.avatar.setOnClickListener {
+        binding.avatarContainer.setOnClickListener {
             findNavController().navigate(R.id.action_mainContainerFragment_to_profileFragment)
         }
 
@@ -305,7 +338,6 @@ class HomeFragment : Fragment() {
     //Feature: Zoom Camera
     private fun setupZoomGesture() {
 
-        //ScaleGestureDetector is Android's class can listen when user touch more than one finger
         val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
                 val currentZoomRatio = camera?.cameraInfo?.zoomState?.value?.zoomRatio ?: 1f

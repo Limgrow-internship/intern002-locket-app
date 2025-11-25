@@ -34,8 +34,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentLoginBinding
-import com.intern002.locketapp.ui.viewmodel.LoginState
-import com.intern002.locketapp.ui.viewmodel.LoginViewModel
+import com.intern002.locketapp.ui.viewmodel.login.LoginState
+import com.intern002.locketapp.ui.viewmodel.login.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

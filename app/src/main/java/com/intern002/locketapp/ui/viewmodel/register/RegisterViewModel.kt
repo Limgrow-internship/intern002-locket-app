@@ -1,4 +1,4 @@
-package com.intern002.locketapp.ui.viewmodel
+package com.intern002.locketapp.ui.viewmodel.register
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

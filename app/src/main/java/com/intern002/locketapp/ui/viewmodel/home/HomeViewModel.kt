@@ -1,4 +1,4 @@
-package com.intern002.locketapp.ui.viewmodel
+package com.intern002.locketapp.ui.viewmodel.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WelcomeViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
@@ -20,7 +20,6 @@ class WelcomeViewModel @Inject constructor(
 
     fun fetchUserProfile() {
         viewModelScope.launch {
-            // This will automatically fetch the logged-in user's profile
             val profile = userRepository.getCurrentUserProfile()
             _userProfile.value = profile
         }

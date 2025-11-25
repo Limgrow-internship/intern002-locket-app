@@ -21,10 +21,10 @@ object TimeUtils {
             val days = TimeUnit.MILLISECONDS.toDays(now.time - past.time)
 
             return when {
-                seconds < 60 -> "${seconds}s" // Giây
-                minutes < 60 -> "${minutes}m" // Phút
-                hours < 24 -> "${hours}h"     // Giờ
-                else -> "${days}d"            // Ngày
+                seconds < 60 -> "${seconds}s"
+                minutes < 60 -> "${minutes}m"
+                hours < 24 -> "${hours}h"
+                else -> "${days}d"
             }
         } catch (e: Exception) {
             return "now"

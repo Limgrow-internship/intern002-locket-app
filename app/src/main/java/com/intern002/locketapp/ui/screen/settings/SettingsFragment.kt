@@ -15,7 +15,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.prefs.AuthManager
 import com.intern002.locketapp.databinding.FragmentSettingsBinding
-import com.intern002.locketapp.ui.viewmodel.SettingsViewModel
+import com.intern002.locketapp.ui.viewmodel.setting.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject

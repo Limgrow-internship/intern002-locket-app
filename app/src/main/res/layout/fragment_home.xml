@@ -7,16 +7,34 @@
     android:animateLayoutChanges="true"
     android:background="@color/black">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/avatar"
+    <FrameLayout
+        android:id="@+id/avatar_container"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="25dp"
-        android:src="@drawable/avt_sample"
+        android:background="@drawable/bg_button_outline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/CircleImageView" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/avatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/avt_sample"
+            app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+        <TextView
+            android:id="@+id/text_avatar_initial"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="T" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/text_app_name"
@@ -25,9 +43,10 @@
         android:text="@string/title_app"
         android:textAppearance="?attr/textAppearanceHeadline6"
         android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@id/avatar_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/avatar"
+        app:layout_constraintTop_toTopOf="@id/avatar_container"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
@@ -52,9 +71,9 @@
         android:layout_marginEnd="25dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_chat_bubble"
-        app:layout_constraintBottom_toBottomOf="@id/avatar"
+        app:layout_constraintBottom_toBottomOf="@id/avatar_container"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/avatar" />
+        app:layout_constraintTop_toTopOf="@id/avatar_container" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/camera_preview_container"

@@ -18,8 +18,8 @@ import androidx.navigation.fragment.findNavController
 import com.intern002.locketapp.R
 import com.intern002.locketapp.ads.AdManager
 import com.intern002.locketapp.databinding.FragmentSplashBinding
-import com.intern002.locketapp.ui.viewmodel.SplashState
-import com.intern002.locketapp.ui.viewmodel.SplashViewModel
+import com.intern002.locketapp.ui.viewmodel.splash.SplashState
+import com.intern002.locketapp.ui.viewmodel.splash.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

@@ -20,7 +20,7 @@ import com.bumptech.glide.Glide
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.remote.model.Language
 import com.intern002.locketapp.databinding.FragmentLanguageBinding
-import com.intern002.locketapp.ui.viewmodel.LanguageViewModel
+import com.intern002.locketapp.ui.viewmodel.language.LanguageViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
