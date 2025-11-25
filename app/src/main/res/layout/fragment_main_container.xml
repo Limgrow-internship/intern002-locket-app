@@ -20,7 +20,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
-            android:id="@+id/button_gallery"
+            android:id="@+id/button_dashboard"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/button_flip_camera"
+            android:id="@+id/button_share"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:scaleType="fitCenter"
