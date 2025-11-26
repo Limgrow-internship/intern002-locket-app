@@ -87,8 +87,8 @@
     <string name="signup_action_text">Sign up</string>
     <string name="login_prompt_full">Have an account? Log in or Sign up</string>
     <string name="login_footer_links">Terms of Use      |      Privacy Policy      |      Restore</string>
-    <string name="email_headline">Enter your email</string>
-    <string name="email_hint">Email address</string>
+    <string name="email_headline">Change your email</string>
+    <string name="email_hint">Enter your email here</string>
     <string name="terms_and_privacy_notice">By tapping Continue, you agree to our Terms of Service and Privacy Policy.</string>
     <string name="button_continue">Continue</string>
     <string name="pass_headline">Enter your password</string>
@@ -97,10 +97,11 @@
     <string name="forgot_password">Forgot password?</string>
     <string name="content_desc_back_button">Back</string>
     <string name="password_reset_email">A password reset email has been sent.</string>
-    <string name="invalid_email_error">Email address already exists.</string>
+    <string name="username_hint">Enter username here</string>
     <string name="password_incorrect_error">Incorrect password.</string>
     <string name="password_length_error">Password must be between 8 and 18 characters.</string>
 
+    <!-- Caption -->
     <string name="default_web_client_id" translatable="false">
          683081082714-hko4tbl5sdd8uu85hb5sq7hmsu87jneg.apps.googleusercontent.com
      </string>
@@ -114,4 +115,9 @@
     <string name="caption_option_time_placeholder">1:40 PM</string>
 
 
+    <!-- Change -->
+    <string name="email_change_headline">Change your email</string>
+    <string name="username_change_headline">Change your username</string>
+    <string name="invalid_username_error">Change your password</string>
+    <string name="invalid_email_error">Email address already exists.</string>
 </resources>

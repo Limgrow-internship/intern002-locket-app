@@ -104,4 +104,72 @@
         app:layout_constraintStart_toStartOf="@id/tv_username"
         app:layout_constraintTop_toBottomOf="@id/tv_username" />
 
+    <LinearLayout
+        android:id="@+id/layout_my_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_button_outline_dark"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="15dp"
+        android:visibility="gone"
+        android:layout_marginBottom="130dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/img_activity_indicator"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_smile"
+            app:tint="@color/white"
+            app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+        <TextView
+            android:id="@+id/tv_activity_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Activity"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="13sp"
+            android:layout_marginStart="8dp" />
+
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="4dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_reactor_3"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:translationX="32dp"
+                android:src="@drawable/avt_sample"
+                app:shapeAppearanceOverlay="@style/CircleImageView"
+                android:visibility="gone" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_reactor_2"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:translationX="16dp"
+                android:src="@drawable/avt_sample"
+                app:shapeAppearanceOverlay="@style/CircleImageView"
+                android:visibility="gone" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/img_reactor_1"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/avt_sample"
+                app:shapeAppearanceOverlay="@style/CircleImageView"
+                android:visibility="gone" />
+        </FrameLayout>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

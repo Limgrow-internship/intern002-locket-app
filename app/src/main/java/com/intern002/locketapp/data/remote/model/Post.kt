@@ -8,5 +8,6 @@ data class Post(
     val mediaUrl: String,
     val mediaType: String,
     val caption: String?,
-    val createdAt: String
+    val createdAt: String,
+    val reactors: List<Reactor> = emptyList()
 )

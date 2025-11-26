@@ -78,8 +78,8 @@
                 android:paddingTop="16dp">
                  <FrameLayout
                     android:id="@+id/avatar_container"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:layout_marginEnd="12dp">
 
                     <View
@@ -89,13 +89,13 @@
 
                     <ImageView
                         android:id="@+id/imgAvatar"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:src="@drawable/avt_sample"
                         android:scaleType="centerCrop"
                         android:layout_gravity="center"
                         android:background="@drawable/bg_avatar"
-                        android:padding="5dp"/>
+                        android:padding="3dp"/>
 
                     <TextView
                         android:id="@+id/text_avatar_initial"

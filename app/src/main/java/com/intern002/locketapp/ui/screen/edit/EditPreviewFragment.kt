@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -14,14 +15,15 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.intern002.locketapp.databinding.FragmentEditPreviewBinding
 import com.intern002.locketapp.utils.MediaSaver
-import com.intern002.locketapp.utils.setOnKeyboardVisibilityListener
 import kotlinx.coroutines.launch
 
-class EditPreviewFragment: Fragment() {
+class EditPreviewFragment : Fragment() {
     private var _binding: FragmentEditPreviewBinding? = null
     private val binding get() = _binding!!
 
     private val args: EditPreviewFragmentArgs by navArgs()
+
+    private var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -48,7 +50,8 @@ class EditPreviewFragment: Fragment() {
         setupEditTextAction()
 
         binding.imagePreview.setOnClickListener {
-            val imm = requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+            val imm =
+                requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
             imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
         }
     }
@@ -73,14 +76,15 @@ class EditPreviewFragment: Fragment() {
             // TODO: Gọi API gửi ảnh
         }
     }
-    private fun setupImage(uri : Uri) {
+
+    private fun setupImage(uri: Uri) {
         binding.imagePreview.visibility = View.VISIBLE
         binding.videoPreview.visibility = View.GONE
 
         Glide.with(this).load(uri).into(binding.imagePreview)
     }
 
-    private fun setupVideo(uri : Uri) {
+    private fun setupVideo(uri: Uri) {
         binding.imagePreview.visibility = View.GONE
         binding.videoPreview.visibility = View.VISIBLE
         binding.videoPreview.setVideoURI(uri)
@@ -114,11 +118,12 @@ class EditPreviewFragment: Fragment() {
         }
     }
 
-    // 1. XỬ LÝ ẨN HIỆN KHI BÀN PHÍM LÊN/XUỐNG
     private fun setupKeyboardHandling() {
         val rootView = binding.root
 
-        rootView.viewTreeObserver.addOnGlobalLayoutListener {
+        globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+            if (_binding == null) return@OnGlobalLayoutListener
+
             val r = android.graphics.Rect()
             rootView.getWindowVisibleDisplayFrame(r)
 
@@ -132,7 +137,6 @@ class EditPreviewFragment: Fragment() {
                 binding.buttonDownload.visibility = View.GONE
 
             } else {
-                // === BÀN PHÍM TẮT ===
                 binding.layoutEditControls.visibility = View.VISIBLE
                 binding.recyclerFriends.visibility = View.VISIBLE
                 binding.textHeaderSend.visibility = View.VISIBLE
@@ -141,19 +145,22 @@ class EditPreviewFragment: Fragment() {
                 binding.editTextCaption.clearFocus()
             }
         }
+        rootView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
 
     private fun setupEditTextAction() {
         binding.editTextCaption.setOnEditorActionListener { v, actionId, event ->
             if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE) {
-                val imm = requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
+                val imm =
+                    requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
                 return@setOnEditorActionListener true
             }
             false
         }
     }
+
     private fun showCaptionBottomSheet() {
         val bottomSheet = CaptionBottomSheetFragment { selectedText ->
 
@@ -171,6 +178,9 @@ class EditPreviewFragment: Fragment() {
     }
 
     override fun onDestroyView() {
+        if (globalLayoutListener != null) {
+            binding.root.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
+        }
         super.onDestroyView()
         _binding = null
     }

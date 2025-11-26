@@ -67,6 +67,14 @@ class SettingsFragment : Fragment() {
             findNavController().navigate(R.id.action_settingsFragment_to_extensionsFragment)
         }
 
+        binding.btnChangeName.setOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_changeUserNameFragment)
+        }
+
+        binding.btnChangeEmail.setOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_enterPasswordFragment)
+        }
+
         binding.btnLogout.setOnClickListener {
             showLogoutConfirmationDialog()
         }
@@ -80,11 +88,9 @@ class SettingsFragment : Fragment() {
                 dialog.dismiss()
             }
             .setPositiveButton(getString(R.string.logout_dialog_ok)) { dialog, _ ->
-                // Clear local tokens FIRST
                 viewLifecycleOwner.lifecycleScope.launch {
                     authManager.clearTokens()
                 }
-                // Then notify the server
                 viewModel.onLogoutClicked()
                 dialog.dismiss()
             }

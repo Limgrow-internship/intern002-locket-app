@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -12,9 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.datasource.MockData
+import com.intern002.locketapp.data.remote.model.Post
+import com.intern002.locketapp.data.remote.model.Reactor
 import com.intern002.locketapp.databinding.FragmentPostListBinding
 
-class PostListFragment : Fragment() {
+class PostListFragment : Fragment(), PostItemCallBack {
 
     private var _binding: FragmentPostListBinding? = null
     private val binding get() = _binding!!
@@ -31,13 +35,17 @@ class PostListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val postList = MockData.posts
+
+        // 1. SETUP ADAPTER (Truyền "this" vào làm callback)
+        val adapter = PostAdapter(postList, "me", this)
         binding.recyclerViewPosts.layoutManager = LinearLayoutManager(context)
-        val adapter = PostAdapter(MockData.posts)
         binding.recyclerViewPosts.adapter = adapter
 
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(binding.recyclerViewPosts)
 
+        setupScrollListener(adapter, snapHelper, postList)
         setupScrollConflict()
     }
 
@@ -75,6 +83,49 @@ class PostListFragment : Fragment() {
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
         })
+    }
+
+    private fun setupScrollListener(
+        adapter: PostAdapter,
+        snapHelper: PagerSnapHelper,
+        postList: List<Post>
+    ) {
+        binding.recyclerViewPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                // Chỉ kiểm tra khi RecyclerView đã dừng hẳn
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val snapView = snapHelper.findSnapView(recyclerView.layoutManager)
+                    val position = snapView?.let { recyclerView.layoutManager?.getPosition(it) }
+
+                    if (position != null && position >= 0) {
+                        val currentPost = postList[position]
+
+                        adapter.updateVisibleItemType(currentPost)
+                    }
+                }
+            }
+        })
+    }
+
+    override fun onPostTypeChanged(isMine: Boolean) {
+        val replyBar = binding.layoutReactionBar
+
+        if (isMine) {
+            replyBar.isVisible = false
+        } else {
+            replyBar.isVisible = true
+        }
+    }
+
+    override fun onShowReactions(reactors: List<Reactor>) {
+        if (reactors.isNotEmpty()) {
+            val bottomSheet = ReactionsBottomSheetFragment(reactors)
+            bottomSheet.show(parentFragmentManager, "ReactionsSheet")
+        } else {
+            Toast.makeText(context, "Chưa có ai thả tim cả huhu 😢", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // Hàm này để MainContainer gọi khi chọn ảnh từ Grid (Chức năng Jump to Post)

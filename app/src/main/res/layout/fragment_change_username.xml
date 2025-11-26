@@ -23,7 +23,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-        android:text="@string/email_headline"
+        android:text="@string/username_change_headline"
         android:layout_marginTop="100dp"
         android:textColor="@color/white"
         android:textSize="25sp"
@@ -50,11 +50,11 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/email_edit_text"
+            android:id="@+id/username_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:hint="@string/email_hint"
+            android:hint="@string/username_hint"
             android:background="@drawable/bg_selected"
             android:imeOptions="actionDone"
             android:singleLine="true"/>

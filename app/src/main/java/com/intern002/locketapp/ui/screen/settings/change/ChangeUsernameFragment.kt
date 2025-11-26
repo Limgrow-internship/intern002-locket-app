@@ -12,28 +12,27 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.intern002.locketapp.R
-import com.intern002.locketapp.databinding.FragmentChangeEmailBinding
-import com.intern002.locketapp.ui.viewmodel.setting.ChangeEmailViewModel
-import com.intern002.locketapp.ui.viewmodel.setting.UpdateEmailState
+import com.intern002.locketapp.databinding.FragmentChangeUsernameBinding
+import com.intern002.locketapp.ui.viewmodel.setting.ChangeUsernameViewModel
+import com.intern002.locketapp.ui.viewmodel.setting.UpdateUsernameState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ChangeEmailFragment : Fragment() {
+class ChangeUsernameFragment : Fragment() {
 
-    private var _binding: FragmentChangeEmailBinding? = null
+    private var _binding: FragmentChangeUsernameBinding? = null
     private val binding get() = _binding!!
 
-    // Thêm ViewModel
-    private val viewModel: ChangeEmailViewModel by viewModels()
+    private val viewModel: ChangeUsernameViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentChangeEmailBinding.inflate(inflater, container, false)
+        _binding = FragmentChangeUsernameBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -41,7 +40,7 @@ class ChangeEmailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupClickListeners()
-        observeViewModel() // Thêm hàm lắng nghe ViewModel
+        observeViewModel()
     }
 
     private fun setupClickListeners() {
@@ -53,14 +52,12 @@ class ChangeEmailFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        // Thêm logic cho nút Save
         binding.buttonSave.setOnClickListener {
-            val newEmail = binding.emailEditText.text.toString().trim()
-            if (newEmail.isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()) {
-                viewModel.updateEmail(newEmail)
+            val newUsername = binding.usernameEditText.text.toString().trim()
+            if (newUsername.isNotEmpty()) {
+                viewModel.updateUsername(newUsername)
             } else {
-                // Hiển thị lỗi nếu email trống hoặc không hợp lệ
-                Toast.makeText(requireContext(), "Please enter a valid email", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Username cannot be empty", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -68,15 +65,16 @@ class ChangeEmailFragment : Fragment() {
     private fun observeViewModel() {
         lifecycleScope.launch {
             viewModel.updateState.collectLatest { state ->
-                binding.progressBar.isVisible = state is UpdateEmailState.Loading
-                binding.buttonSave.isEnabled = state !is UpdateEmailState.Loading
+                binding.progressBar.isVisible = state is UpdateUsernameState.Loading
+                binding.buttonSave.isEnabled = state !is UpdateUsernameState.Loading
 
                 when (state) {
-                    is UpdateEmailState.Success -> {
-                        Toast.makeText(requireContext(), "Email updated successfully!", Toast.LENGTH_SHORT).show()
+                    is UpdateUsernameState.Success -> {
+                        Toast.makeText(requireContext(), "Username updated successfully!", Toast.LENGTH_SHORT).show()
+                        // Quay về màn hình Settings sau khi thành công
                         findNavController().popBackStack(R.id.settingsFragment, false)
                     }
-                    is UpdateEmailState.Error -> {
+                    is UpdateUsernameState.Error -> {
                         Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_LONG).show()
                     }
                     else -> {}

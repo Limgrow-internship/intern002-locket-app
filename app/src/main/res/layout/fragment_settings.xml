@@ -432,6 +432,7 @@
                         android:textColor="@android:color/white"
                         android:textSize="16sp"/>
                     <ImageView
+                        android:id="@+id/btn_change_name"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_forward"
@@ -498,6 +499,7 @@
                         android:textColor="@android:color/white"
                         android:textSize="16sp"/>
                     <ImageView
+                        android:id="@+id/btn_change_email"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_forward"

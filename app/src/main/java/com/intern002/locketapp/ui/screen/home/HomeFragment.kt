@@ -68,15 +68,10 @@ class HomeFragment : Fragment() {
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
     private var imageCapture: ImageCapture? = null
-
-    // Flash state (0: Off, 1: On)
     private var isFlashOn = false
-
-    private var isCameraIconState = true
     private val handler = Handler(Looper.getMainLooper())
     private var isRecording = false
 
-    //Time to know touch and hold
     private val LONG_PRESS_DURATION = 350L
     private var isLongPressTriggered = false
     private val longPressRunnable = Runnable {
@@ -98,7 +93,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    //Permission for camera
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val cameraGranted = permissions[Manifest.permission.CAMERA] ?: false
@@ -338,6 +332,7 @@ class HomeFragment : Fragment() {
     //Feature: Zoom Camera
     private fun setupZoomGesture() {
 
+        //ScaleGestureDetector is Android's class can listen when user touch more than one finger
         val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
                 val currentZoomRatio = camera?.cameraInfo?.zoomState?.value?.zoomRatio ?: 1f

@@ -308,6 +308,12 @@
         <action
             android:id="@+id/action_settingsFragment_to_extensionsFragment"
             app:destination="@id/ExtensionFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_enterPasswordFragment"
+            app:destination="@id/enterPasswordFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_changeUserNameFragment"
+            app:destination="@id/changeUserNameFragment" />
     </fragment>
 
     <fragment
@@ -382,4 +388,27 @@
         android:id="@+id/main_activity"
         android:name="com.intern002.locketapp.ui.MainActivity"
         tools:layout="@layout/activity_main" />
+
+    <fragment
+        android:id="@+id/enterPasswordFragment"
+        android:name="com.intern002.locketapp.ui.screen.settings.change.EnterPasswordFragment"
+        android:label="EnterPasswordFragment"
+        tools:layout="@layout/fragment_enter_password" >
+        <action
+            android:id="@+id/action_enterPasswordFragment_to_changeEmailFragment"
+            app:destination="@id/changeEmailFragment" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/changeEmailFragment"
+        android:name="com.intern002.locketapp.ui.screen.settings.change.ChangeEmailFragment"
+        android:label="ChangeEmailFragment"
+        tools:layout="@layout/fragment_change_email" />
+
+    <fragment
+        android:id="@+id/changeUserNameFragment"
+        android:name="com.intern002.locketapp.ui.screen.settings.change.ChangeUsernameFragment"
+        android:label="ChangeUsernameFragment"
+        tools:layout="@layout/fragment_change_username" />
+
 </navigation>

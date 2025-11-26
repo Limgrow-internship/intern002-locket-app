@@ -20,7 +20,6 @@ class WelcomeViewModel @Inject constructor(
 
     fun fetchUserProfile() {
         viewModelScope.launch {
-            // This will automatically fetch the logged-in user's profile
             val profile = userRepository.getCurrentUserProfile()
             _userProfile.value = profile
         }
