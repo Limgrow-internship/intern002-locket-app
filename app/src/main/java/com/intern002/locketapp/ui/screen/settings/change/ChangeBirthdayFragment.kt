@@ -1,0 +1,174 @@
+package com.intern002.locketapp.ui.screen.settings.change
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import com.intern002.locketapp.databinding.FragmentBirthdayBinding
+import com.intern002.locketapp.ui.screen.auth.welcome.NumberPickerDialogFragment
+import com.intern002.locketapp.ui.viewmodel.setting.ChangeBirthdayViewModel
+import com.intern002.locketapp.ui.viewmodel.setting.UpdateBirthdayState
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import java.util.*
+
+@AndroidEntryPoint
+class ChangeBirthdayFragment : Fragment() {
+    private var _binding: FragmentBirthdayBinding? = null
+    private val binding get() = _binding!!
+
+    private val changeBirthdayViewModel: ChangeBirthdayViewModel by viewModels()
+
+    private var selectedMonth: Int? = null
+    private var selectedDay: Int? = null
+
+    private val MONTHS = arrayOf(
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    )
+
+    private fun getDaysInMonth(month: Int): Int {
+        return when (month) {
+            1, 3, 5, 7, 8, 10, 12 -> 31
+            4, 6, 9, 11 -> 30
+            2 -> 29 // Considering leap years for simplicity
+            else -> 31
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentBirthdayBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.tvInfoText.visibility = View.GONE
+        binding.tvWarningMessage.visibility = View.GONE
+
+        updateInfoMessage()
+        observeViewModel()
+        setupResultListeners()
+        setupClickListeners()
+    }
+
+    private fun setupResultListeners() {
+        childFragmentManager.setFragmentResultListener(NumberPickerDialogFragment.TAG_MONTH, viewLifecycleOwner) { _, bundle ->
+            val result = bundle.getInt(NumberPickerDialogFragment.SELECTED_VALUE)
+            onMonthSelected(result)
+        }
+
+        childFragmentManager.setFragmentResultListener(NumberPickerDialogFragment.TAG_DAY, viewLifecycleOwner) { _, bundle ->
+            val result = bundle.getInt(NumberPickerDialogFragment.SELECTED_VALUE)
+            onDaySelected(result)
+        }
+    }
+
+    private fun setupClickListeners() {
+        binding.buttonMonth.setOnClickListener {
+            val currentMonth = selectedMonth ?: 1
+            val dialog = NumberPickerDialogFragment.newInstance(
+                NumberPickerDialogFragment.TAG_MONTH,
+                "Select Month", 1, 12, currentMonth
+            )
+            dialog.show(childFragmentManager, NumberPickerDialogFragment.TAG_MONTH)
+        }
+
+        binding.buttonDay.setOnClickListener {
+            if (selectedMonth == null) {
+                binding.tvWarningMessage.visibility = View.VISIBLE
+                binding.tvInfoText.visibility = View.GONE
+                return@setOnClickListener
+            }
+            binding.tvWarningMessage.visibility = View.GONE
+            val maxDays = getDaysInMonth(selectedMonth!!)
+            val currentDay = selectedDay?.let { if (it > maxDays) 1 else it } ?: 1
+            val dialog = NumberPickerDialogFragment.newInstance(
+                NumberPickerDialogFragment.TAG_DAY,
+                "Select Day", 1, maxDays, currentDay
+            )
+            dialog.show(childFragmentManager, NumberPickerDialogFragment.TAG_DAY)
+        }
+
+        binding.buttonContinue.setOnClickListener {
+            if (selectedMonth != null && selectedDay != null) {
+                val year = Calendar.getInstance().get(Calendar.YEAR) - 20
+                val birthdayString = String.format("%d-%02d-%02d", year, selectedMonth, selectedDay)
+                changeBirthdayViewModel.updateBirthday(birthdayString)
+            }
+        }
+    }
+
+    private fun onMonthSelected(value: Int) {
+        if (selectedMonth != value) {
+            selectedDay = null
+            binding.buttonDay.text = "Day"
+        }
+        selectedMonth = value
+        binding.buttonMonth.text = value.toString()
+        updateInfoMessage()
+    }
+
+    private fun onDaySelected(value: Int) {
+        selectedDay = value
+        binding.buttonDay.text = value.toString()
+        updateInfoMessage()
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                changeBirthdayViewModel.updateState.collect { state ->
+                    binding.loadingView.isVisible = state is UpdateBirthdayState.Loading
+                    binding.buttonContinue.isEnabled = state !is UpdateBirthdayState.Loading
+
+                    when (state) {
+                        is UpdateBirthdayState.Success -> {
+                            Toast.makeText(requireContext(), "Birthday updated successfully!", Toast.LENGTH_SHORT).show()
+                            findNavController().popBackStack()
+                        }
+                        is UpdateBirthdayState.Error -> {
+                            Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                        }
+                        else -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateInfoMessage() {
+        if (selectedMonth != null && selectedDay != null) {
+            val monthName = MONTHS[selectedMonth!! - 1]
+            binding.tvInfoText.text = "You have selected $monthName $selectedDay."
+            binding.tvInfoText.visibility = View.VISIBLE
+            binding.tvWarningMessage.visibility = View.GONE
+            binding.buttonContinue.isEnabled = true
+            binding.buttonContinue.alpha = 1.0f
+        } else {
+            binding.tvInfoText.visibility = View.GONE
+            binding.buttonContinue.isEnabled = false
+            binding.buttonContinue.alpha = 0.5f
+            if (selectedMonth != null) {
+                binding.tvWarningMessage.visibility = View.GONE
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}

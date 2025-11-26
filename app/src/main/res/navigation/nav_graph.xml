@@ -314,6 +314,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_changeUserNameFragment"
             app:destination="@id/changeUserNameFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_changeBirthdayFragment"
+            app:destination="@id/changeBirthdayFragment" />
     </fragment>
 
     <fragment
@@ -410,5 +413,11 @@
         android:name="com.intern002.locketapp.ui.screen.settings.change.ChangeUsernameFragment"
         android:label="ChangeUsernameFragment"
         tools:layout="@layout/fragment_change_username" />
+
+    <fragment
+        android:id="@+id/changeBirthdayFragment"
+        android:name="com.intern002.locketapp.ui.screen.settings.change.ChangeBirthdayFragment"
+        android:label="ChangeBirthdayFragment"
+        tools:layout="@layout/fragment_birthday" />
 
 </navigation>

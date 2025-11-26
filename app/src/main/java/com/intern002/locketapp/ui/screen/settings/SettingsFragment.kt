@@ -75,6 +75,10 @@ class SettingsFragment : Fragment() {
             findNavController().navigate(R.id.action_settingsFragment_to_enterPasswordFragment)
         }
 
+        binding.btnChangeBirthday.setOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_changeBirthdayFragment)
+        }
+
         binding.btnLogout.setOnClickListener {
             showLogoutConfirmationDialog()
         }

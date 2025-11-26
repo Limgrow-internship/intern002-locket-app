@@ -399,6 +399,7 @@
                         android:textColor="@android:color/white"
                         android:textSize="16sp"/>
                     <ImageView
+                        android:id="@+id/btn_change_birthday"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_forward"

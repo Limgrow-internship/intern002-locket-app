@@ -119,5 +119,8 @@
     <string name="email_change_headline">Change your email</string>
     <string name="username_change_headline">Change your username</string>
     <string name="invalid_username_error">Change your password</string>
+    <string name="change_birthday_headline">Change your birthday?</string>
     <string name="invalid_email_error">Email address already exists.</string>
+
+
 </resources>
