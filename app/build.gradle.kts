@@ -44,6 +44,8 @@ android {
         debug {
             val baseUrl = getLocalProperty("base.url", project) ?: "http://10.0.2.2:8080"
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            val cloudinaryUrl = getLocalProperty("cloudinary_url", project) ?: ""
+            buildConfigField("String", "CLOUDINARY_URL", "\"$cloudinaryUrl\"")
         }
         release {
             isMinifyEnabled = false
@@ -52,6 +54,8 @@ android {
                 "proguard-rules.pro",
             )
             buildConfigField("String", "BASE_URL", "\"https://your.production.server.com/\"")
+            val cloudinaryUrl = getLocalProperty("cloudinary_url", project) ?: ""
+            buildConfigField("String", "CLOUDINARY_URL", "\"$cloudinaryUrl\"")
         }
     }
     compileOptions {
@@ -124,6 +128,9 @@ dependencies {
 
     // Circle ImageView
     implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    // Cloudinary
+    implementation("com.cloudinary:cloudinary-android:2.4.0")
 
     // Tests
     testImplementation(libs.junit)

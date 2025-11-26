@@ -12,6 +12,7 @@ interface UserRepository {
     suspend fun updateEmail(newEmail: String)
     suspend fun updateUsername(newUsername: String)
     suspend fun updateBirthday(birthday: String)
+    suspend fun updateAvatar(avatarUrl: String?)
 }
 
 class UserRepositoryImpl @Inject constructor(
@@ -40,6 +41,11 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun updateBirthday(birthday: String) {
         val request = UpdateUserRequest(birthday = birthday)
+        userApi.updateUser(request)
+    }
+
+    override suspend fun updateAvatar(avatarUrl: String?) {
+        val request = UpdateUserRequest(avatarUrl = avatarUrl)
         userApi.updateUser(request)
     }
 }
