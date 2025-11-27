@@ -165,7 +165,7 @@
             android:id="@+id/tv_your_friends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/your_friends"
+            android:text="@string/your_friends_count"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"

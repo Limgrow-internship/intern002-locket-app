@@ -70,7 +70,8 @@
     <string name="instagram">Instagram</string>
     <string name="twitter">Twitter</string>
     <string name="more">More</string>
-    <string name="your_friends">Your Friends (06 / 20)</string>
+    <string name="your_friends">Your Friends</string>
+    <string name="your_friends_count">Your Friends (%1$d / %2$d)</string>
     <string name="add_friends">Add Friends</string>
     <string name="friends_added_count">%1$d / %2$d friends added</string>
     <string name="suggestions">Suggestions</string>

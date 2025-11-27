@@ -2,7 +2,9 @@ package com.intern002.locketapp.data.model
 
 data class Friend(
     val id: String,
-    val name: String,
+    val email: String?,
     val username: String,
-    val avatarUrl: String? = null
+    val discriminator: Int,
+    val birthday: String,
+    val avatarUrl: String?
 )
