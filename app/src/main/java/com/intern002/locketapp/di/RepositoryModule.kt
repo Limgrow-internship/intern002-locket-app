@@ -1,5 +1,7 @@
 package com.intern002.locketapp.di
 
+import com.intern002.locketapp.data.repository.PostRepository
+import com.intern002.locketapp.data.repository.PostRepositoryImpl
 import com.intern002.locketapp.data.repository.UserRepository
 import com.intern002.locketapp.data.repository.UserRepositoryImpl
 import dagger.Binds
@@ -15,5 +17,9 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindPostRepository(postRepositoryImpl: PostRepositoryImpl): PostRepository
 
 }

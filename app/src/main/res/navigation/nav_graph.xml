@@ -30,7 +30,7 @@
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"/>
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
@@ -167,7 +167,7 @@
         android:id="@+id/SignupEmailFragment"
         android:name="com.intern002.locketapp.ui.screen.auth.signup.SignupEmailFragment"
         android:label="fragment_signup_email"
-        tools:layout="@layout/fragment_signup_email" >
+        tools:layout="@layout/fragment_signup_email">
         <action
             android:id="@+id/action_SignupEmailFragment_to_SignupPasswordFragment"
             app:destination="@id/SignupPasswordFragment" />
@@ -334,14 +334,14 @@
             android:id="@+id/action_chatListFragment_to_homeFragment"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/nav_graph"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
         android:id="@+id/chatDetailFragment"
         android:name="com.intern002.locketapp.ui.screen.chat.ChatDetailFragment"
         android:label="fragment_chat_detail"
-        tools:layout="@layout/fragment_chat_detail" >
+        tools:layout="@layout/fragment_chat_detail">
         <argument
             android:name="conversationId"
             app:argType="string" />
@@ -351,7 +351,7 @@
         <action
             android:id="@+id/action_chatDetailFragment_to_chatListFragment"
             app:destination="@id/chatListFragment"
-            app:popUpTo="@id/homeFragment"/>
+            app:popUpTo="@id/homeFragment" />
     </fragment>
 
     <fragment
@@ -376,7 +376,7 @@
         android:id="@+id/AddFriendsFragment"
         android:name="com.intern002.locketapp.ui.screen.friends.AddFriendsFragment"
         android:label="fragment_add_friends"
-        tools:layout="@layout/fragment_add_friends" >
+        tools:layout="@layout/fragment_add_friends">
         <action
             android:id="@+id/action_addFriendsFragment_to_mainContainerFragment"
             app:destination="@id/mainContainerFragment"
@@ -393,12 +393,12 @@
         android:id="@+id/enterPasswordFragment"
         android:name="com.intern002.locketapp.ui.screen.settings.change.EnterPasswordFragment"
         android:label="EnterPasswordFragment"
-        tools:layout="@layout/fragment_enter_password" >
+        tools:layout="@layout/fragment_enter_password">
         <action
             android:id="@+id/action_enterPasswordFragment_to_changeEmailFragment"
             app:destination="@id/changeEmailFragment" />
     </fragment>
-    
+
     <fragment
         android:id="@+id/changeEmailFragment"
         android:name="com.intern002.locketapp.ui.screen.settings.change.ChangeEmailFragment"

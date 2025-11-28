@@ -1,5 +1,11 @@
 import java.util.Properties
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -38,6 +44,15 @@ android {
         versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        val cloudName = localProperties.getProperty("CLOUDINARY_CLOUD_NAME") ?: ""
+        val apiKey = localProperties.getProperty("CLOUDINARY_API_KEY") ?: ""
+        val apiSecret = localProperties.getProperty("CLOUDINARY_API_SECRET") ?: ""
+        val cloudinaryUrl = localProperties.getProperty("CLOUDINARY_URL") ?: ""
+
+        buildConfigField("String", "CLOUDINARY_URL", "\"$cloudinaryUrl\"")
+        buildConfigField("String", "CLOUD_NAME", "\"$cloudName\"")
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
+        buildConfigField("String", "API_SECRET", "\"$apiSecret\"")
     }
 
     buildTypes {
@@ -89,6 +104,7 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:2.3.10")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.10")
     implementation("io.ktor:ktor-client-auth:2.3.10")
+    implementation("io.ktor:ktor-serialization-gson:2.3.10") // Quan trọng: Gson cho Ktor
 
     // Network
     implementation(libs.serialization.json)
@@ -148,6 +164,12 @@ dependencies {
     implementation("androidx.camera:camera-camera2:1.3.3")
     implementation("androidx.camera:camera-lifecycle:1.3.3")
     implementation("androidx.camera:camera-view:1.3.3")
+
+    //Cloudinary
+    implementation("com.cloudinary:cloudinary-android:2.3.1")
+
+    //Gson
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 ktlint {
