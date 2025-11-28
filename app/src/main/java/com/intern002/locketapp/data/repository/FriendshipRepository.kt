@@ -13,28 +13,17 @@ interface FriendshipRepository {
     suspend fun getFriends(): List<Friend>
     suspend fun searchUser(username: String, discriminator: Int): Friend
     suspend fun sendFriendRequest(username: String, discriminator: Int)
+    suspend fun acceptFriendRequest(friendshipId: String)
+    suspend fun rejectFriendRequest(friendshipId: String)
+    suspend fun deleteFriendship(friendshipId: String)
     suspend fun getPendingRequests(): List<Friend>
     suspend fun getSentRequests(): List<Friend>
+
 }
 
 class FriendshipRepositoryImpl @Inject constructor(
     private val api: FriendshipApi
 ) : FriendshipRepository {
-
-    private fun FriendDTO.toFriendWithStatus(): Friend {
-        val friendshipStatus = when (status) {
-            "accepted" -> FriendshipStatus.FRIEND
-            "pending" -> FriendshipStatus.PENDING_INCOMING
-            else -> FriendshipStatus.NOT_FRIEND
-        }
-        return Friend(
-            id = id,
-            username = username,
-            discriminator = discriminator,
-            avatarUrl = avatarUrl,
-            status = friendshipStatus
-        )
-    }
 
     override suspend fun getFriends(): List<Friend> {
         return api.getFriends().map { friendshipDto ->
@@ -60,15 +49,33 @@ class FriendshipRepositoryImpl @Inject constructor(
         val pendingRequests = pendingRequestsDeferred.await()
         val sentRequests = sentRequestsDeferred.await()
 
-        val finalStatus = when {
-            friends.any { it.id == foundUserDto.id } -> FriendshipStatus.FRIEND
-            pendingRequests.any { it.id == foundUserDto.id } -> FriendshipStatus.PENDING_INCOMING
-            sentRequests.any { it.id == foundUserDto.id } -> FriendshipStatus.PENDING_OUTGOING
-            else -> FriendshipStatus.NOT_FRIEND
+        val existingPending = pendingRequests.find { it.username == foundUserDto.username && it.discriminator == foundUserDto.discriminator }
+        val existingSent = sentRequests.find { it.username == foundUserDto.username && it.discriminator == foundUserDto.discriminator }
+
+        val finalStatus: FriendshipStatus
+        val finalId: String
+
+        when {
+            friends.any { it.id == foundUserDto.id } -> {
+                finalStatus = FriendshipStatus.FRIEND
+                finalId = foundUserDto.id
+            }
+            existingPending != null -> {
+                finalStatus = FriendshipStatus.PENDING_INCOMING
+                finalId = existingPending.id
+            }
+            existingSent != null -> {
+                finalStatus = FriendshipStatus.PENDING_OUTGOING
+                finalId = existingSent.id
+            }
+            else -> {
+                finalStatus = FriendshipStatus.NOT_FRIEND
+                finalId = foundUserDto.id
+            }
         }
 
         return@coroutineScope Friend(
-            id = foundUserDto.id,
+            id = finalId, 
             username = foundUserDto.username,
             discriminator = foundUserDto.discriminator,
             avatarUrl = foundUserDto.avatarUrl,
@@ -81,19 +88,41 @@ class FriendshipRepositoryImpl @Inject constructor(
         api.sendFriendRequest(request)
     }
 
+    override suspend fun acceptFriendRequest(friendshipId: String) {
+        api.acceptFriendRequest(friendshipId)
+    }
+
+    override suspend fun rejectFriendRequest(friendshipId: String) {
+        api.rejectFriendRequest(friendshipId)
+    }
+
+    override suspend fun deleteFriendship(friendshipId: String) {
+        api.deleteFriendship(friendshipId)
+    }
+
     override suspend fun getPendingRequests(): List<Friend> {
         return api.getPendingRequests().map { pendingRequest ->
-            pendingRequest.requester.toFriendWithStatus().apply {
+            val userDto = pendingRequest.requester
+            Friend(
+                id = pendingRequest.friendshipId,
+                username = userDto.username,
+                discriminator = userDto.discriminator,
+                avatarUrl = userDto.avatarUrl,
                 status = FriendshipStatus.PENDING_INCOMING
-            }
+            )
         }
     }
 
     override suspend fun getSentRequests(): List<Friend> {
         return api.getSentRequests().map { sentRequest ->
-            sentRequest.addressee.toFriendWithStatus().apply {
+            val userDto = sentRequest.addressee
+            Friend(
+                id = sentRequest.friendshipId, // Correct: Use friendshipId
+                username = userDto.username,
+                discriminator = userDto.discriminator,
+                avatarUrl = userDto.avatarUrl,
                 status = FriendshipStatus.PENDING_OUTGOING
-            }
+            )
         }
     }
 }

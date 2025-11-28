@@ -6,9 +6,12 @@ import com.intern002.locketapp.data.model.Friend
 import com.intern002.locketapp.data.repository.FriendshipRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,17 +42,27 @@ class FriendsViewModel @Inject constructor(
     private var searchJob: Job? = null
 
     init {
-        getFriends()
+        getFriendsData()
     }
 
-    private fun getFriends() {
+    private fun getFriendsData() {
         viewModelScope.launch {
             _friendsListState.value = FriendsListState.Loading
             try {
-                val friends = repository.getFriends()
-                _friendsListState.value = FriendsListState.Success(friends)
+                coroutineScope {
+                    val friendsDeferred = async { repository.getFriends() }
+                    val pendingDeferred = async { repository.getPendingRequests() }
+                    val sentDeferred = async { repository.getSentRequests() }
+
+                    val friends = friendsDeferred.await()
+                    val pending = pendingDeferred.await()
+                    val sent = sentDeferred.await()
+
+                    // Combine all lists, pending requests on top
+                    _friendsListState.value = FriendsListState.Success(pending + sent + friends)
+                }
             } catch (e: Exception) {
-                _friendsListState.value = FriendsListState.Error(e.message ?: "Failed to load friends")
+                _friendsListState.value = FriendsListState.Error(e.message ?: "Failed to load data")
             }
         }
     }
@@ -63,7 +76,7 @@ class FriendsViewModel @Inject constructor(
         }
 
         searchJob = viewModelScope.launch {
-            delay(300) // Debounce
+            delay(300)
             _searchResultState.value = SearchState.Loading
 
             val parts = query.split('#').map { it.trim() }
@@ -94,11 +107,44 @@ class FriendsViewModel @Inject constructor(
             try {
                 repository.sendFriendRequest(friend.username, friend.discriminator)
 
-                val updatedFriend = friend.copy(status = FriendshipStatus.PENDING_OUTGOING)
-                _searchResultState.value = SearchState.Success(updatedFriend)
+                _searchResultState.value = SearchState.Idle
+
+                getFriendsData()
 
             } catch (e: Exception) {
                 _searchResultState.value = SearchState.Error("Failed to send request: ${e.message}")
+            }
+        }
+    }
+
+    fun acceptRequest(friend: Friend) {
+        viewModelScope.launch {
+            try {
+                repository.acceptFriendRequest(friend.id) 
+                getFriendsData()
+            } catch (e: Exception) {
+            }
+        }
+    }
+
+    fun deleteFriendship(friend: Friend) {
+        viewModelScope.launch {
+            try {
+                repository.deleteFriendship(friend.id)
+            } catch (e: Exception){
+
+            }
+        }
+    }
+
+    fun rejectRequest(friend: Friend) {
+        viewModelScope.launch {
+            try {
+                repository.rejectFriendRequest(friend.id)
+                // Refresh the list to remove the request
+                getFriendsData()
+            } catch (e: Exception) {
+                // Optionally handle error
             }
         }
     }

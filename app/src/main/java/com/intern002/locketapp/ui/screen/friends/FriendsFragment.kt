@@ -23,6 +23,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.model.Friend
 import com.intern002.locketapp.databinding.FragmentFriendsBinding
@@ -62,8 +63,8 @@ class FriendsFragment : Fragment() {
 
     private fun setupRecyclerView() {
         friendsAdapter = FriendsAdapter().apply {
-            onAddFriendClickListener = {
-                viewModel.addFriend(it)
+            onItemClickListener = {
+                handleFriendItemClick(it)
             }
         }
         binding.rvFriends.apply {
@@ -71,6 +72,51 @@ class FriendsFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
         }
     }
+
+    private fun handleFriendItemClick(friend: Friend) {
+        when (friend.status) {
+            FriendshipStatus.PENDING_INCOMING -> showPendingRequestDialog(friend)
+            FriendshipStatus.PENDING_OUTGOING -> showSentRequestDialog(friend)
+            FriendshipStatus.FRIEND -> showFriendDialog(friend)
+            else -> {  }
+        }
+    }
+
+    private fun showPendingRequestDialog(friend: Friend) {
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle("Friend Request")
+            .setMessage("Accept friend request from ${friend.username}?")
+            .setNegativeButton("Reject") { _, _ ->
+                viewModel.rejectRequest(friend)
+            }
+            .setPositiveButton("Accept") { _, _ ->
+                viewModel.acceptRequest(friend)
+            }
+            .show()
+    }
+
+    private fun showSentRequestDialog(friend: Friend) {
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle("Request Sent")
+            .setMessage("You have already sent a friend request to ${friend.username}.")
+            .setNegativeButton("Keep", null)
+            .setPositiveButton("Cancel Request Friend") { _, _ ->
+                viewModel.rejectRequest(friend)
+            }
+            .show()
+    }
+
+    private fun showFriendDialog(friend: Friend) {
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle("Unfriend")
+            .setMessage("Are you sure you want to unfriend ${friend.username}?")
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Unfriend") { _, _ ->
+                viewModel.deleteFriendship(friend)
+            }
+            .show()
+    }
+
 
     private fun setupClickListeners() {
         binding.btnBack.setOnClickListener {
@@ -100,7 +146,7 @@ class FriendsFragment : Fragment() {
 
                         when (state) {
                             is FriendsListState.Success -> {
-                                val friendCount = state.users.size
+                                val friendCount = state.users.filter { it.status == FriendshipStatus.FRIEND }.size
                                 binding.tvYourFriends.text = getString(R.string.your_friends_count, friendCount, 20)
                                 friendsAdapter.submitList(state.users)
                             }
@@ -108,7 +154,7 @@ class FriendsFragment : Fragment() {
                                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                                 binding.tvYourFriends.text = getString(R.string.your_friends)
                             }
-                            is FriendsListState.Loading -> { }
+                            is FriendsListState.Loading -> {  }
                         }
                     }
                 }
@@ -158,7 +204,7 @@ class FriendsFragment : Fragment() {
             FriendshipStatus.FRIEND -> R.drawable.ic_friend
             FriendshipStatus.NOT_FRIEND -> R.drawable.ic_add_friend
             FriendshipStatus.PENDING_INCOMING, FriendshipStatus.PENDING_OUTGOING -> R.drawable.ic_invited
-            FriendshipStatus.SELF -> 0
+            FriendshipStatus.SELF -> 0 // Or some other indicator for self
         }
 
         if (statusIcon != 0) {

@@ -10,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -21,11 +23,11 @@ import com.intern002.locketapp.ui.viewmodel.friends.FriendshipStatus
 
 class FriendsAdapter : ListAdapter<Friend, FriendsAdapter.FriendViewHolder>(FriendDiffCallback()) {
 
-    var onAddFriendClickListener: ((Friend) -> Unit)? = null
+    var onItemClickListener: ((Friend) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
         val binding = ItemFriendBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return FriendViewHolder(binding, onAddFriendClickListener)
+        return FriendViewHolder(binding, onItemClickListener)
     }
 
     override fun onBindViewHolder(holder: FriendViewHolder, position: Int) {
@@ -35,17 +37,15 @@ class FriendsAdapter : ListAdapter<Friend, FriendsAdapter.FriendViewHolder>(Frie
 
     class FriendViewHolder(
         private val binding: ItemFriendBinding,
-        private val onAddFriendClickListener: ((Friend) -> Unit)?
+        private val onItemClickListener: ((Friend) -> Unit)?
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private var currentFriend: Friend? = null
 
         init {
-            binding.ivStatus.setOnClickListener {
+            itemView.setOnClickListener {
                 currentFriend?.let {
-                    if (it.status == FriendshipStatus.NOT_FRIEND) {
-                        onAddFriendClickListener?.invoke(it)
-                    }
+                    onItemClickListener?.invoke(it)
                 }
             }
         }
@@ -81,8 +81,8 @@ class FriendsAdapter : ListAdapter<Friend, FriendsAdapter.FriendViewHolder>(Frie
         }
 
         private fun createInitialDrawable(context: Context, name: String): BitmapDrawable {
-            val size = 150 // pixel size of the bitmap
-            val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+            val size = 150
+            val bitmap = createBitmap(size, size)
             val canvas = Canvas(bitmap)
 
             val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -100,7 +100,7 @@ class FriendsAdapter : ListAdapter<Friend, FriendsAdapter.FriendViewHolder>(Frie
             val yPos = (canvas.height / 2f) - ((textPaint.descent() + textPaint.ascent()) / 2f)
             canvas.drawText(initial, canvas.width / 2f, yPos, textPaint)
 
-            return BitmapDrawable(context.resources, bitmap)
+            return bitmap.toDrawable(context.resources) as BitmapDrawable
         }
     }
 

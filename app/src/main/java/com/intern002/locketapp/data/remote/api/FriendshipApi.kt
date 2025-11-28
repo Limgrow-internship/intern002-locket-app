@@ -31,6 +31,7 @@ data class SentRequestDTO(
     val status: String
 )
 
+
 class FriendshipApi @Inject constructor(private val client: HttpClient) {
     private val baseUrl = BuildConfig.BASE_URL
 
@@ -52,6 +53,17 @@ class FriendshipApi @Inject constructor(private val client: HttpClient) {
         }
     }
 
+    suspend fun rejectFriendRequest(friendshipId: String) {
+        client.put("$baseUrl/friends/reject/$friendshipId")
+    }
+    
+    suspend fun acceptFriendRequest(friendshipId: String) {
+        client.put("$baseUrl/friends/accept/$friendshipId")
+    }
+
+    suspend fun deleteFriendship(friendshipId: String) {
+        client.delete("$baseUrl/friends/$friendshipId")
+    }
     suspend fun getPendingRequests(): List<PendingRequestDTO> {
         return client.get("$baseUrl/friends/requests/pending").body()
     }
