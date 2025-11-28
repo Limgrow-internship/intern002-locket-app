@@ -100,12 +100,32 @@ class EditPreviewFragment : Fragment(R.layout.fragment_edit_preview) {
 
     private fun setupFriendsList() {
         val mockData = arrayListOf(
-            FriendItem(0, "All", isSelected = true, isAllButton = true),
-            FriendItem(1, "Minh", avatarUrl = "https://i.pravatar.cc/150?img=1"),
-            FriendItem(2, "Trâm", avatarUrl = "https://i.pravatar.cc/150?img=5"),
-            FriendItem(3, "Long", avatarUrl = "https://i.pravatar.cc/150?img=8"),
-            FriendItem(4, "Vy", avatarUrl = "https://i.pravatar.cc/150?img=10"),
-            FriendItem(5, "Hùng", avatarUrl = "https://i.pravatar.cc/150?img=12")
+            FriendItem("", "All", isSelected = true, isAllButton = true),
+            FriendItem(
+                "b4934e28-8c90-4166-b9da-4c8ef1aa9e8a",
+                "Minh",
+                avatarUrl = "https://i.pravatar.cc/150?img=1"
+            ),
+            FriendItem(
+                "759867dc-6a21-4a78-8228-cbd4aa2399da",
+                "Trâm",
+                avatarUrl = "https://i.pravatar.cc/150?img=5"
+            ),
+            FriendItem(
+                "e235acd9-95e0-4588-9939-4bb1109173fc",
+                "Long",
+                avatarUrl = "https://i.pravatar.cc/150?img=8"
+            ),
+            FriendItem(
+                "15e478c0-4e61-4280-a88d-26c81bd8eae5",
+                "Vy",
+                avatarUrl = "https://i.pravatar.cc/150?img=10"
+            ),
+            FriendItem(
+                "4f18d2d2-724c-4e32-b29a-c5cc008dd3a6",
+                "Hùng",
+                avatarUrl = "https://i.pravatar.cc/150?img=12"
+            )
         )
 
         val adapter = FriendsSelectAdapter(mockData)
