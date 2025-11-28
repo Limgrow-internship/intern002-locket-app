@@ -17,14 +17,12 @@ object CloudinaryModule {
     @Provides
     @Singleton
     fun provideMediaManager(@ApplicationContext context: Context): MediaManager {
-        val config = mapOf(
-            "cloud_name" to BuildConfig.CLOUDINARY_URL.substringAfter("@"),
-            "api_key" to BuildConfig.CLOUDINARY_URL.substringAfter("//").substringBefore(":"),
-            "api_secret" to BuildConfig.CLOUDINARY_URL.substringAfter(":").substringBefore("@")
-        )
-        // Step 1: Initialize the MediaManager (this returns Unit)
-        MediaManager.init(context, config)
-        // Step 2: Get the initialized instance and return it
+        if (BuildConfig.CLOUDINARY_URL.isNotBlank()) {
+            val config = mapOf(
+                "cloudinary_url" to BuildConfig.CLOUDINARY_URL
+            )
+            MediaManager.init(context, config)
+        }
         return MediaManager.get()
     }
 }

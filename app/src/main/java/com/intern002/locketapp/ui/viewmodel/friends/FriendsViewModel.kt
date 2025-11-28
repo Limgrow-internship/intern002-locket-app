@@ -9,24 +9,20 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-enum class FriendshipStatus { FRIEND, NOT_FRIEND, PENDING, SELF }
-
-sealed class FriendsUiState {
-    object Loading : FriendsUiState()
-    data class Success(val friends: List<Friend>) : FriendsUiState()
-    data class Error(val message: String) : FriendsUiState()
+sealed class FriendsListState {
+    object Loading : FriendsListState()
+    data class Success(val users: List<Friend>) : FriendsListState()
+    data class Error(val message: String) : FriendsListState()
 }
 
-sealed class SearchUiState {
-    object Idle : SearchUiState()
-    object Loading : SearchUiState()
-    data class Success(val user: Friend, val status: FriendshipStatus) : SearchUiState()
-    data class Error(val message: String) : SearchUiState()
-    object NotFound : SearchUiState()
+sealed class SearchState {
+    object Idle : SearchState()
+    object Loading : SearchState()
+    data class Success(val user: Friend) : SearchState()
+    data class Error(val message: String) : SearchState()
 }
 
 @HiltViewModel
@@ -34,81 +30,76 @@ class FriendsViewModel @Inject constructor(
     private val repository: FriendshipRepository
 ) : ViewModel() {
 
-    private val _friendsUiState = MutableStateFlow<FriendsUiState>(FriendsUiState.Loading)
-    val friendsUiState = _friendsUiState.asStateFlow()
+    private val _friendsListState = MutableStateFlow<FriendsListState>(FriendsListState.Loading)
+    val friendsListState = _friendsListState.asStateFlow()
 
-    private val _searchUiState = MutableStateFlow<SearchUiState>(SearchUiState.Idle)
-    val searchUiState = _searchUiState.asStateFlow()
+    private val _searchResultState = MutableStateFlow<SearchState>(SearchState.Idle)
+    val searchResultState = _searchResultState.asStateFlow()
 
     private var searchJob: Job? = null
-    private var currentFriends: List<Friend> = emptyList()
 
     init {
         getFriends()
     }
 
-    fun getFriends() {
+    private fun getFriends() {
         viewModelScope.launch {
-            _friendsUiState.value = FriendsUiState.Loading
+            _friendsListState.value = FriendsListState.Loading
             try {
                 val friends = repository.getFriends()
-                currentFriends = friends
-                _friendsUiState.value = FriendsUiState.Success(friends)
+                _friendsListState.value = FriendsListState.Success(friends)
             } catch (e: Exception) {
-                _friendsUiState.value = FriendsUiState.Error(e.message ?: "An unknown error occurred")
+                _friendsListState.value = FriendsListState.Error(e.message ?: "Failed to load friends")
             }
         }
     }
 
     fun searchUser(query: String) {
         searchJob?.cancel()
-        if (query.isBlank() || !query.contains("#")) {
-            _searchUiState.value = SearchUiState.Idle
+
+        if (query.isBlank() || !query.contains('#')) {
+            _searchResultState.value = SearchState.Idle
             return
         }
 
         searchJob = viewModelScope.launch {
-            delay(500) // Debounce
-            _searchUiState.value = SearchUiState.Loading
+            delay(300) // Debounce
+            _searchResultState.value = SearchState.Loading
 
-            val parts = query.split("#")
-            if (parts.size != 2) {
-                _searchUiState.value = SearchUiState.Error("Invalid format. Use username#discriminator")
+            val parts = query.split('#').map { it.trim() }
+            if (parts.size != 2 || parts[0].isEmpty() || parts[1].isEmpty()) {
+                _searchResultState.value = SearchState.Idle
                 return@launch
             }
 
-            val username = parts[0].trim()
-            val discriminator = parts[1].trim().toIntOrNull()
+            val username = parts[0]
+            val discriminator = parts[1].toIntOrNull()
 
             if (discriminator == null) {
-                _searchUiState.value = SearchUiState.Error("Invalid discriminator")
+                _searchResultState.value = SearchState.Idle
                 return@launch
             }
 
             try {
                 val foundUser = repository.searchUser(username, discriminator)
-                val status = determineFriendshipStatus(foundUser.id)
-                _searchUiState.value = SearchUiState.Success(foundUser, status)
+                _searchResultState.value = SearchState.Success(foundUser)
             } catch (e: Exception) {
-                // Customize based on server response if possible
-                _searchUiState.value = SearchUiState.NotFound
+                _searchResultState.value = SearchState.Error("User not found")
             }
         }
     }
 
-    private fun determineFriendshipStatus(userId: String): FriendshipStatus {
-        // This logic needs to be improved with actual sent requests list
-        // For now, it only checks against the current friends list
-        if (currentFriends.any { it.id == userId }) {
-            return FriendshipStatus.FRIEND
-        } 
-        // TODO: Check against current user ID for 'SELF'
-        // TODO: Check against sent friend requests list for 'PENDING'
-        return FriendshipStatus.NOT_FRIEND
-    }
+    fun addFriend(friend: Friend) {
+        viewModelScope.launch {
+            try {
+                repository.sendFriendRequest(friend.username, friend.discriminator)
 
-    fun clearSearch() {
-        searchJob?.cancel()
-        _searchUiState.value = SearchUiState.Idle
+                val updatedFriend = friend.copy(status = FriendshipStatus.PENDING_OUTGOING)
+                _searchResultState.value = SearchState.Success(updatedFriend)
+
+            } catch (e: Exception) {
+                _searchResultState.value = SearchState.Error("Failed to send request: ${e.message}")
+            }
+        }
     }
 }

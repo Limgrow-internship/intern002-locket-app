@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -109,11 +108,14 @@ class SettingsFragment : Fragment(), EditAvatarBottomSheetFragment.EditAvatarLis
                 launch {
                     viewModel.avatarUpdateState.collect { state ->
                         binding.loadingView.isVisible = state is AvatarUpdateState.Loading
-                        if (state is AvatarUpdateState.Success) {
-                            Toast.makeText(requireContext(), "Avatar updated!", Toast.LENGTH_SHORT).show()
-                        }
-                        if (state is AvatarUpdateState.Error) {
-                            Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                        when (state) {
+                            is AvatarUpdateState.Success -> {
+                                Toast.makeText(requireContext(), "Avatar updated!", Toast.LENGTH_SHORT).show()
+                            }
+                            is AvatarUpdateState.Error -> {
+                                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                            }
+                            else -> {}
                         }
                     }
                 }
