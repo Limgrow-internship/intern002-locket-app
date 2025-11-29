@@ -115,7 +115,7 @@
                         android:layout_gravity="bottom|end"
                         android:src="@drawable/ic_camera_badge"
                         android:background="@drawable/bg_camera_badge"
-                        android:padding="2dp" />
+                        android:padding="1dp" />
                 </FrameLayout>
 
                 <LinearLayout

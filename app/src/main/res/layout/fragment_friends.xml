@@ -157,6 +157,7 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/btn_messenger"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/ic_messenger"
@@ -178,6 +179,7 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/btn_instagram"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/ic_instagram"
@@ -199,6 +201,7 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/btn_twitter"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/ic_twitter"
@@ -219,10 +222,11 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/btn_more"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/ic_more"
-                    android:layout_marginBottom="5dp"/>
+                    android:layout_marginBottom="5dp"
+                    android:src="@drawable/ic_more" />
 
                 <TextView
                     android:layout_width="wrap_content"

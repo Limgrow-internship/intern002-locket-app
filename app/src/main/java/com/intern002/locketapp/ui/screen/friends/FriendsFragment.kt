@@ -1,11 +1,14 @@
 package com.intern002.locketapp.ui.screen.friends
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -32,6 +35,7 @@ import com.intern002.locketapp.ui.viewmodel.friends.FriendshipStatus
 import com.intern002.locketapp.ui.viewmodel.friends.FriendsListState
 import com.intern002.locketapp.ui.viewmodel.friends.FriendsViewModel
 import com.intern002.locketapp.ui.viewmodel.friends.SearchState
+import com.intern002.locketapp.ui.viewmodel.friends.ShareTarget
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -99,10 +103,10 @@ class FriendsFragment : Fragment() {
         MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
             .setTitle("Request Sent")
             .setMessage("You have already sent a friend request to ${friend.username}.")
-            .setNegativeButton("Keep", null)
-            .setPositiveButton("Cancel Request Friend") { _, _ ->
+            .setNegativeButton("Cancel Request") { _, _ ->
                 viewModel.rejectRequest(friend)
             }
+            .setPositiveButton("Keep", null)
             .show()
     }
 
@@ -121,6 +125,18 @@ class FriendsFragment : Fragment() {
     private fun setupClickListeners() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
+        }
+        binding.btnMore.setOnClickListener {
+            viewModel.onShareProfileClicked(ShareTarget.GENERIC)
+        }
+        binding.btnMessenger.setOnClickListener {
+            viewModel.onShareProfileClicked(ShareTarget.MESSENGER)
+        }
+        binding.btnInstagram.setOnClickListener {
+            viewModel.onShareProfileClicked(ShareTarget.INSTAGRAM)
+        }
+        binding.btnTwitter.setOnClickListener {
+            viewModel.onShareProfileClicked(ShareTarget.TWITTER)
         }
     }
 
@@ -154,16 +170,17 @@ class FriendsFragment : Fragment() {
                                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                                 binding.tvYourFriends.text = getString(R.string.your_friends)
                             }
-                            is FriendsListState.Loading -> {  }
+                            is FriendsListState.Loading -> { /* Handled by isVisible */ }
                         }
                     }
                 }
 
                 launch {
                     viewModel.searchResultState.collect { state ->
-                        binding.cvSearchResult.isVisible = state is SearchState.Success || state is SearchState.Loading
+                        val isSuccess = state is SearchState.Success
+                        binding.cvSearchResult.isVisible = isSuccess || state is SearchState.Loading
                         binding.pbSearchLoading.isVisible = state is SearchState.Loading
-                        binding.rlSearchResult.isVisible = state is SearchState.Success
+                        binding.rlSearchResult.isVisible = isSuccess
 
                         when (state) {
                             is SearchState.Success -> {
@@ -175,13 +192,52 @@ class FriendsFragment : Fragment() {
                                     Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            is SearchState.Loading -> {  }
+                            is SearchState.Loading -> { /* Handled by isVisible */ }
                             is SearchState.Idle -> {
                                 binding.cvSearchResult.isVisible = false
                             }
                         }
                     }
                 }
+
+                launch {
+                    viewModel.shareEvent.collect { event ->
+                        when (event.target) {
+                            ShareTarget.GENERIC -> shareGeneric(event.shareText)
+                            ShareTarget.MESSENGER -> shareToTargetedApp(event.shareText, "com.facebook.orca", "Messenger")
+                            ShareTarget.INSTAGRAM -> shareToTargetedApp(event.shareText, "com.instagram.android", "Instagram")
+                            ShareTarget.TWITTER -> shareToTargetedApp(event.shareText, "com.twitter.android", "Twitter")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun shareGeneric(shareText: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, shareText)
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+    }
+
+    private fun shareToTargetedApp(shareText: String, packageName: String, appName: String) {
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, shareText)
+            type = "text/plain"
+            setPackage(packageName)
+        }
+        try {
+            startActivity(sendIntent)
+        } catch (e: ActivityNotFoundException) {
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+            } catch (anfe: ActivityNotFoundException) {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
             }
         }
     }
@@ -204,7 +260,7 @@ class FriendsFragment : Fragment() {
             FriendshipStatus.FRIEND -> R.drawable.ic_friend
             FriendshipStatus.NOT_FRIEND -> R.drawable.ic_add_friend
             FriendshipStatus.PENDING_INCOMING, FriendshipStatus.PENDING_OUTGOING -> R.drawable.ic_invited
-            FriendshipStatus.SELF -> 0 // Or some other indicator for self
+            FriendshipStatus.SELF -> 0
         }
 
         if (statusIcon != 0) {
@@ -215,14 +271,12 @@ class FriendsFragment : Fragment() {
         }
 
         binding.ivSearchStatus.setOnClickListener {
-            if (friend.status == FriendshipStatus.NOT_FRIEND) {
-                viewModel.addFriend(friend)
-            }
+             handleFriendItemClick(friend)
         }
     }
 
     private fun createInitialDrawable(context: Context, name: String): BitmapDrawable {
-        val size = 150
+        val size = 150 // pixel size of the bitmap
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 

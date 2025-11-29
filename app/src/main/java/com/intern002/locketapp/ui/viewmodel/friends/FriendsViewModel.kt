@@ -4,16 +4,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.intern002.locketapp.data.model.Friend
 import com.intern002.locketapp.data.repository.FriendshipRepository
+import com.intern002.locketapp.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+enum class ShareTarget {
+    GENERIC,
+    MESSENGER,
+    INSTAGRAM,
+    TWITTER
+}
+
+data class ShareEvent(val shareText: String, val target: ShareTarget)
 
 sealed class FriendsListState {
     object Loading : FriendsListState()
@@ -30,7 +41,8 @@ sealed class SearchState {
 
 @HiltViewModel
 class FriendsViewModel @Inject constructor(
-    private val repository: FriendshipRepository
+    private val repository: FriendshipRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _friendsListState = MutableStateFlow<FriendsListState>(FriendsListState.Loading)
@@ -38,6 +50,9 @@ class FriendsViewModel @Inject constructor(
 
     private val _searchResultState = MutableStateFlow<SearchState>(SearchState.Idle)
     val searchResultState = _searchResultState.asStateFlow()
+
+    private val _shareEvent = Channel<ShareEvent>()
+    val shareEvent = _shareEvent.receiveAsFlow()
 
     private var searchJob: Job? = null
 
@@ -58,11 +73,22 @@ class FriendsViewModel @Inject constructor(
                     val pending = pendingDeferred.await()
                     val sent = sentDeferred.await()
 
-                    // Combine all lists, pending requests on top
                     _friendsListState.value = FriendsListState.Success(pending + sent + friends)
                 }
             } catch (e: Exception) {
                 _friendsListState.value = FriendsListState.Error(e.message ?: "Failed to load data")
+            }
+        }
+    }
+
+    fun onShareProfileClicked(target: ShareTarget = ShareTarget.GENERIC) {
+        viewModelScope.launch {
+            try {
+                val user = userRepository.getCurrentUserProfile()
+                val shareText = "Add me on Locket! My username is ${user.username}#${user.discriminator}"
+                _shareEvent.send(ShareEvent(shareText, target))
+            } catch (e: Exception) {
+                // Handle error if necessary
             }
         }
     }
@@ -94,8 +120,15 @@ class FriendsViewModel @Inject constructor(
             }
 
             try {
+                val currentUser = userRepository.getCurrentUserProfile()
                 val foundUser = repository.searchUser(username, discriminator)
-                _searchResultState.value = SearchState.Success(foundUser)
+
+                if (foundUser.id == currentUser.id) {
+                    _searchResultState.value = SearchState.Idle
+                } else {
+                    _searchResultState.value = SearchState.Success(foundUser)
+                }
+
             } catch (e: Exception) {
                 _searchResultState.value = SearchState.Error("User not found")
             }
@@ -106,11 +139,8 @@ class FriendsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.sendFriendRequest(friend.username, friend.discriminator)
-
                 _searchResultState.value = SearchState.Idle
-
                 getFriendsData()
-
             } catch (e: Exception) {
                 _searchResultState.value = SearchState.Error("Failed to send request: ${e.message}")
             }
@@ -120,7 +150,7 @@ class FriendsViewModel @Inject constructor(
     fun acceptRequest(friend: Friend) {
         viewModelScope.launch {
             try {
-                repository.acceptFriendRequest(friend.id) 
+                repository.acceptFriendRequest(friend.id)
                 getFriendsData()
             } catch (e: Exception) {
             }
@@ -131,8 +161,9 @@ class FriendsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.deleteFriendship(friend.id)
-            } catch (e: Exception){
-
+                getFriendsData()
+            } catch (e: Exception) {
+                // Handle error if needed
             }
         }
     }
@@ -141,10 +172,8 @@ class FriendsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.rejectFriendRequest(friend.id)
-                // Refresh the list to remove the request
                 getFriendsData()
             } catch (e: Exception) {
-                // Optionally handle error
             }
         }
     }
