@@ -71,4 +71,8 @@ class FriendshipApi @Inject constructor(private val client: HttpClient) {
     suspend fun getSentRequests(): List<SentRequestDTO> {
         return client.get("$baseUrl/friends/requests/sent").body()
     }
+
+    suspend fun getSuggestions(): List<FriendDTO> {
+        return client.get("$baseUrl/friends/suggestions").body()
+    }
 }

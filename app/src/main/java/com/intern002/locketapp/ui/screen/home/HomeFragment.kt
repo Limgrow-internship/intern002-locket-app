@@ -248,6 +248,10 @@ class HomeFragment : Fragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupControls() {
+        binding.textFriends.setOnClickListener {
+            findNavController().navigate(R.id.action_mainContainerFragment_to_FriendsFragment)
+        }
+
         binding.btnChat.setOnClickListener {
             findNavController().navigate(R.id.action_mainContainerFragment_to_chatListFragment)
         }

@@ -31,6 +31,9 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out"/>
+        <action
+            android:id="@+id/action_mainContainerFragment_to_FriendsFragment"
+            app:destination="@id/FriendsFragment" />
     </fragment>
 
     <fragment
@@ -285,8 +288,8 @@
             android:id="@+id/action_profileFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
         <action
-            android:id="@+id/action_profileFragment_to_FriendsFragment"
-            app:destination="@id/FriendsFragment" />
+            android:id="@+id/action_profileFragment_to_suggestionFriendsFragment"
+            app:destination="@id/suggestionFriendsFragment" />
     </fragment>
 
     <fragment
@@ -386,6 +389,11 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/suggestionFriendsFragment"
+        android:name="com.intern002.locketapp.ui.screen.friends.SuggestionFriendsFragment"
+        android:label="SuggestionFriendsFragment" />
 
     <activity
         android:id="@+id/main_activity"

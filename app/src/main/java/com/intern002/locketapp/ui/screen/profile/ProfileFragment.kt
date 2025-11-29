@@ -80,7 +80,7 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_profileFragment_to_settingsFragment)
         }
         binding.icFriends.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_FriendsFragment)
+            findNavController().navigate(R.id.action_profileFragment_to_suggestionFriendsFragment)
         }
     }
 

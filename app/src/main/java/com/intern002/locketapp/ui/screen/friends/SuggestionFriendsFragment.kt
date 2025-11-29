@@ -29,37 +29,38 @@ import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.model.Friend
-import com.intern002.locketapp.databinding.FragmentFriendsBinding
+import com.intern002.locketapp.databinding.FragmentSuggestionFriendsBinding
 import com.intern002.locketapp.ui.adapter.FriendsAdapter
 import com.intern002.locketapp.ui.viewmodel.friends.FriendListState
 import com.intern002.locketapp.ui.viewmodel.friends.FriendshipStatus
 import com.intern002.locketapp.ui.viewmodel.friends.FriendshipViewModel
 import com.intern002.locketapp.ui.viewmodel.friends.SearchState
 import com.intern002.locketapp.ui.viewmodel.friends.ShareTarget
+import com.intern002.locketapp.ui.viewmodel.friends.SuggestionsState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FriendsFragment : Fragment() {
+class SuggestionFriendsFragment : Fragment() {
 
-    private var _binding: FragmentFriendsBinding? = null
+    private var _binding: FragmentSuggestionFriendsBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: FriendshipViewModel by viewModels()
-    private lateinit var friendsAdapter: FriendsAdapter
+    private lateinit var suggestionsAdapter: FriendsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFriendsBinding.inflate(inflater, container, false)
+        _binding = FragmentSuggestionFriendsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.initializeForFriendsScreen()
+        viewModel.initializeForSuggestionsScreen()
 
         setupRecyclerView()
         setupClickListeners()
@@ -68,38 +69,23 @@ class FriendsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        friendsAdapter = FriendsAdapter().apply {
-            onItemClickListener = {
-                handleFriendItemClick(it)
+        suggestionsAdapter = FriendsAdapter().apply {
+            onItemClickListener = { friend ->
+                handleFriendItemClick(friend)
             }
         }
         binding.rvFriends.apply {
-            adapter = friendsAdapter
+            adapter = suggestionsAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
     }
 
     private fun handleFriendItemClick(friend: Friend) {
         when (friend.status) {
-            FriendshipStatus.PENDING_INCOMING -> showPendingRequestDialog(friend)
-            FriendshipStatus.PENDING_OUTGOING -> showSentRequestDialog(friend)
-            FriendshipStatus.FRIEND -> showFriendDialog(friend)
             FriendshipStatus.NOT_FRIEND -> viewModel.addFriend(friend)
-            else -> {  }
+            FriendshipStatus.PENDING_OUTGOING -> showSentRequestDialog(friend)
+            else -> { }
         }
-    }
-
-    private fun showPendingRequestDialog(friend: Friend) {
-        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
-            .setTitle("Friend Request")
-            .setMessage("Accept friend request from ${friend.username}?")
-            .setNegativeButton("Reject") { _, _ ->
-                viewModel.rejectRequest(friend)
-            }
-            .setPositiveButton("Accept") { _, _ ->
-                viewModel.acceptRequest(friend)
-            }
-            .show()
     }
 
     private fun showSentRequestDialog(friend: Friend) {
@@ -113,22 +99,11 @@ class FriendsFragment : Fragment() {
             .show()
     }
 
-    private fun showFriendDialog(friend: Friend) {
-        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
-            .setTitle("Unfriend")
-            .setMessage("Are you sure you want to unfriend ${friend.username}?")
-            .setNegativeButton("Cancel", null)
-            .setPositiveButton("Unfriend") { _, _ ->
-                viewModel.deleteFriendship(friend)
-            }
-            .show()
-    }
-
-
     private fun setupClickListeners() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
+
         binding.btnMore.setOnClickListener {
             viewModel.onShareProfileClicked(ShareTarget.GENERIC)
         }
@@ -159,21 +134,21 @@ class FriendsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    viewModel.friendsListState.collect { state ->
-                        binding.pbFriendsLoading.isVisible = state is FriendListState.Loading
-                        binding.rvFriends.isVisible = state is FriendListState.Success
+                    viewModel.suggestionsState.collect { state ->
+                        binding.pbSuggestionsLoading.isVisible = state is SuggestionsState.Loading
+                        binding.rvFriends.isVisible = state is SuggestionsState.Success
 
-                        when (state) {
-                            is FriendListState.Success -> {
-                                val friendCount = state.users.filter { it.status == FriendshipStatus.FRIEND }.size
-                                binding.tvYourFriends.text = getString(R.string.your_friends_count, friendCount, 20)
-                                friendsAdapter.submitList(state.users)
-                            }
-                            is FriendListState.Error -> {
-                                Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
-                                binding.tvYourFriends.text = getString(R.string.your_friends)
-                            }
-                            is FriendListState.Loading -> { /* Handled by isVisible */ }
+                        if (state is SuggestionsState.Success) {
+                            suggestionsAdapter.submitList(state.users)
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.friendsListState.collect { state ->
+                        if (state is FriendListState.Success) {
+                            val friendCount = state.users.count { it.status == FriendshipStatus.FRIEND }
+                            binding.tvYourFriends.text = getString(R.string.suggestions_count, friendCount, 20)
                         }
                     }
                 }
@@ -195,7 +170,7 @@ class FriendsFragment : Fragment() {
                                     Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            is SearchState.Loading -> { /* Handled by isVisible */ }
+                            is SearchState.Loading -> { }
                             is SearchState.Idle -> {
                                 binding.cvSearchResult.isVisible = false
                             }
@@ -300,7 +275,6 @@ class FriendsFragment : Fragment() {
 
         return BitmapDrawable(context.resources, bitmap)
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

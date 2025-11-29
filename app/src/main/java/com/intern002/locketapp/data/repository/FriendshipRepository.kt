@@ -3,7 +3,6 @@ package com.intern002.locketapp.data.repository
 import com.intern002.locketapp.data.model.Friend
 import com.intern002.locketapp.data.remote.api.FriendRequestDTO
 import com.intern002.locketapp.data.remote.api.FriendshipApi
-import com.intern002.locketapp.data.remote.dto.FriendDTO
 import com.intern002.locketapp.ui.viewmodel.friends.FriendshipStatus
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -18,7 +17,7 @@ interface FriendshipRepository {
     suspend fun deleteFriendship(friendshipId: String)
     suspend fun getPendingRequests(): List<Friend>
     suspend fun getSentRequests(): List<Friend>
-
+    suspend fun getSuggestions(): List<Friend>
 }
 
 class FriendshipRepositoryImpl @Inject constructor(
@@ -49,7 +48,6 @@ class FriendshipRepositoryImpl @Inject constructor(
         val pendingRequests = pendingRequestsDeferred.await()
         val sentRequests = sentRequestsDeferred.await()
 
-        // Find if there is an existing relationship
         val existingFriend = friends.find { it.username == foundUserDto.username && it.discriminator == foundUserDto.discriminator }
         val existingPending = pendingRequests.find { it.username == foundUserDto.username && it.discriminator == foundUserDto.discriminator }
         val existingSent = sentRequests.find { it.username == foundUserDto.username && it.discriminator == foundUserDto.discriminator }
@@ -60,19 +58,19 @@ class FriendshipRepositoryImpl @Inject constructor(
         when {
             existingFriend != null -> {
                 finalStatus = FriendshipStatus.FRIEND
-                finalId = existingFriend.id // This would be the userId
+                finalId = existingFriend.id
             }
             existingPending != null -> {
                 finalStatus = FriendshipStatus.PENDING_INCOMING
-                finalId = existingPending.id // This is the correct friendshipId
+                finalId = existingPending.id
             }
             existingSent != null -> {
                 finalStatus = FriendshipStatus.PENDING_OUTGOING
-                finalId = existingSent.id // This is the correct friendshipId
+                finalId = existingSent.id
             }
             else -> {
                 finalStatus = FriendshipStatus.NOT_FRIEND
-                finalId = foundUserDto.id // This is the userId
+                finalId = foundUserDto.id
             }
         }
 
@@ -106,7 +104,7 @@ class FriendshipRepositoryImpl @Inject constructor(
         return api.getPendingRequests().map { pendingRequest ->
             val userDto = pendingRequest.requester
             Friend(
-                id = pendingRequest.friendshipId, // This is the friendshipId
+                id = pendingRequest.friendshipId,
                 username = userDto.username,
                 discriminator = userDto.discriminator,
                 avatarUrl = userDto.avatarUrl,
@@ -119,11 +117,23 @@ class FriendshipRepositoryImpl @Inject constructor(
         return api.getSentRequests().map { sentRequest ->
             val userDto = sentRequest.addressee
             Friend(
-                id = sentRequest.friendshipId, // This is the friendshipId
+                id = sentRequest.friendshipId, 
                 username = userDto.username,
                 discriminator = userDto.discriminator,
                 avatarUrl = userDto.avatarUrl,
                 status = FriendshipStatus.PENDING_OUTGOING
+            )
+        }
+    }
+
+    override suspend fun getSuggestions(): List<Friend> {
+        return api.getSuggestions().map { friendDto ->
+            Friend(
+                id = friendDto.id,
+                username = friendDto.username,
+                discriminator = friendDto.discriminator,
+                avatarUrl = friendDto.avatarUrl,
+                status = FriendshipStatus.NOT_FRIEND
             )
         }
     }

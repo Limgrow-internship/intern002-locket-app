@@ -18,7 +18,6 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 👂 LẮNG NGHE KẾT QUẢ TỪ GRID (Khi user chọn ảnh xong quay về)
         childFragmentManager.setFragmentResultListener(
             "request_jump_to_post",
             this
@@ -36,7 +35,6 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMainContainerBinding.bind(view)
 
-        // 1. Setup ViewPager
         val adapter = MainPagerAdapter(this)
         binding.viewPagerMain.adapter = adapter
         binding.viewPagerMain.getChildAt(0).overScrollMode = View.OVER_SCROLL_NEVER

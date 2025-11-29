@@ -26,10 +26,16 @@ enum class ShareTarget {
 
 data class ShareEvent(val shareText: String, val target: ShareTarget)
 
-sealed class FriendsListState {
-    object Loading : FriendsListState()
-    data class Success(val users: List<Friend>) : FriendsListState()
-    data class Error(val message: String) : FriendsListState()
+sealed class FriendListState {
+    object Loading : FriendListState()
+    data class Success(val users: List<Friend>) : FriendListState()
+    data class Error(val message: String) : FriendListState()
+}
+
+sealed class SuggestionsState {
+    object Loading : SuggestionsState()
+    data class Success(val users: List<Friend>) : SuggestionsState()
+    data class Error(val message: String) : SuggestionsState()
 }
 
 sealed class SearchState {
@@ -40,13 +46,16 @@ sealed class SearchState {
 }
 
 @HiltViewModel
-class FriendsViewModel @Inject constructor(
+class FriendshipViewModel @Inject constructor(
     private val repository: FriendshipRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _friendsListState = MutableStateFlow<FriendsListState>(FriendsListState.Loading)
+    private val _friendsListState = MutableStateFlow<FriendListState>(FriendListState.Loading)
     val friendsListState = _friendsListState.asStateFlow()
+
+    private val _suggestionsState = MutableStateFlow<SuggestionsState>(SuggestionsState.Loading)
+    val suggestionsState = _suggestionsState.asStateFlow()
 
     private val _searchResultState = MutableStateFlow<SearchState>(SearchState.Idle)
     val searchResultState = _searchResultState.asStateFlow()
@@ -56,13 +65,18 @@ class FriendsViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
-    init {
+    fun initializeForFriendsScreen() {
         getFriendsData()
+    }
+
+    fun initializeForSuggestionsScreen() {
+        getFriendsData()
+        getSuggestionsData()
     }
 
     private fun getFriendsData() {
         viewModelScope.launch {
-            _friendsListState.value = FriendsListState.Loading
+            _friendsListState.value = FriendListState.Loading
             try {
                 coroutineScope {
                     val friendsDeferred = async { repository.getFriends() }
@@ -73,10 +87,32 @@ class FriendsViewModel @Inject constructor(
                     val pending = pendingDeferred.await()
                     val sent = sentDeferred.await()
 
-                    _friendsListState.value = FriendsListState.Success(pending + sent + friends)
+                    _friendsListState.value = FriendListState.Success(pending + sent + friends)
                 }
             } catch (e: Exception) {
-                _friendsListState.value = FriendsListState.Error(e.message ?: "Failed to load data")
+                _friendsListState.value = FriendListState.Error(e.message ?: "Failed to load data")
+            }
+        }
+    }
+
+    private fun getSuggestionsData() {
+        viewModelScope.launch {
+            _suggestionsState.value = SuggestionsState.Loading
+            try {
+                coroutineScope {
+                    val suggestionsDeferred = async { repository.getSuggestions() }
+                    val sentDeferred = async { repository.getSentRequests() }
+
+                    val suggestions = suggestionsDeferred.await()
+                    val sent = sentDeferred.await()
+
+                    val combinedList = suggestions + sent
+                    val distinctList = combinedList.distinctBy { it.username to it.discriminator }
+
+                    _suggestionsState.value = SuggestionsState.Success(distinctList)
+                }
+            } catch (e: Exception) {
+                _suggestionsState.value = SuggestionsState.Error(e.message ?: "Failed to load suggestions")
             }
         }
     }
@@ -93,6 +129,7 @@ class FriendsViewModel @Inject constructor(
                 }
             }
             getFriendsData()
+            getSuggestionsData()
         }
     }
 
@@ -103,7 +140,7 @@ class FriendsViewModel @Inject constructor(
                 val shareText = "Add me on Locket! My username is ${user.username}#${user.discriminator}"
                 _shareEvent.send(ShareEvent(shareText, target))
             } catch (e: Exception) {
-                // Handle error if necessary
+                // Handle error
             }
         }
     }
@@ -154,9 +191,7 @@ class FriendsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.sendFriendRequest(friend.username, friend.discriminator)
-                val updatedFriend = friend.copy(status = FriendshipStatus.PENDING_OUTGOING)
-                _searchResultState.value = SearchState.Success(updatedFriend)
-                getFriendsData()
+                refreshStatesAfterMutation()
             } catch (e: Exception) {
                 _searchResultState.value = SearchState.Error("Failed to send request: ${e.message}")
             }
