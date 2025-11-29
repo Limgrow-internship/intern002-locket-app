@@ -49,6 +49,8 @@ class FriendshipRepositoryImpl @Inject constructor(
         val pendingRequests = pendingRequestsDeferred.await()
         val sentRequests = sentRequestsDeferred.await()
 
+        // Find if there is an existing relationship
+        val existingFriend = friends.find { it.username == foundUserDto.username && it.discriminator == foundUserDto.discriminator }
         val existingPending = pendingRequests.find { it.username == foundUserDto.username && it.discriminator == foundUserDto.discriminator }
         val existingSent = sentRequests.find { it.username == foundUserDto.username && it.discriminator == foundUserDto.discriminator }
 
@@ -56,21 +58,21 @@ class FriendshipRepositoryImpl @Inject constructor(
         val finalId: String
 
         when {
-            friends.any { it.id == foundUserDto.id } -> {
+            existingFriend != null -> {
                 finalStatus = FriendshipStatus.FRIEND
-                finalId = foundUserDto.id
+                finalId = existingFriend.id // This would be the userId
             }
             existingPending != null -> {
                 finalStatus = FriendshipStatus.PENDING_INCOMING
-                finalId = existingPending.id
+                finalId = existingPending.id // This is the correct friendshipId
             }
             existingSent != null -> {
                 finalStatus = FriendshipStatus.PENDING_OUTGOING
-                finalId = existingSent.id
+                finalId = existingSent.id // This is the correct friendshipId
             }
             else -> {
                 finalStatus = FriendshipStatus.NOT_FRIEND
-                finalId = foundUserDto.id
+                finalId = foundUserDto.id // This is the userId
             }
         }
 
@@ -104,7 +106,7 @@ class FriendshipRepositoryImpl @Inject constructor(
         return api.getPendingRequests().map { pendingRequest ->
             val userDto = pendingRequest.requester
             Friend(
-                id = pendingRequest.friendshipId,
+                id = pendingRequest.friendshipId, // This is the friendshipId
                 username = userDto.username,
                 discriminator = userDto.discriminator,
                 avatarUrl = userDto.avatarUrl,
@@ -117,7 +119,7 @@ class FriendshipRepositoryImpl @Inject constructor(
         return api.getSentRequests().map { sentRequest ->
             val userDto = sentRequest.addressee
             Friend(
-                id = sentRequest.friendshipId, // Correct: Use friendshipId
+                id = sentRequest.friendshipId, // This is the friendshipId
                 username = userDto.username,
                 discriminator = userDto.discriminator,
                 avatarUrl = userDto.avatarUrl,

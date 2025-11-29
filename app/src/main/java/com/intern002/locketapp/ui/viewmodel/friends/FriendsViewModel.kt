@@ -81,6 +81,21 @@ class FriendsViewModel @Inject constructor(
         }
     }
 
+    private fun refreshStatesAfterMutation() {
+        viewModelScope.launch {
+            val currentSearchState = _searchResultState.value
+            if (currentSearchState is SearchState.Success) {
+                try {
+                    val updatedFriend = repository.searchUser(currentSearchState.user.username, currentSearchState.user.discriminator)
+                    _searchResultState.value = SearchState.Success(updatedFriend)
+                } catch (e: Exception) {
+                    _searchResultState.value = SearchState.Idle
+                }
+            }
+            getFriendsData()
+        }
+    }
+
     fun onShareProfileClicked(target: ShareTarget = ShareTarget.GENERIC) {
         viewModelScope.launch {
             try {
@@ -139,7 +154,8 @@ class FriendsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.sendFriendRequest(friend.username, friend.discriminator)
-                _searchResultState.value = SearchState.Idle
+                val updatedFriend = friend.copy(status = FriendshipStatus.PENDING_OUTGOING)
+                _searchResultState.value = SearchState.Success(updatedFriend)
                 getFriendsData()
             } catch (e: Exception) {
                 _searchResultState.value = SearchState.Error("Failed to send request: ${e.message}")
@@ -151,7 +167,7 @@ class FriendsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.acceptFriendRequest(friend.id)
-                getFriendsData()
+                refreshStatesAfterMutation()
             } catch (e: Exception) {
             }
         }
@@ -161,9 +177,8 @@ class FriendsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.deleteFriendship(friend.id)
-                getFriendsData()
+                refreshStatesAfterMutation()
             } catch (e: Exception) {
-                // Handle error if needed
             }
         }
     }
@@ -172,7 +187,7 @@ class FriendsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.rejectFriendRequest(friend.id)
-                getFriendsData()
+                refreshStatesAfterMutation()
             } catch (e: Exception) {
             }
         }

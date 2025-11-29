@@ -82,6 +82,7 @@ class FriendsFragment : Fragment() {
             FriendshipStatus.PENDING_INCOMING -> showPendingRequestDialog(friend)
             FriendshipStatus.PENDING_OUTGOING -> showSentRequestDialog(friend)
             FriendshipStatus.FRIEND -> showFriendDialog(friend)
+            FriendshipStatus.NOT_FRIEND -> viewModel.addFriend(friend)
             else -> {  }
         }
     }

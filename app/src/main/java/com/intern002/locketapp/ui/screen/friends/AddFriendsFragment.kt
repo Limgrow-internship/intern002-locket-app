@@ -11,14 +11,12 @@ import com.intern002.locketapp.R
 import com.intern002.locketapp.data.model.FriendStatus
 import com.intern002.locketapp.data.model.Suggestion
 import com.intern002.locketapp.databinding.FragmentAddFriendsBinding
-import com.intern002.locketapp.ui.adapter.SuggestionAdapter
 
 class AddFriendsFragment : Fragment() {
 
     private var _binding: FragmentAddFriendsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var suggestionAdapter: SuggestionAdapter
     private val suggestions = mutableListOf<Suggestion>()
     private var invitedCount = 0
     private val maxFriends = 20
@@ -44,16 +42,7 @@ class AddFriendsFragment : Fragment() {
 
     private fun setupRecyclerView() {
         suggestions.addAll(createMockSuggestions())
-        suggestionAdapter = SuggestionAdapter(suggestions) { suggestion ->
-            suggestion.status = FriendStatus.INVITED
-            invitedCount++
-            updateFriendCount()
-            suggestionAdapter.notifyDataSetChanged()
-        }
-        binding.rvFriends.apply {
-            adapter = suggestionAdapter
-            layoutManager = LinearLayoutManager(requireContext())
-        }
+
     }
 
     private fun updateFriendCount() {
