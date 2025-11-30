@@ -8,7 +8,7 @@ import com.intern002.locketapp.data.remote.model.Post
 import com.intern002.locketapp.databinding.ItemGridPostBinding
 
 class GridPostAdapter(
-    private val list: List<Post>,
+    private var list: List<Post>,
     private val onItemClick: (Int) -> Unit
 ) : RecyclerView.Adapter<GridPostAdapter.GridViewHolder>() {
 
@@ -26,6 +26,8 @@ class GridPostAdapter(
 
         Glide.with(holder.itemView)
             .load(post.mediaUrl)
+            .placeholder(android.R.color.darker_gray)
+            .centerCrop()
             .into(holder.binding.imgGrid)
 
         holder.itemView.setOnClickListener {
@@ -34,4 +36,9 @@ class GridPostAdapter(
     }
 
     override fun getItemCount(): Int = list.size
+
+    fun updateData(newList: List<Post>) {
+        list = newList
+        notifyDataSetChanged()
+    }
 }

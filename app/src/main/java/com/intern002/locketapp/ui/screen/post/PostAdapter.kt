@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +14,6 @@ import com.intern002.locketapp.data.remote.model.Reactor
 import com.intern002.locketapp.databinding.ItemPostBinding
 import com.intern002.locketapp.utils.TimeUtils
 
-
 interface PostItemCallBack {
     fun onPostTypeChanged(isMine: Boolean)
     fun onShowReactions(reactors: List<Reactor>)
@@ -23,7 +21,7 @@ interface PostItemCallBack {
 
 class PostAdapter(
     private var list: List<Post>,
-    private val currentUserId: String = "me", // ID của mình
+    private val currentUserId: String,
     private val callback: PostItemCallBack
 ) : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
@@ -37,11 +35,8 @@ class PostAdapter(
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = list[position]
-        val currentUserId = this.currentUserId
 
-        // Gọi callback để Fragment cha ẩn/hiện thanh Reply Bar
         val isMine = post.authorId == currentUserId
-        callback.onPostTypeChanged(isMine) // Báo hiệu lên PostListFragment
 
         with(holder.binding) {
             tvUsername.text = if (isMine) "You" else post.userName
@@ -49,7 +44,6 @@ class PostAdapter(
             tvCaption.isVisible = !post.caption.isNullOrEmpty()
             tvCaption.text = post.caption
 
-            // Avatar
             Glide.with(root).load(post.userAvatarUrl)
                 .placeholder(R.drawable.avt_sample)
                 .into(imgAvatar)
@@ -64,55 +58,50 @@ class PostAdapter(
                 .placeholder(android.R.color.darker_gray)
                 .into(imgPostMedia)
 
-            // --- 3. LOGIC PHÁT VIDEO ---
             if (post.mediaType == "video") {
                 cardMedia.setOnClickListener {
                     imgPostMedia.visibility = View.GONE
                     videoPostMedia.visibility = View.VISIBLE
 
-                    val uri = post.mediaUrl.toUri()
-                    videoPostMedia.setVideoURI(uri)
+                    try {
+                        val uri = post.mediaUrl.toUri()
+                        videoPostMedia.setVideoURI(uri)
 
-                    videoPostMedia.setOnPreparedListener { mp ->
-                        mp.isLooping = true
-                        mp.start()
+                        videoPostMedia.setOnPreparedListener { mp ->
+                            mp.isLooping = true
+                            mp.start()
 
-                        videoPostMedia.setOnClickListener {
-                            if (videoPostMedia.isPlaying) {
-                                videoPostMedia.pause()
-                                Toast.makeText(it.context, "Video Paused", Toast.LENGTH_SHORT)
-                                    .show()
-                            } else {
-                                videoPostMedia.start()
-                                Toast.makeText(it.context, "Video Resumed", Toast.LENGTH_SHORT)
-                                    .show()
+                            videoPostMedia.setOnClickListener {
+                                if (videoPostMedia.isPlaying) {
+                                    videoPostMedia.pause()
+                                } else {
+                                    videoPostMedia.start()
+                                }
                             }
                         }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             }
-            if (isMine) {
-                tvUsername.text = "You"
-                tvUsername.alpha = 1.0f
 
+            if (isMine) {
                 layoutMyActivity.isVisible = true
-                val reactors = post.reactors
+
+                val reactors = post.reactors ?: emptyList()
 
                 layoutMyActivity.setOnClickListener {
-                    callback.onShowReactions(post.reactors)
+                    callback.onShowReactions(reactors)
                 }
-                if (reactors.isEmpty()) {
-                    holder.binding.tvActivityText.text = "No activity yet"
-                    holder.binding.imgActivityIndicator.setImageResource(R.drawable.ic_smile)
-                } else {
-                    holder.binding.tvActivityText.text = "Activity"
-                    holder.binding.imgActivityIndicator.setImageResource(R.drawable.ic_smile)
 
-                    // Logic load Avatar chồng lên nhau (Chỉ load 3 người đầu tiên)
-                    // Dùng Glide và set Visibility cho từng img_reactor_X
+                if (reactors.isEmpty()) {
+                    tvActivityText.text = "No activity yet"
+                } else {
+                    tvActivityText.text = "Activity"
+                    // TODO: Logic load 3 avatar chồng lên nhau ở đây (dùng Glide)
                 }
+
             } else {
-                tvUsername.text = post.userName
                 layoutMyActivity.isVisible = false
             }
         }
@@ -125,10 +114,11 @@ class PostAdapter(
 
     override fun getItemCount(): Int = list.size
 
-
     @SuppressLint("NotifyDataSetChanged")
     fun updateData(newList: List<Post>) {
         list = newList
         notifyDataSetChanged()
     }
+
+    fun getCurrentList(): List<Post> = list
 }

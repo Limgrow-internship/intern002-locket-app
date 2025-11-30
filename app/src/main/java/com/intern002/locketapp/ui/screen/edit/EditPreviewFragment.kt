@@ -9,6 +9,7 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -17,6 +18,7 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentEditPreviewBinding
+import com.intern002.locketapp.ui.screen.main.MainViewModel
 import com.intern002.locketapp.utils.MediaSaver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -29,6 +31,7 @@ class EditPreviewFragment : Fragment(R.layout.fragment_edit_preview) {
     private val args: EditPreviewFragmentArgs by navArgs()
 
     private val viewModel: EditPreviewViewModel by viewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     private var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
 
@@ -80,6 +83,7 @@ class EditPreviewFragment : Fragment(R.layout.fragment_edit_preview) {
                         is SendState.Success -> {
                             binding.buttonSend.isEnabled = true
                             binding.buttonSend.alpha = 1f
+                            mainViewModel.refreshTrigger.value = true
                             Toast.makeText(context, "Gửi thành công!", Toast.LENGTH_SHORT).show()
                             findNavController().popBackStack()
                         }
