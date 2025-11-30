@@ -31,6 +31,7 @@ import com.intern002.locketapp.R
 import com.intern002.locketapp.data.model.Friend
 import com.intern002.locketapp.databinding.FragmentAddFriendsBinding
 import com.intern002.locketapp.ui.adapter.FriendsAdapter
+import com.intern002.locketapp.ui.viewmodel.friends.FriendListState
 import com.intern002.locketapp.ui.viewmodel.friends.FriendshipStatus
 import com.intern002.locketapp.ui.viewmodel.friends.FriendshipViewModel
 import com.intern002.locketapp.ui.viewmodel.friends.SearchState
@@ -44,7 +45,6 @@ class AddFriendsFragment : Fragment() {
 
     private var _binding: FragmentAddFriendsBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: FriendshipViewModel by viewModels()
     private lateinit var suggestionsAdapter: FriendsAdapter
 
@@ -58,7 +58,7 @@ class AddFriendsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         viewModel.initializeForSuggestionsScreen()
 
         setupRecyclerView()
@@ -66,6 +66,7 @@ class AddFriendsFragment : Fragment() {
         setupSearch()
         observeViewModel()
     }
+
 
     private fun setupRecyclerView() {
         suggestionsAdapter = FriendsAdapter().apply {
@@ -98,12 +99,14 @@ class AddFriendsFragment : Fragment() {
             .show()
     }
 
+    // --- KEEPING setupClickListeners FROM AddFriendsFragment ---
     private fun setupClickListeners() {
+        // Nút Continue chuyển sang màn hình chính (Logic riêng của AddFriends)
         binding.btnContinue.setOnClickListener {
-            val action = AddFriendsFragmentDirections.actionAddFriendsFragmentToMainContainerFragment()
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_addFriendsFragment_to_mainContainerFragment)
         }
 
+        // Các nút share giữ nguyên logic
         binding.btnMore.setOnClickListener {
             viewModel.onShareProfileClicked(ShareTarget.GENERIC)
         }
@@ -117,6 +120,8 @@ class AddFriendsFragment : Fragment() {
             viewModel.onShareProfileClicked(ShareTarget.TWITTER)
         }
     }
+
+    // --- FUNCTIONALITY FROM SuggestionFriendsFragment (Adapted for AddFriends Binding) ---
 
     private fun setupSearch() {
         binding.btnSearch.addTextChangedListener(object : TextWatcher {
@@ -133,6 +138,7 @@ class AddFriendsFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // 1. Suggestions State
                 launch {
                     viewModel.suggestionsState.collect { state ->
                         binding.pbSuggestionsLoading.isVisible = state is SuggestionsState.Loading
@@ -144,6 +150,18 @@ class AddFriendsFragment : Fragment() {
                     }
                 }
 
+                // 2. Friends List State (Cập nhật số lượng bạn bè)
+                launch {
+                    viewModel.friendsListState.collect { state ->
+                        if (state is FriendListState.Success) {
+                            val friendCount = state.users.count { it.status == FriendshipStatus.FRIEND }
+                            // Sử dụng ID tvFriendCount của AddFriendsFragment thay vì tvYourFriends
+                            binding.tvFriendCount.text = getString(R.string.friends_added_count, friendCount, 20)
+                        }
+                    }
+                }
+
+                // 3. Search Result State
                 launch {
                     viewModel.searchResultState.collect { state ->
                         val isSuccess = state is SearchState.Success
@@ -169,6 +187,7 @@ class AddFriendsFragment : Fragment() {
                     }
                 }
 
+                // 4. Share Events
                 launch {
                     viewModel.shareEvent.collect { event ->
                         when (event.target) {
@@ -240,12 +259,12 @@ class AddFriendsFragment : Fragment() {
         }
 
         binding.ivSearchStatus.setOnClickListener {
-             handleFriendItemClick(friend)
+            handleFriendItemClick(friend)
         }
     }
 
     private fun createInitialDrawable(context: Context, name: String): BitmapDrawable {
-        val size = 150 // pixel size of the bitmap
+        val size = 150
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 

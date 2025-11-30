@@ -4,6 +4,7 @@ import android.util.Log
 import com.intern002.locketapp.BuildConfig
 import com.intern002.locketapp.data.prefs.AuthManager
 import com.intern002.locketapp.data.remote.api.AuthApi
+import com.intern002.locketapp.data.remote.api.ChatApi
 import com.intern002.locketapp.data.remote.api.UserApi
 import com.intern002.locketapp.data.remote.model.auth.RefreshRequest
 import com.intern002.locketapp.data.remote.response.AuthResponse
@@ -104,5 +105,11 @@ object NetworkModule {
     @Singleton
     fun provideUserApi(client: HttpClient): UserApi {
         return UserApi(client)
+    }
+
+    @Provides
+    @Singleton
+    fun provideChatApi(client: HttpClient): ChatApi {
+        return ChatApi(client)
     }
 }

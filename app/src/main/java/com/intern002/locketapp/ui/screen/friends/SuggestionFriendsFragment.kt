@@ -254,7 +254,7 @@ class SuggestionFriendsFragment : Fragment() {
     }
 
     private fun createInitialDrawable(context: Context, name: String): BitmapDrawable {
-        val size = 150 // pixel size of the bitmap
+        val size = 150
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 

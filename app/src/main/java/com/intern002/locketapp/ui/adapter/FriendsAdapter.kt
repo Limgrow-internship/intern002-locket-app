@@ -106,7 +106,7 @@ class FriendsAdapter : ListAdapter<Friend, FriendsAdapter.FriendViewHolder>(Frie
 
     class FriendDiffCallback : DiffUtil.ItemCallback<Friend>() {
         override fun areItemsTheSame(oldItem: Friend, newItem: Friend): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.username == newItem.username && oldItem.discriminator == newItem.discriminator
         }
 
         override fun areContentsTheSame(oldItem: Friend, newItem: Friend): Boolean {

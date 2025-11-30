@@ -337,10 +337,9 @@
             android:id="@+id/action_chatListFragment_to_chatDetailFragment"
             app:destination="@id/chatDetailFragment" />
         <action
-            android:id="@+id/action_chatListFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/nav_graph"
-            app:popUpToInclusive="true"/>
+            android:id="@+id/action_chatListFragment_to_mainContainerFragment"
+            app:destination="@id/mainContainerFragment"
+            app:popUpTo="@id/mainContainerFragment" />
     </fragment>
 
     <fragment

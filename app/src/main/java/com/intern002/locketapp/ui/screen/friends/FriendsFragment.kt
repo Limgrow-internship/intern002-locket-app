@@ -195,7 +195,7 @@ class FriendsFragment : Fragment() {
                                     Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            is SearchState.Loading -> { /* Handled by isVisible */ }
+                            is SearchState.Loading -> { }
                             is SearchState.Idle -> {
                                 binding.cvSearchResult.isVisible = false
                             }

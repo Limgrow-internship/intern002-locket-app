@@ -101,15 +101,10 @@ class FriendshipViewModel @Inject constructor(
             try {
                 coroutineScope {
                     val suggestionsDeferred = async { repository.getSuggestions() }
-                    val sentDeferred = async { repository.getSentRequests() }
 
                     val suggestions = suggestionsDeferred.await()
-                    val sent = sentDeferred.await()
 
-                    val combinedList = suggestions + sent
-                    val distinctList = combinedList.distinctBy { it.username to it.discriminator }
-
-                    _suggestionsState.value = SuggestionsState.Success(distinctList)
+                    _suggestionsState.value = SuggestionsState.Success(suggestions)
                 }
             } catch (e: Exception) {
                 _suggestionsState.value = SuggestionsState.Error(e.message ?: "Failed to load suggestions")
@@ -140,7 +135,6 @@ class FriendshipViewModel @Inject constructor(
                 val shareText = "Add me on Locket! My username is ${user.username}#${user.discriminator}"
                 _shareEvent.send(ShareEvent(shareText, target))
             } catch (e: Exception) {
-                // Handle error
             }
         }
     }

@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 sealed class ChatListState {
     object Loading : ChatListState()
-    data class Success(val conversations: List<Conversation>) : ChatListState()
+    data class Success(val conversations: List<Conversation>, val currentUserAvatarUrl: String?) : ChatListState()
     data class Error(val message: String) : ChatListState()
 }
 
@@ -39,7 +39,7 @@ class ChatViewModel @Inject constructor(
             when (val result = chatRepository.getConversations()) {
                 is Result.Success -> {
                     val conversations = result.data?.map { it.toConversation(userResult.id) } ?: emptyList()
-                    _chatListState.value = ChatListState.Success(conversations)
+                    _chatListState.value = ChatListState.Success(conversations, userResult.avatarUrl)
                 }
                 is Result.Error -> {
                     _chatListState.value = ChatListState.Error(result.message ?: "An unknown error occurred")

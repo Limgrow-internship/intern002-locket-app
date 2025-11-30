@@ -4,17 +4,30 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentChatListBinding
+import com.intern002.locketapp.ui.adapter.ChatListAdapter
+import com.intern002.locketapp.ui.viewmodel.chat.ChatListState
+import com.intern002.locketapp.ui.viewmodel.chat.ChatViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class ChatListFragment : Fragment() {
 
     private var _binding: FragmentChatListBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel: ChatViewModel by viewModels()
     private lateinit var chatListAdapter: ChatListAdapter
 
     override fun onCreateView(
@@ -29,17 +42,21 @@ class ChatListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
+        observeViewModel()
 
         binding.btnBack.setOnClickListener {
-            val action = ChatListFragmentDirections.actionChatListFragmentToHomeFragment()
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_chatListFragment_to_mainContainerFragment)
         }
+
+        viewModel.getConversations()
     }
 
     private fun setupRecyclerView() {
-        val mockData = createMockChatData()
-        chatListAdapter = ChatListAdapter(mockData) { conversation ->
-            val action = ChatListFragmentDirections.actionChatListFragmentToChatDetailFragment(conversation.id, conversation.name)
+        chatListAdapter = ChatListAdapter(emptyList(), "") { conversation ->
+            val action = ChatListFragmentDirections.actionChatListFragmentToChatDetailFragment(
+                conversation.id,
+                conversation.name
+            )
             findNavController().navigate(action)
         }
         binding.rvChatList.apply {
@@ -48,18 +65,27 @@ class ChatListFragment : Fragment() {
         }
     }
 
-    private fun createMockChatData(): List<Conversation> {
-        return listOf(
-            Conversation("1", "Linh Trần", "You: Gì z trời", "12:40 AM", "", true, true),
-            Conversation("2", "Anh Phạm", "You: Dễ thương dũ", "11:22 AM", "", true, true),
-            Conversation("3", "shrreyaaa", "2 New Messages", "11:15 AM", "", false, false),
-            Conversation("4", "Tuấn Anh", "Đi đâu dui dzậy?", "10:55 AM", "", false, false),
-            Conversation("5", "Minh Nguyễn", "Minh reacted to your...", "09:21 AM", "", false, true),
-            Conversation("6", "Mai Anh", "You: Vẫn một hả", "11:22 AM", "", true, true),
-            Conversation("7", "Bích Ngọc", "3 New Messages", "Yesterday", "", false, false),
-            Conversation("8", "Khánh Vân", "You: Kh dui", "Yesterday", "", true, false),
-            Conversation("9", "Đức Anh", "...", "", "", false, true)
-        )
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.chatListState.collect { state ->
+                    binding.pbLoading.isVisible = state is ChatListState.Loading
+                    binding.rvChatList.isVisible = state is ChatListState.Success
+
+                    when (state) {
+                        is ChatListState.Success -> {
+                            chatListAdapter.updateData(state.conversations, state.currentUserAvatarUrl)
+                        }
+                        is ChatListState.Error -> {
+                            Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                        }
+                        is ChatListState.Loading -> {
+                            // Handled by isVisible
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
