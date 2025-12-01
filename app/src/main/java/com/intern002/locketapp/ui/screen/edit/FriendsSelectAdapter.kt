@@ -5,12 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.intern002.locketapp.R
+import com.intern002.locketapp.data.remote.model.friend.FriendUserResponse
 import com.intern002.locketapp.databinding.ItemFriendSelectBinding
 
 class FriendsSelectAdapter(
-    private val list: ArrayList<FriendItem>
-): RecyclerView.Adapter<FriendsSelectAdapter.FriendViewHolder>() {
-    inner class FriendViewHolder(val binding: ItemFriendSelectBinding) : RecyclerView.ViewHolder(binding.root)
+    private var list: ArrayList<FriendItem>
+) : RecyclerView.Adapter<FriendsSelectAdapter.FriendViewHolder>() {
+    inner class FriendViewHolder(val binding: ItemFriendSelectBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendViewHolder {
         return FriendViewHolder(
@@ -23,11 +25,11 @@ class FriendsSelectAdapter(
 
         holder.binding.tvName.text = item.name
 
-        if(item.isAllButton) {
+        if (item.isAllButton) {
             holder.binding.imgAvatar.setImageResource(R.drawable.ic_user_group)
-            holder.binding.imgAvatar.setPadding(10,10,10,10)
-        }else {
-            holder.binding.imgAvatar.setPadding(0,0,0,0)
+            holder.binding.imgAvatar.setPadding(10, 10, 10, 10)
+        } else {
+            holder.binding.imgAvatar.setPadding(0, 0, 0, 0)
             Glide.with(holder.itemView.context)
                 .load(item.avatarUrl)
                 .placeholder(R.drawable.avt_sample)
@@ -60,7 +62,7 @@ class FriendsSelectAdapter(
                 clickedItem.isSelected = true
                 notifyDataSetChanged()
             }
-        }else {
+        } else {
             clickedItem.isSelected = !clickedItem.isSelected
 
             if (clickedItem.isSelected) {
@@ -84,5 +86,22 @@ class FriendsSelectAdapter(
         } else {
             return list.filter { it.isSelected && !it.isAllButton }
         }
+    }
+
+    fun updateData(newList: List<FriendUserResponse>) {
+        val newItems = newList.map { user ->
+            FriendItem(
+                id = user.id,
+                name = user.username,
+                avatarUrl = user.avatarUrl
+            )
+        }
+
+        val allItems = ArrayList<FriendItem>()
+        allItems.add(FriendItem("0", "All", isSelected = true, isAllButton = true))
+        allItems.addAll(newItems)
+
+        this.list = allItems
+        notifyDataSetChanged()
     }
 }
