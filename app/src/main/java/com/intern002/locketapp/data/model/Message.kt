@@ -1,9 +1,21 @@
 package com.intern002.locketapp.data.model
 
+import com.intern002.locketapp.data.remote.dto.MessageDTO
+
 data class Message(
-    val id: String,
-    val content: String,
-    val senderId: String, // ID of the user who sent the message
-    val timestamp: Long, // Use Long for easier sorting
-    val imageUrl: String? = null // For special image messages
+    val senderId: String,
+    val messageType: String,
+    val content: String?,
+    val imageUrl: String?,
+    val createdAt: String
 )
+
+fun MessageDTO.toMessage(): Message {
+    return Message(
+        senderId = this.senderId,
+        messageType = this.messageType,
+        content = this.content,
+        imageUrl = this.imageUrl,
+        createdAt = this.createdAt
+    )
+}

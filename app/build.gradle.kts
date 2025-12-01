@@ -46,6 +46,10 @@ android {
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
             val cloudinaryUrl = getLocalProperty("cloudinary_url", project) ?: ""
             buildConfigField("String", "CLOUDINARY_URL", "\"$cloudinaryUrl\"")
+            val supabaseUrl = getLocalProperty("supabase.url", project) ?: ""
+            buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+            val supabaseKey = getLocalProperty("supabase.key", project) ?: ""
+            buildConfigField("String", "SUPABASE_KEY", "\"$supabaseKey\"")
         }
         release {
             isMinifyEnabled = false
@@ -54,8 +58,13 @@ android {
                 "proguard-rules.pro",
             )
             buildConfigField("String", "BASE_URL", "\"https://your.production.server.com/\"")
+
             val cloudinaryUrl = getLocalProperty("cloudinary_url", project) ?: ""
             buildConfigField("String", "CLOUDINARY_URL", "\"$cloudinaryUrl\"")
+            val supabaseUrl = getLocalProperty("supabase.url", project) ?: ""
+            buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+            val supabaseKey = getLocalProperty("supabase.key", project) ?: ""
+            buildConfigField("String", "SUPABASE_KEY", "\"$supabaseKey\"")
         }
     }
     compileOptions {
@@ -88,11 +97,16 @@ dependencies {
     // Ktor Client
     implementation("io.ktor:ktor-client-android:2.3.10")
     implementation("io.ktor:ktor-client-core:2.3.10")
-    implementation("io.ktor:ktor-client-cio:2.3.10")
+    implementation("io.ktor:ktor-client-okhttp:2.3.10")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.10")
     implementation("io.ktor:ktor-client-logging:2.3.10")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.10")
     implementation("io.ktor:ktor-client-auth:2.3.10")
+
+    // Supabase
+    implementation(platform(libs.supabase.bom))
+    implementation(libs.supabase.realtime)
+    implementation(libs.supabase.postgrest)
 
     // Network
     implementation(libs.serialization.json)

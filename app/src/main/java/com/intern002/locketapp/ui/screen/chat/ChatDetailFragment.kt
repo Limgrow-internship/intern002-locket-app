@@ -4,24 +4,40 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.intern002.locketapp.R
-import com.intern002.locketapp.data.model.Message
+import com.intern002.locketapp.data.repository.UserRepository
 import com.intern002.locketapp.databinding.FragmentChatDetailBinding
 import com.intern002.locketapp.ui.adapter.MessageAdapter
+import com.intern002.locketapp.ui.viewmodel.chat.ChatDetailViewModel
+import com.intern002.locketapp.ui.viewmodel.chat.MessageListState
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class ChatDetailFragment : Fragment() {
 
     private var _binding: FragmentChatDetailBinding? = null
     private val binding get() = _binding!!
 
     private val args: ChatDetailFragmentArgs by navArgs()
+    private val viewModel: ChatDetailViewModel by viewModels()
     private lateinit var messageAdapter: MessageAdapter
 
-    private val currentUserId = "my_id"
+    @Inject
+    lateinit var userRepository: UserRepository
+
+    private var currentUserId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,17 +53,19 @@ class ChatDetailFragment : Fragment() {
 
         binding.toolbarTitle.text = args.recipientName
 
-        setupRecyclerView()
-
-        binding.btnBack.setOnClickListener {
-            val action = ChatDetailFragmentDirections.actionChatDetailFragmentToChatListFragment()
-            findNavController().navigate(action)
+        lifecycleScope.launch {
+            currentUserId = userRepository.getCurrentUserProfile()?.id
+            if (currentUserId != null) {
+                setupRecyclerView(currentUserId!!)
+            }
         }
+
+        observeViewModel()
+        setupClickListeners()
     }
 
-    private fun setupRecyclerView() {
-        val mockMessages = createMockMessages()
-        messageAdapter = MessageAdapter(mockMessages, currentUserId)
+    private fun setupRecyclerView(userId: String) {
+        messageAdapter = MessageAdapter(mutableListOf(), userId)
         binding.rvMessages.apply {
             adapter = messageAdapter
             layoutManager = LinearLayoutManager(requireContext()).apply {
@@ -56,15 +74,45 @@ class ChatDetailFragment : Fragment() {
         }
     }
 
-    private fun createMockMessages(): List<Message> {
-        return listOf(
-            Message("1", "", "user_id_friend", 1, imageUrl = "img_food_sample"),
-            Message("2", "Đi mà không rủ", "user_id_friend", 2),
-            Message("3", "Buồn bạn quá đi", "user_id_friend", 3),
-            Message("4", "Hôm qua có rủ rồi mà", "my_id", 4),
-            Message("5", "Nhắn không trả lời", "my_id", 5),
-            Message("6", "Gì z trời", "my_id", 6)
-        )
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.messageState.collect { state ->
+                    binding.progressBar.isVisible = state is MessageListState.Loading
+                    binding.rvMessages.isVisible = state is MessageListState.Success
+
+                    when (state) {
+                        is MessageListState.Success -> {
+                            val newMessages = state.messages
+                            if (messageAdapter.itemCount < newMessages.size) {
+                                messageAdapter.setMessages(newMessages)
+                                binding.rvMessages.scrollToPosition(newMessages.size - 1)
+                            } else {
+                                messageAdapter.setMessages(newMessages)
+                            }
+                        }
+                        is MessageListState.Error -> {
+                            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupClickListeners() {
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        binding.btnSend.setOnClickListener {
+            val messageText = binding.etMessage.text.toString()
+            if (messageText.isNotBlank()) {
+                viewModel.sendMessage(messageText)
+                binding.etMessage.text.clear()
+            }
+        }
     }
 
     override fun onDestroyView() {
