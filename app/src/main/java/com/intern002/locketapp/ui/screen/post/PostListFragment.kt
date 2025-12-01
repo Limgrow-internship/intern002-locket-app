@@ -33,6 +33,8 @@ class PostListFragment : Fragment(), PostItemCallBack {
     private val viewModel: PostListViewModel by viewModels()
     private val mainViewModel: MainViewModel by activityViewModels()
 
+    private var pendingScrollPosition: Int? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -59,7 +61,8 @@ class PostListFragment : Fragment(), PostItemCallBack {
 
         mainViewModel.scrollRequest.observe(viewLifecycleOwner) { index ->
             if (index != null) {
-                scrollToPosition(index)
+                pendingScrollPosition = index
+                consumePendingScroll()
                 mainViewModel.scrollRequest.value = null
             }
         }
@@ -96,7 +99,13 @@ class PostListFragment : Fragment(), PostItemCallBack {
                     adapter.updateData(postList)
 
                     if (postList.isNotEmpty()) {
-                        checkCurrentVisibleItem()
+                        binding.recyclerViewPosts.post {
+                            if (pendingScrollPosition != null) {
+                                consumePendingScroll()
+                            } else {
+                                checkCurrentVisibleItem()
+                            }
+                        }
                     }
                 }
             }
@@ -171,11 +180,14 @@ class PostListFragment : Fragment(), PostItemCallBack {
     fun scrollToPosition(index: Int) {
         binding.recyclerViewPosts.post {
             val layoutManager = binding.recyclerViewPosts.layoutManager as? LinearLayoutManager
-            layoutManager?.scrollToPositionWithOffset(index, 0)
 
-            binding.recyclerViewPosts.postDelayed({
-                checkCurrentVisibleItem()
-            }, 100)
+            if (layoutManager != null) {
+                layoutManager.scrollToPositionWithOffset(index, 0)
+
+                binding.recyclerViewPosts.postDelayed({
+                    checkCurrentVisibleItem()
+                }, 50)
+            }
         }
     }
 
@@ -213,6 +225,17 @@ class PostListFragment : Fragment(), PostItemCallBack {
                     adapter.updateVisibleItemType(currentPost)
                 }
             }
+        }
+    }
+
+    private fun consumePendingScroll() {
+        val index = pendingScrollPosition ?: return // Không có nợ thì thôi
+        val adapter = binding.recyclerViewPosts.adapter ?: return
+
+        // Chỉ cuộn nếu vị trí đó hợp lệ (nằm trong danh sách)
+        if (index >= 0 && index < adapter.itemCount) {
+            scrollToPosition(index)
+            pendingScrollPosition = null // Xóa nợ sau khi cuộn xong
         }
     }
 
