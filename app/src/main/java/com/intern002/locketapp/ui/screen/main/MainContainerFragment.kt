@@ -4,21 +4,22 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentMainContainerBinding
-import com.intern002.locketapp.ui.screen.post.PostListFragment
 
 class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
 
     private var _binding: FragmentMainContainerBinding? = null
     private val binding get() = _binding!!
 
+    private val mainViewModel: MainViewModel by activityViewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 👂 LẮNG NGHE KẾT QUẢ TỪ GRID (Khi user chọn ảnh xong quay về)
         childFragmentManager.setFragmentResultListener(
             "request_jump_to_post",
             this
@@ -27,8 +28,7 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
 
             binding.viewPagerMain.setCurrentItem(1, false)
 
-            val feedFragment = childFragmentManager.findFragmentByTag("f1") as? PostListFragment
-            feedFragment?.scrollToPosition(index)
+            mainViewModel.scrollRequest.value = index
         }
     }
 

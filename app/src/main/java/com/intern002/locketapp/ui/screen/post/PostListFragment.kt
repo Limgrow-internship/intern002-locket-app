@@ -6,7 +6,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -68,10 +67,7 @@ class PostListFragment : Fragment(), PostItemCallBack {
 
     override fun onResume() {
         super.onResume()
-
         if (mainViewModel.refreshTrigger.value == true) {
-            android.util.Log.d("PostListFragment", "Thấy cờ Refresh -> Gọi API mới ngay!")
-
             viewModel.refreshFeed()
             scrollToPosition(0)
             mainViewModel.refreshTrigger.value = false
@@ -80,7 +76,6 @@ class PostListFragment : Fragment(), PostItemCallBack {
 
     private fun setupAdapter(myUserId: String) {
         if (binding.recyclerViewPosts.adapter == null) {
-
             val adapter = PostAdapter(emptyList(), myUserId, this)
             binding.recyclerViewPosts.adapter = adapter
 
@@ -88,12 +83,9 @@ class PostListFragment : Fragment(), PostItemCallBack {
             snapHelper.attachToRecyclerView(binding.recyclerViewPosts)
 
             setupScrollConflict()
-
             observePosts(adapter)
-
             setupPagination()
-
-            setupScrollListener(adapter, snapHelper)
+            setupScrollListener()
         }
     }
 
@@ -102,6 +94,10 @@ class PostListFragment : Fragment(), PostItemCallBack {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.posts.collectLatest { postList ->
                     adapter.updateData(postList)
+
+                    if (postList.isNotEmpty()) {
+                        checkCurrentVisibleItem()
+                    }
                 }
             }
         }
@@ -158,20 +154,15 @@ class PostListFragment : Fragment(), PostItemCallBack {
         })
     }
 
-    private fun setupScrollListener(adapter: PostAdapter, snapHelper: PagerSnapHelper) {
+    private fun setupScrollListener() {
         binding.recyclerViewPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                // Khi lướt xong và dừng lại (IDLE)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val snapView = snapHelper.findSnapView(recyclerView.layoutManager)
-                    val position = snapView?.let { recyclerView.layoutManager?.getPosition(it) }
-
-                    val currentList = adapter.getCurrentList()
-
-                    if (position != null && position >= 0 && position < currentList.size) {
-                        val currentPost = currentList[position]
-                        adapter.updateVisibleItemType(currentPost)
-                    }
+                    // 👇 CHỈ CẦN GỌI DÒNG NÀY THÔI
+                    // (Nó sẽ tự tìm view đang snap và update UI)
+                    checkCurrentVisibleItem()
                 }
             }
         })
@@ -181,11 +172,19 @@ class PostListFragment : Fragment(), PostItemCallBack {
         binding.recyclerViewPosts.post {
             val layoutManager = binding.recyclerViewPosts.layoutManager as? LinearLayoutManager
             layoutManager?.scrollToPositionWithOffset(index, 0)
+
+            binding.recyclerViewPosts.postDelayed({
+                checkCurrentVisibleItem()
+            }, 100)
         }
     }
 
     override fun onPostTypeChanged(isMine: Boolean) {
-        binding.layoutReactionBar.isVisible = !isMine
+        if (isMine) {
+            binding.layoutReactionBar.visibility = View.GONE
+        } else {
+            binding.layoutReactionBar.visibility = View.VISIBLE
+        }
     }
 
     override fun onShowReactions(reactors: List<Reactor>) {
@@ -197,6 +196,25 @@ class PostListFragment : Fragment(), PostItemCallBack {
         }
     }
 
+    private fun checkCurrentVisibleItem() {
+        binding.recyclerViewPosts.post {
+            val layoutManager =
+                binding.recyclerViewPosts.layoutManager as? LinearLayoutManager ?: return@post
+            val adapter = binding.recyclerViewPosts.adapter as? PostAdapter ?: return@post
+
+            val snapHelper = PagerSnapHelper()
+            val snapView = snapHelper.findSnapView(layoutManager)
+            val position = snapView?.let { layoutManager.getPosition(it) }
+
+            if (position != null && position != RecyclerView.NO_POSITION) {
+                val currentList = adapter.getCurrentList()
+                if (position in currentList.indices) {
+                    val currentPost = currentList[position]
+                    adapter.updateVisibleItemType(currentPost)
+                }
+            }
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
