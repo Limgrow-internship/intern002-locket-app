@@ -353,6 +353,10 @@
         <argument
             android:name="recipientName"
             app:argType="string" />
+        <argument
+            android:name="recipientAvatarUrl"
+            app:argType="string"
+            app:nullable="true" />
         <action
             android:id="@+id/action_chatDetailFragment_to_chatListFragment"
             app:destination="@id/chatListFragment"

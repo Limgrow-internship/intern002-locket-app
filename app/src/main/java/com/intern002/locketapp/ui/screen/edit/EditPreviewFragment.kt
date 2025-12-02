@@ -9,19 +9,29 @@ import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentEditPreviewBinding
+import com.intern002.locketapp.ui.screen.main.MainViewModel
 import com.intern002.locketapp.utils.MediaSaver
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-class EditPreviewFragment : Fragment() {
+@AndroidEntryPoint
+class EditPreviewFragment : Fragment(R.layout.fragment_edit_preview) {
     private var _binding: FragmentEditPreviewBinding? = null
     private val binding get() = _binding!!
 
     private val args: EditPreviewFragmentArgs by navArgs()
+
+    private val viewModel: EditPreviewViewModel by viewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     private var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
 
@@ -54,27 +64,77 @@ class EditPreviewFragment : Fragment() {
                 requireContext().getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager
             imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
         }
+
+        observeViewModel()
+
+    }
+
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
+                viewModel.sendState.collect { state ->
+                    when (state) {
+                        is SendState.Loading -> {
+                            binding.buttonSend.isEnabled = false
+                            binding.buttonSend.alpha = 0.5f
+                            Toast.makeText(context, "Đang gửi ảnh...", Toast.LENGTH_SHORT).show()
+                        }
+
+                        is SendState.Success -> {
+                            binding.buttonSend.isEnabled = true
+                            binding.buttonSend.alpha = 1f
+                            mainViewModel.refreshTrigger.value = true
+                            Toast.makeText(context, "Gửi thành công!", Toast.LENGTH_SHORT).show()
+                            findNavController().popBackStack()
+                        }
+
+                        is SendState.Error -> {
+                            binding.buttonSend.isEnabled = true
+                            binding.buttonSend.alpha = 1f
+                            Toast.makeText(context, "Lỗi: ${state.message}", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+
+                        else -> {} // Idle
+                    }
+                }
+            }
+        }
     }
 
     private fun setupFriendsList() {
         val mockData = arrayListOf(
-            FriendItem(0, "All", isSelected = true, isAllButton = true),
-            FriendItem(1, "Minh", avatarUrl = "https://i.pravatar.cc/150?img=1"),
-            FriendItem(2, "Trâm", avatarUrl = "https://i.pravatar.cc/150?img=5"),
-            FriendItem(3, "Long", avatarUrl = "https://i.pravatar.cc/150?img=8"),
-            FriendItem(4, "Vy", avatarUrl = "https://i.pravatar.cc/150?img=10"),
-            FriendItem(5, "Hùng", avatarUrl = "https://i.pravatar.cc/150?img=12")
+            FriendItem("", "All", isSelected = true, isAllButton = true),
+            FriendItem(
+                "b4934e28-8c90-4166-b9da-4c8ef1aa9e8a",
+                "Minh",
+                avatarUrl = "https://i.pravatar.cc/150?img=1"
+            ),
+            FriendItem(
+                "759867dc-6a21-4a78-8228-cbd4aa2399da",
+                "Trâm",
+                avatarUrl = "https://i.pravatar.cc/150?img=5"
+            ),
+            FriendItem(
+                "e235acd9-95e0-4588-9939-4bb1109173fc",
+                "Long",
+                avatarUrl = "https://i.pravatar.cc/150?img=8"
+            ),
+            FriendItem(
+                "15e478c0-4e61-4280-a88d-26c81bd8eae5",
+                "Vy",
+                avatarUrl = "https://i.pravatar.cc/150?img=10"
+            ),
+            FriendItem(
+                "4f18d2d2-724c-4e32-b29a-c5cc008dd3a6",
+                "Hùng",
+                avatarUrl = "https://i.pravatar.cc/150?img=12"
+            )
         )
 
         val adapter = FriendsSelectAdapter(mockData)
         binding.recyclerFriends.adapter = adapter
 
-        binding.buttonSend.setOnClickListener {
-            val selectedFriends = adapter.getSelectedFriends()
-            val names = selectedFriends.joinToString { it.name }
-
-            // TODO: Gọi API gửi ảnh
-        }
     }
 
     private fun setupImage(uri: Uri) {
@@ -103,7 +163,25 @@ class EditPreviewFragment : Fragment() {
 
         binding.buttonSend.setOnClickListener {
             val caption = binding.editTextCaption.text.toString()
-            Toast.makeText(context, "Sending with caption: $caption", Toast.LENGTH_SHORT).show()
+
+            val adapter = binding.recyclerFriends.adapter
+            if (adapter == null) {
+                return@setOnClickListener
+            }
+
+            if (adapter !is FriendsSelectAdapter) {
+                return@setOnClickListener
+            }
+
+            val selectedFriends = adapter.getSelectedFriends()
+
+            if (selectedFriends.isEmpty()) {
+                Toast.makeText(context, "Chọn ít nhất 1 người bạn!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val friendIds = selectedFriends.map { it.id.toString() }
+            viewModel.sendPost(uri, isVideo, caption, friendIds)
         }
 
         binding.buttonDownload.setOnClickListener {

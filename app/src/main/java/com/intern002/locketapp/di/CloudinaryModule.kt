@@ -1,28 +1,30 @@
 package com.intern002.locketapp.di
 
-import android.content.Context
 import com.cloudinary.android.MediaManager
-import com.intern002.locketapp.BuildConfig
+import com.intern002.locketapp.data.repository.CloudinaryRepository
+import com.intern002.locketapp.data.repository.CloudinaryRepositoryImpl
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object CloudinaryModule {
+abstract class CloudinaryModule {
 
-    @Provides
+    @Binds
     @Singleton
-    fun provideMediaManager(@ApplicationContext context: Context): MediaManager {
-        if (BuildConfig.CLOUDINARY_URL.isNotBlank()) {
-            val config = mapOf(
-                "cloudinary_url" to BuildConfig.CLOUDINARY_URL
-            )
-            MediaManager.init(context, config)
+    abstract fun bindCloudinaryRepository(
+        impl: CloudinaryRepositoryImpl
+    ): CloudinaryRepository
+
+    companion object {
+        @Provides
+        @Singleton
+        fun provideMediaManager(): MediaManager {
+            return MediaManager.get()
         }
-        return MediaManager.get()
     }
 }

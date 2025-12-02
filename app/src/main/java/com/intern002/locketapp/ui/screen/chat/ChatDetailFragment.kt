@@ -65,7 +65,12 @@ class ChatDetailFragment : Fragment() {
     }
 
     private fun setupRecyclerView(userId: String) {
-        messageAdapter = MessageAdapter(mutableListOf(), userId)
+        messageAdapter = MessageAdapter(
+            mutableListOf(),
+            userId,
+            args.recipientAvatarUrl,
+            args.recipientName
+        )
         binding.rvMessages.apply {
             adapter = messageAdapter
             layoutManager = LinearLayoutManager(requireContext()).apply {

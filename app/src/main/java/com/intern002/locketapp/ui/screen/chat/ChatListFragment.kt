@@ -58,8 +58,9 @@ class ChatListFragment : Fragment() {
     private fun setupRecyclerView() {
         chatListAdapter = ChatListAdapter(emptyList(), "") { conversation ->
             val action = ChatListFragmentDirections.actionChatListFragmentToChatDetailFragment(
-                conversation.id,
-                conversation.name
+                conversationId = conversation.id,
+                recipientName = conversation.name,
+                recipientAvatarUrl = conversation.avatarUrl
             )
             findNavController().navigate(action)
         }

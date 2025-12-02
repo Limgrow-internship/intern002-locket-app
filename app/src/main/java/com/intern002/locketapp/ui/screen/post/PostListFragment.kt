@@ -6,22 +6,34 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.intern002.locketapp.R
-import com.intern002.locketapp.data.datasource.MockData
-import com.intern002.locketapp.data.remote.model.Post
 import com.intern002.locketapp.data.remote.model.Reactor
 import com.intern002.locketapp.databinding.FragmentPostListBinding
+import com.intern002.locketapp.ui.screen.main.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class PostListFragment : Fragment(), PostItemCallBack {
 
     private var _binding: FragmentPostListBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: PostListViewModel by viewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
+
+    private var pendingScrollPosition: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,18 +47,84 @@ class PostListFragment : Fragment(), PostItemCallBack {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val postList = MockData.posts
-
-        // 1. SETUP ADAPTER (Truyền "this" vào làm callback)
-        val adapter = PostAdapter(postList, "me", this)
         binding.recyclerViewPosts.layoutManager = LinearLayoutManager(context)
-        binding.recyclerViewPosts.adapter = adapter
 
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(binding.recyclerViewPosts)
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.currentUserId.collectLatest { myId ->
+                    if (myId != null) {
+                        setupAdapter(myId)
+                    }
+                }
+            }
+        }
 
-        setupScrollListener(adapter, snapHelper, postList)
-        setupScrollConflict()
+        mainViewModel.scrollRequest.observe(viewLifecycleOwner) { index ->
+            if (index != null) {
+                pendingScrollPosition = index
+                consumePendingScroll()
+                mainViewModel.scrollRequest.value = null
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (mainViewModel.refreshTrigger.value == true) {
+            viewModel.refreshFeed()
+            scrollToPosition(0)
+            mainViewModel.refreshTrigger.value = false
+        }
+    }
+
+    private fun setupAdapter(myUserId: String) {
+        if (binding.recyclerViewPosts.adapter == null) {
+            val adapter = PostAdapter(emptyList(), myUserId, this)
+            binding.recyclerViewPosts.adapter = adapter
+
+            val snapHelper = PagerSnapHelper()
+            snapHelper.attachToRecyclerView(binding.recyclerViewPosts)
+
+            setupScrollConflict()
+            observePosts(adapter)
+            setupPagination()
+            setupScrollListener()
+        }
+    }
+
+    private fun observePosts(adapter: PostAdapter) {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.posts.collectLatest { postList ->
+                    adapter.updateData(postList)
+
+                    if (postList.isNotEmpty()) {
+                        binding.recyclerViewPosts.post {
+                            if (pendingScrollPosition != null) {
+                                consumePendingScroll()
+                            } else {
+                                checkCurrentVisibleItem()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupPagination() {
+        binding.recyclerViewPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                if (totalItemCount <= lastVisibleItem + 3) {
+                    viewModel.loadPosts(isRefresh = false)
+                }
+            }
+        })
     }
 
     private fun setupScrollConflict() {
@@ -85,37 +163,39 @@ class PostListFragment : Fragment(), PostItemCallBack {
         })
     }
 
-    private fun setupScrollListener(
-        adapter: PostAdapter,
-        snapHelper: PagerSnapHelper,
-        postList: List<Post>
-    ) {
+    private fun setupScrollListener() {
         binding.recyclerViewPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-
-                // Chỉ kiểm tra khi RecyclerView đã dừng hẳn
+                // Khi lướt xong và dừng lại (IDLE)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val snapView = snapHelper.findSnapView(recyclerView.layoutManager)
-                    val position = snapView?.let { recyclerView.layoutManager?.getPosition(it) }
-
-                    if (position != null && position >= 0) {
-                        val currentPost = postList[position]
-
-                        adapter.updateVisibleItemType(currentPost)
-                    }
+                    // 👇 CHỈ CẦN GỌI DÒNG NÀY THÔI
+                    // (Nó sẽ tự tìm view đang snap và update UI)
+                    checkCurrentVisibleItem()
                 }
             }
         })
     }
 
-    override fun onPostTypeChanged(isMine: Boolean) {
-        val replyBar = binding.layoutReactionBar
+    fun scrollToPosition(index: Int) {
+        binding.recyclerViewPosts.post {
+            val layoutManager = binding.recyclerViewPosts.layoutManager as? LinearLayoutManager
 
+            if (layoutManager != null) {
+                layoutManager.scrollToPositionWithOffset(index, 0)
+
+                binding.recyclerViewPosts.postDelayed({
+                    checkCurrentVisibleItem()
+                }, 50)
+            }
+        }
+    }
+
+    override fun onPostTypeChanged(isMine: Boolean) {
         if (isMine) {
-            replyBar.isVisible = false
+            binding.layoutReactionBar.visibility = View.GONE
         } else {
-            replyBar.isVisible = true
+            binding.layoutReactionBar.visibility = View.VISIBLE
         }
     }
 
@@ -128,18 +208,34 @@ class PostListFragment : Fragment(), PostItemCallBack {
         }
     }
 
-    // Hàm này để MainContainer gọi khi chọn ảnh từ Grid (Chức năng Jump to Post)
-    fun scrollToPosition(index: Int) {
-        binding.recyclerViewPosts.postDelayed({
-            binding.recyclerViewPosts.scrollToPosition(index)
-        }, 100)
+    private fun checkCurrentVisibleItem() {
+        binding.recyclerViewPosts.post {
+            val layoutManager =
+                binding.recyclerViewPosts.layoutManager as? LinearLayoutManager ?: return@post
+            val adapter = binding.recyclerViewPosts.adapter as? PostAdapter ?: return@post
+
+            val snapHelper = PagerSnapHelper()
+            val snapView = snapHelper.findSnapView(layoutManager)
+            val position = snapView?.let { layoutManager.getPosition(it) }
+
+            if (position != null && position != RecyclerView.NO_POSITION) {
+                val currentList = adapter.getCurrentList()
+                if (position in currentList.indices) {
+                    val currentPost = currentList[position]
+                    adapter.updateVisibleItemType(currentPost)
+                }
+            }
+        }
     }
 
-    override fun onPause() {
-        super.onPause()
-        // KHI RỜI KHỎI MÀN HÌNH FEED (Về Camera hoặc tắt app)
-        // -> Reset cuộn về vị trí đầu tiên (0) ngay lập tức
-        binding.recyclerViewPosts.scrollToPosition(0)
+    private fun consumePendingScroll() {
+        val index = pendingScrollPosition ?: return
+        val adapter = binding.recyclerViewPosts.adapter ?: return
+
+        if (index >= 0 && index < adapter.itemCount) {
+            scrollToPosition(index)
+            pendingScrollPosition = null
+        }
     }
 
     override fun onDestroyView() {

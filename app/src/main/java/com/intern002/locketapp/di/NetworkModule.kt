@@ -5,7 +5,7 @@ import com.intern002.locketapp.BuildConfig
 import com.intern002.locketapp.data.prefs.AuthManager
 import com.intern002.locketapp.data.remote.api.AuthApi
 import com.intern002.locketapp.data.remote.api.ChatApi
-import com.intern002.locketapp.data.remote.api.UserApi
+import com.intern002.locketapp.data.remote.api.PostApi
 import com.intern002.locketapp.data.remote.model.auth.RefreshRequest
 import com.intern002.locketapp.data.remote.response.AuthResponse
 import dagger.Module
@@ -56,19 +56,16 @@ object NetworkModule {
 
             install(Auth) {
                 bearer {
-                    // 1. Tải Token mới nhất từ AuthManager
                     loadTokens {
                         val accessToken = runBlocking { authManager.getAccessToken().first() }
                         val refreshToken = runBlocking { authManager.getRefreshToken().first() }
                         if (accessToken.isNullOrBlank() || refreshToken.isNullOrBlank()) {
                             null
                         } else {
-                            // Trả về token mới nhất đã được lưu trong DataStore
                             BearerTokens(accessToken, refreshToken)
                         }
                     }
 
-                    // 2. Refresh Token (Logic làm mới token)
                     refreshTokens {
                         val refreshTokenValue = runBlocking { authManager.getRefreshToken().first() }
                         if (refreshTokenValue.isNullOrBlank()) {
@@ -93,10 +90,8 @@ object NetworkModule {
                         }
                     }
 
-                    // 3. BẮT BUỘC: Đảm bảo Ktor gửi token cho các request cần xác thực
                     sendWithoutRequest { request ->
                         val path = request.url.encodedPath
-                        // Không gửi token cho các endpoint xác thực (login, register, google, refresh, check-email)
                         !path.contains("/auth/login") &&
                                 !path.contains("/auth/register") &&
                                 !path.contains("/auth/google") &&
@@ -116,13 +111,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideUserApi(client: HttpClient): UserApi {
-        return UserApi(client)
+    fun provideChatApi(client: HttpClient): ChatApi {
+        return ChatApi(client)
     }
 
     @Provides
     @Singleton
-    fun provideChatApi(client: HttpClient): ChatApi {
-        return ChatApi(client)
+    fun providePostApi(client: HttpClient): PostApi {
+        return PostApi(client)
     }
 }

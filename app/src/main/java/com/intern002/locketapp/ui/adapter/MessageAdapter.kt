@@ -2,16 +2,22 @@ package com.intern002.locketapp.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.intern002.locketapp.R
 import com.intern002.locketapp.data.model.Message
 import com.intern002.locketapp.databinding.ItemMessageImageSentBinding
 import com.intern002.locketapp.databinding.ItemMessageReceivedBinding
 import com.intern002.locketapp.databinding.ItemMessageSentBinding
 
-class MessageAdapter(private var messages: MutableList<Message>, private var currentUserId: String) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MessageAdapter(
+    private var messages: MutableList<Message>,
+    private var currentUserId: String,
+    private val recipientAvatarUrl: String?,
+    private val recipientName: String?
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         private const val VIEW_TYPE_SENT_TEXT = 1
@@ -23,7 +29,7 @@ class MessageAdapter(private var messages: MutableList<Message>, private var cur
     fun setCurrentUserId(newUserId: String) {
         if (currentUserId != newUserId) {
             currentUserId = newUserId
-            notifyDataSetChanged() // Reload all views with the new user perspective
+            notifyDataSetChanged()
         }
     }
 
@@ -63,14 +69,13 @@ class MessageAdapter(private var messages: MutableList<Message>, private var cur
         when (holder) {
             is SentTextViewHolder -> holder.bind(message)
             is SentImageViewHolder -> holder.bind(message)
-            is ReceivedTextViewHolder -> holder.bind(message)
-            is ReceivedImageViewHolder -> holder.bind(message)
+            is ReceivedTextViewHolder -> holder.bind(message, recipientAvatarUrl, recipientName)
+            is ReceivedImageViewHolder -> holder.bind(message, recipientAvatarUrl, recipientName)
         }
     }
 
     override fun getItemCount(): Int = messages.size
 
-    // FIX: Replaced notifyDataSetChanged() with a more efficient DiffUtil implementation
     fun setMessages(newMessages: List<Message>) {
         val diffCallback = MessageDiffCallback(this.messages, newMessages)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
@@ -79,51 +84,70 @@ class MessageAdapter(private var messages: MutableList<Message>, private var cur
         diffResult.dispatchUpdatesTo(this)
     }
 
-    // ViewHolder for sent text messages
     class SentTextViewHolder(private val binding: ItemMessageSentBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message) {
             binding.tvMessageBody.text = message.content
         }
     }
 
-    // ViewHolder for sent image messages
     class SentImageViewHolder(private val binding: ItemMessageImageSentBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message) {
             Glide.with(itemView.context).load(message.imageUrl).into(binding.ivMessageImage)
         }
     }
 
-    // ViewHolder for received text messages
     class ReceivedTextViewHolder(private val binding: ItemMessageReceivedBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(message: Message) {
+        fun bind(message: Message, avatarUrl: String?, name: String?) {
             binding.tvMessageBody.text = message.content
-            binding.tvMessageBody.visibility = android.view.View.VISIBLE
-            binding.cvImageContainer.visibility = android.view.View.GONE
+            binding.tvMessageBody.isVisible = true
+            binding.cvImageContainer.isVisible = false
+            updateAvatar(avatarUrl, name)
+        }
+
+        private fun updateAvatar(avatarUrl: String?, name: String?) {
+            if (!avatarUrl.isNullOrEmpty()) {
+                binding.ivAvatar.isVisible = true
+                binding.tvAvatarLetter.isVisible = false
+                Glide.with(itemView.context).load(avatarUrl).into(binding.ivAvatar)
+            } else {
+                binding.ivAvatar.isVisible = false
+                binding.tvAvatarLetter.isVisible = true
+                binding.tvAvatarLetter.text = name?.firstOrNull()?.toString() ?: ""
+            }
         }
     }
 
-    // ViewHolder for received image messages
     class ReceivedImageViewHolder(private val binding: ItemMessageReceivedBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(message: Message) {
+        fun bind(message: Message, avatarUrl: String?, name: String?) {
             Glide.with(itemView.context).load(message.imageUrl).into(binding.ivMessageImage)
-            binding.tvMessageBody.visibility = android.view.View.GONE
-            binding.cvImageContainer.visibility = android.view.View.VISIBLE
+            binding.tvMessageBody.isVisible = false
+            binding.cvImageContainer.isVisible = true
+            updateAvatar(avatarUrl, name)
+        }
+
+        private fun updateAvatar(avatarUrl: String?, name: String?) {
+            if (!avatarUrl.isNullOrEmpty()) {
+                binding.ivAvatar.isVisible = true
+                binding.tvAvatarLetter.isVisible = false
+                Glide.with(itemView.context).load(avatarUrl).into(binding.ivAvatar)
+            } else {
+                binding.ivAvatar.isVisible = false
+                binding.tvAvatarLetter.isVisible = true
+                binding.tvAvatarLetter.text = name?.firstOrNull()?.toString() ?: ""
+            }
         }
     }
 }
 
-// DiffUtil Callback to calculate the difference between two lists efficiently
 class MessageDiffCallback(private val oldList: List<Message>, private val newList: List<Message>) : DiffUtil.Callback() {
     override fun getOldListSize(): Int = oldList.size
     override fun getNewListSize(): Int = newList.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        // Use a unique identifier for each message, createdAt is a good candidate
         return oldList[oldItemPosition].createdAt == newList[newItemPosition].createdAt
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        // Check if the content of the message is the same
         return oldList[oldItemPosition] == newList[newItemPosition]
     }
 }

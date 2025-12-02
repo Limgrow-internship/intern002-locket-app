@@ -1,5 +1,11 @@
 import java.util.Properties
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -38,14 +44,21 @@ android {
         versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        val cloudName = localProperties.getProperty("CLOUDINARY_CLOUD_NAME") ?: ""
+        val apiKey = localProperties.getProperty("CLOUDINARY_API_KEY") ?: ""
+        val apiSecret = localProperties.getProperty("CLOUDINARY_API_SECRET") ?: ""
+        val cloudinaryUrl = localProperties.getProperty("CLOUDINARY_URL") ?: ""
+
+        buildConfigField("String", "CLOUDINARY_URL", "\"$cloudinaryUrl\"")
+        buildConfigField("String", "CLOUD_NAME", "\"$cloudName\"")
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
+        buildConfigField("String", "API_SECRET", "\"$apiSecret\"")
     }
 
     buildTypes {
         debug {
             val baseUrl = getLocalProperty("base.url", project) ?: "http://10.0.2.2:8080"
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
-            val cloudinaryUrl = getLocalProperty("cloudinary_url", project) ?: ""
-            buildConfigField("String", "CLOUDINARY_URL", "\"$cloudinaryUrl\"")
             val supabaseUrl = getLocalProperty("supabase.url", project) ?: ""
             buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
             val supabaseKey = getLocalProperty("supabase.key", project) ?: ""
@@ -58,9 +71,6 @@ android {
                 "proguard-rules.pro",
             )
             buildConfigField("String", "BASE_URL", "\"https://your.production.server.com/\"")
-
-            val cloudinaryUrl = getLocalProperty("cloudinary_url", project) ?: ""
-            buildConfigField("String", "CLOUDINARY_URL", "\"$cloudinaryUrl\"")
             val supabaseUrl = getLocalProperty("supabase.url", project) ?: ""
             buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
             val supabaseKey = getLocalProperty("supabase.key", project) ?: ""
@@ -102,6 +112,7 @@ dependencies {
     implementation("io.ktor:ktor-client-logging:2.3.10")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.10")
     implementation("io.ktor:ktor-client-auth:2.3.10")
+    implementation("io.ktor:ktor-serialization-gson:2.3.10")
 
     // Supabase
     implementation(platform(libs.supabase.bom))
@@ -143,9 +154,6 @@ dependencies {
     // Circle ImageView
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
-    // Cloudinary
-    implementation("com.cloudinary:cloudinary-android:2.4.0")
-
     // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -169,6 +177,12 @@ dependencies {
     implementation("androidx.camera:camera-camera2:1.3.3")
     implementation("androidx.camera:camera-lifecycle:1.3.3")
     implementation("androidx.camera:camera-view:1.3.3")
+
+    //Cloudinary
+    implementation("com.cloudinary:cloudinary-android:2.3.1")
+
+    //Gson
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 ktlint {
