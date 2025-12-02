@@ -42,8 +42,13 @@ class ProfileFragment : Fragment() {
         setupCalendars()
     }
 
-    private fun observeViewModel() {
+    override fun onResume() {
+        super.onResume()
+        // Luôn gọi để lấy profile mới nhất mỗi khi fragment quay trở lại màn hình
         viewModel.fetchUserProfile()
+    }
+
+    private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.userProfile.collect { userProfile ->
                 if (userProfile != null) {

@@ -47,7 +47,11 @@ class ChatListFragment : Fragment() {
         binding.btnBack.setOnClickListener {
             findNavController().navigate(R.id.action_chatListFragment_to_mainContainerFragment)
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        // Luôn gọi để lấy danh sách cuộc trò chuyện mới nhất mỗi khi quay lại màn hình
         viewModel.getConversations()
     }
 

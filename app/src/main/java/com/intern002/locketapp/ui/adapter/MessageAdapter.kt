@@ -10,7 +10,7 @@ import com.intern002.locketapp.databinding.ItemMessageImageSentBinding
 import com.intern002.locketapp.databinding.ItemMessageReceivedBinding
 import com.intern002.locketapp.databinding.ItemMessageSentBinding
 
-class MessageAdapter(private var messages: MutableList<Message>, private val currentUserId: String) :
+class MessageAdapter(private var messages: MutableList<Message>, private var currentUserId: String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -18,6 +18,13 @@ class MessageAdapter(private var messages: MutableList<Message>, private val cur
         private const val VIEW_TYPE_SENT_IMAGE = 2
         private const val VIEW_TYPE_RECEIVED_TEXT = 3
         private const val VIEW_TYPE_RECEIVED_IMAGE = 4
+    }
+
+    fun setCurrentUserId(newUserId: String) {
+        if (currentUserId != newUserId) {
+            currentUserId = newUserId
+            notifyDataSetChanged() // Reload all views with the new user perspective
+        }
     }
 
     override fun getItemViewType(position: Int): Int {

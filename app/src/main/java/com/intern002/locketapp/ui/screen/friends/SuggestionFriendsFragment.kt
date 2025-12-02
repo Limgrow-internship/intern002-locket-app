@@ -60,12 +60,16 @@ class SuggestionFriendsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.initializeForSuggestionsScreen()
-
         setupRecyclerView()
         setupClickListeners()
         setupSearch()
         observeViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Luôn gọi để lấy dữ liệu mới nhất mỗi khi fragment quay trở lại màn hình
+        viewModel.initializeForSuggestionsScreen()
     }
 
     private fun setupRecyclerView() {

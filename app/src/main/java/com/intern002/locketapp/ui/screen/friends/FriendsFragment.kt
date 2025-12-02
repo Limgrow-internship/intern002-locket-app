@@ -59,12 +59,16 @@ class FriendsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.initializeForFriendsScreen()
-
         setupRecyclerView()
         setupClickListeners()
         setupSearch()
         observeViewModel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Luôn gọi để lấy dữ liệu mới nhất mỗi khi fragment quay trở lại màn hình
+        viewModel.initializeForFriendsScreen()
     }
 
     private fun setupRecyclerView() {

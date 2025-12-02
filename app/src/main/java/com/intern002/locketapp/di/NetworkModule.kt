@@ -25,7 +25,6 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
@@ -57,16 +56,19 @@ object NetworkModule {
 
             install(Auth) {
                 bearer {
+                    // 1. Tải Token mới nhất từ AuthManager
                     loadTokens {
                         val accessToken = runBlocking { authManager.getAccessToken().first() }
                         val refreshToken = runBlocking { authManager.getRefreshToken().first() }
                         if (accessToken.isNullOrBlank() || refreshToken.isNullOrBlank()) {
                             null
                         } else {
+                            // Trả về token mới nhất đã được lưu trong DataStore
                             BearerTokens(accessToken, refreshToken)
                         }
                     }
 
+                    // 2. Refresh Token (Logic làm mới token)
                     refreshTokens {
                         val refreshTokenValue = runBlocking { authManager.getRefreshToken().first() }
                         if (refreshTokenValue.isNullOrBlank()) {
@@ -89,6 +91,17 @@ object NetworkModule {
                             runBlocking { authManager.clearTokens() }
                             null
                         }
+                    }
+
+                    // 3. BẮT BUỘC: Đảm bảo Ktor gửi token cho các request cần xác thực
+                    sendWithoutRequest { request ->
+                        val path = request.url.encodedPath
+                        // Không gửi token cho các endpoint xác thực (login, register, google, refresh, check-email)
+                        !path.contains("/auth/login") &&
+                                !path.contains("/auth/register") &&
+                                !path.contains("/auth/google") &&
+                                !path.contains("/auth/refresh") &&
+                                !path.contains("/auth/check-email")
                     }
                 }
             }
