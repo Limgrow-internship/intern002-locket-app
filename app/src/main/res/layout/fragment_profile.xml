@@ -75,11 +75,12 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
-                android:paddingTop="16dp">
+                android:paddingTop="16dp"
+                android:paddingBottom="10dp">
                  <FrameLayout
                     android:id="@+id/avatar_container"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
                     android:layout_marginEnd="12dp">
 
                     <View
@@ -114,7 +115,7 @@
                         android:layout_gravity="bottom|end"
                         android:src="@drawable/ic_camera_badge"
                         android:background="@drawable/bg_camera_badge"
-                        android:padding="2dp" />
+                        android:padding="1dp" />
                 </FrameLayout>
 
                 <LinearLayout

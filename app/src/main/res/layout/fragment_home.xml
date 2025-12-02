@@ -159,7 +159,7 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_flip_camera"
+            android:src="@drawable/ic_flig_camera"
             app:layout_constraintBottom_toBottomOf="@id/button_shutter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/button_shutter"

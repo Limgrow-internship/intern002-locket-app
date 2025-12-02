@@ -1,5 +1,9 @@
 package com.intern002.locketapp.di
 
+import com.intern002.locketapp.data.repository.ChatRepository
+import com.intern002.locketapp.data.repository.ChatRepositoryImpl
+import com.intern002.locketapp.data.repository.FriendshipRepository
+import com.intern002.locketapp.data.repository.FriendshipRepositoryImpl
 import com.intern002.locketapp.data.repository.PostRepository
 import com.intern002.locketapp.data.repository.PostRepositoryImpl
 import com.intern002.locketapp.data.repository.UserRepository
@@ -16,7 +20,15 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
+    abstract fun bindFriendshipRepository(impl: FriendshipRepositoryImpl): FriendshipRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindChatRepository(chatRepositoryImpl: ChatRepositoryImpl): ChatRepository
 
     @Binds
     @Singleton

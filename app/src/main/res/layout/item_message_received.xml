@@ -6,13 +6,30 @@
     android:layout_height="wrap_content"
     android:padding="4dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/iv_avatar"
+    <FrameLayout
+        android:id="@+id/fl_avatar"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:src="@drawable/avt_sample"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/avt_sample" />
+
+        <TextView
+            android:id="@+id/tv_avatar_letter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:visibility="gone"
+            tools:text="A" />
+
+    </FrameLayout>
 
     <!-- Text Message Bubble -->
     <TextView
@@ -25,8 +42,8 @@
         android:paddingVertical="12dp"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:visibility="gone" 
-        app:layout_constraintStart_toEndOf="@+id/iv_avatar"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@+id/fl_avatar"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Hi there! This is a received message." />
 
@@ -40,12 +57,12 @@
         app:cardElevation="0dp"
         android:visibility="gone"
         app:cardBackgroundColor="@android:color/transparent"
-        app:layout_constraintStart_toEndOf="@+id/iv_avatar"
+        app:layout_constraintStart_toEndOf="@+id/fl_avatar"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/iv_message_image"
-            android:layout_width="200dp" 
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"

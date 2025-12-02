@@ -59,6 +59,10 @@ android {
         debug {
             val baseUrl = getLocalProperty("base.url", project) ?: "http://10.0.2.2:8080"
             buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            val supabaseUrl = getLocalProperty("supabase.url", project) ?: ""
+            buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+            val supabaseKey = getLocalProperty("supabase.key", project) ?: ""
+            buildConfigField("String", "SUPABASE_KEY", "\"$supabaseKey\"")
         }
         release {
             isMinifyEnabled = false
@@ -67,6 +71,10 @@ android {
                 "proguard-rules.pro",
             )
             buildConfigField("String", "BASE_URL", "\"https://your.production.server.com/\"")
+            val supabaseUrl = getLocalProperty("supabase.url", project) ?: ""
+            buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+            val supabaseKey = getLocalProperty("supabase.key", project) ?: ""
+            buildConfigField("String", "SUPABASE_KEY", "\"$supabaseKey\"")
         }
     }
     compileOptions {
@@ -99,12 +107,17 @@ dependencies {
     // Ktor Client
     implementation("io.ktor:ktor-client-android:2.3.10")
     implementation("io.ktor:ktor-client-core:2.3.10")
-    implementation("io.ktor:ktor-client-cio:2.3.10")
+    implementation("io.ktor:ktor-client-okhttp:2.3.10")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.10")
     implementation("io.ktor:ktor-client-logging:2.3.10")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.10")
     implementation("io.ktor:ktor-client-auth:2.3.10")
-    implementation("io.ktor:ktor-serialization-gson:2.3.10") // Quan trọng: Gson cho Ktor
+    implementation("io.ktor:ktor-serialization-gson:2.3.10")
+
+    // Supabase
+    implementation(platform(libs.supabase.bom))
+    implementation(libs.supabase.realtime)
+    implementation(libs.supabase.postgrest)
 
     // Network
     implementation(libs.serialization.json)

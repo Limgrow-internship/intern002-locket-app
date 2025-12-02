@@ -229,13 +229,12 @@ class PostListFragment : Fragment(), PostItemCallBack {
     }
 
     private fun consumePendingScroll() {
-        val index = pendingScrollPosition ?: return // Không có nợ thì thôi
+        val index = pendingScrollPosition ?: return
         val adapter = binding.recyclerViewPosts.adapter ?: return
 
-        // Chỉ cuộn nếu vị trí đó hợp lệ (nằm trong danh sách)
         if (index >= 0 && index < adapter.itemCount) {
             scrollToPosition(index)
-            pendingScrollPosition = null // Xóa nợ sau khi cuộn xong
+            pendingScrollPosition = null
         }
     }
 
