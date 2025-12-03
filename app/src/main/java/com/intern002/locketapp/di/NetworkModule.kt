@@ -4,9 +4,9 @@ import android.util.Log
 import com.intern002.locketapp.BuildConfig
 import com.intern002.locketapp.data.prefs.AuthManager
 import com.intern002.locketapp.data.remote.api.AuthApi
+import com.intern002.locketapp.data.remote.api.ChatApi
 import com.intern002.locketapp.data.remote.api.FriendApi
 import com.intern002.locketapp.data.remote.api.PostApi
-import com.intern002.locketapp.data.remote.api.UserApi
 import com.intern002.locketapp.data.remote.model.auth.RefreshRequest
 import com.intern002.locketapp.data.remote.response.AuthResponse
 import dagger.Module
@@ -28,6 +28,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.http.encodedPath
 import io.ktor.serialization.gson.gson
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.first
@@ -105,6 +106,15 @@ object NetworkModule {
                             null
                         }
                     }
+
+                    sendWithoutRequest { request ->
+                        val path = request.url.encodedPath
+                        !path.contains("/auth/login") &&
+                                !path.contains("/auth/register") &&
+                                !path.contains("/auth/google") &&
+                                !path.contains("/auth/refresh") &&
+                                !path.contains("/auth/check-email")
+                    }
                 }
             }
 
@@ -122,8 +132,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideUserApi(client: HttpClient): UserApi {
-        return UserApi(client)
+    fun provideChatApi(client: HttpClient): ChatApi {
+        return ChatApi(client)
     }
 
     @Provides

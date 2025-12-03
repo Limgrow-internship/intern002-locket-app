@@ -1,68 +1,116 @@
 package com.intern002.locketapp.ui.adapter
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.BitmapDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
+import com.bumptech.glide.Glide
 import com.intern002.locketapp.R
-import com.intern002.locketapp.data.model.FriendStatus
-import com.intern002.locketapp.data.model.Suggestion
+import com.intern002.locketapp.data.model.Friend
+import com.intern002.locketapp.databinding.ItemSuggestionBinding
+import com.intern002.locketapp.ui.viewmodel.friends.FriendshipStatus
 
-class SuggestionAdapter(private val suggestions: List<Suggestion>, private val onAddClick: (Suggestion) -> Unit) :
-    RecyclerView.Adapter<SuggestionAdapter.SuggestionViewHolder>() {
+class SuggestionsAdapter : ListAdapter<Friend, SuggestionsAdapter.SuggestionViewHolder>(SuggestionDiffCallback()) {
 
-    inner class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val avatar: ImageView = itemView.findViewById(R.id.iv_avatar)
-        private val avatarInitial: TextView = itemView.findViewById(R.id.tv_avatar_initial)
-        private val name: TextView = itemView.findViewById(R.id.tv_name)
-        private val username: TextView = itemView.findViewById(R.id.tv_username)
-        private val addButton: MaterialButton = itemView.findViewById(R.id.btn_add_friend)
-
-        fun bind(suggestion: Suggestion) {
-            name.text = suggestion.name
-            username.text = "@${suggestion.username}"
-
-            if (suggestion.avatarUrl != null) {
-                avatar.visibility = View.VISIBLE
-                avatarInitial.visibility = View.GONE
-                // TODO: Load real image with Glide/Picasso
-                avatar.setImageResource(R.drawable.avt_sample)
-            } else {
-                avatar.visibility = View.GONE
-                avatarInitial.visibility = View.VISIBLE
-                avatarInitial.text = suggestion.name.first().toString()
-            }
-
-            when (suggestion.status) {
-                FriendStatus.NOT_FRIEND -> {
-                    addButton.text = "Add"
-                    addButton.setIconResource(R.drawable.ic_add_friend)
-                    addButton.isEnabled = true
-                    addButton.setOnClickListener { onAddClick(suggestion) }
-                }
-                FriendStatus.INVITED -> {
-                    addButton.text = "Invited"
-                    addButton.icon = null
-                    addButton.isEnabled = false
-                }
-                FriendStatus.FRIEND -> {
-                    addButton.visibility = View.GONE
-                }
-            }
-        }
-    }
+    var onItemClickListener: ((Friend) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_suggestion, parent, false)
-        return SuggestionViewHolder(view)
+        val binding = ItemSuggestionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return SuggestionViewHolder(binding, onItemClickListener)
     }
 
     override fun onBindViewHolder(holder: SuggestionViewHolder, position: Int) {
-        holder.bind(suggestions[position])
+        holder.bind(getItem(position))
     }
 
-    override fun getItemCount(): Int = suggestions.size
+    class SuggestionViewHolder(
+        private val binding: ItemSuggestionBinding,
+        private val onItemClickListener: ((Friend) -> Unit)?
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        private var currentFriend: Friend? = null
+
+        init {
+            itemView.setOnClickListener {
+                currentFriend?.let { friend ->
+                    onItemClickListener?.invoke(friend)
+                }
+            }
+        }
+
+        fun bind(friend: Friend) {
+            currentFriend = friend
+            binding.tvUsername.text = friend.username
+            binding.tvDiscriminator.text = "#${friend.discriminator}"
+
+            if (!friend.avatarUrl.isNullOrEmpty()) {
+                Glide.with(itemView.context)
+                    .load(friend.avatarUrl)
+                    .placeholder(createInitialDrawable(itemView.context, friend.username))
+                    .error(createInitialDrawable(itemView.context, friend.username))
+                    .into(binding.ivAvatar)
+            } else {
+                binding.ivAvatar.setImageDrawable(createInitialDrawable(itemView.context, friend.username))
+            }
+
+            // CORRECTED: The icon now changes based on the friend's status
+            val statusIcon = when (friend.status) {
+                FriendshipStatus.FRIEND -> R.drawable.ic_friend
+                FriendshipStatus.NOT_FRIEND -> R.drawable.ic_add_friend
+                FriendshipStatus.PENDING_INCOMING, FriendshipStatus.PENDING_OUTGOING -> R.drawable.ic_invited
+                FriendshipStatus.SELF -> 0 // Hide icon for self
+            }
+
+            if (statusIcon != 0) {
+                binding.ivStatus.setImageResource(statusIcon)
+                binding.ivStatus.visibility = View.VISIBLE
+            } else {
+                binding.ivStatus.visibility = View.INVISIBLE
+            }
+        }
+
+        private fun createInitialDrawable(context: Context, name: String): BitmapDrawable {
+            val size = 150
+            val bitmap = createBitmap(size, size)
+            val canvas = Canvas(bitmap)
+
+            val backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = ContextCompat.getColor(context, R.color.grey_dark)
+            }
+            canvas.drawCircle(size / 2f, size / 2f, size / 2f, backgroundPaint)
+
+            val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+                color = Color.WHITE
+                textSize = size / 2f
+                textAlign = Paint.Align.CENTER
+            }
+
+            val initial = if (name.isNotEmpty()) name.first().uppercase() else ""
+            val yPos = (canvas.height / 2f) - ((textPaint.descent() + textPaint.ascent()) / 2f)
+            canvas.drawText(initial, canvas.width / 2f, yPos, textPaint)
+
+            return bitmap.toDrawable(context.resources) as BitmapDrawable
+        }
+    }
+
+    class SuggestionDiffCallback : DiffUtil.ItemCallback<Friend>() {
+        override fun areItemsTheSame(oldItem: Friend, newItem: Friend): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Friend, newItem: Friend): Boolean {
+            return oldItem == newItem
+        }
+    }
 }

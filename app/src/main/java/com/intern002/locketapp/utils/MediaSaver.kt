@@ -37,7 +37,6 @@ object MediaSaver {
                 val collection = if (isVideo) {
                     MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                 } else {
-                    // Dùng cái này cho ảnh
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI
                 }
 

@@ -144,8 +144,13 @@ class HomeFragment : Fragment() {
         setupControls()
     }
 
-    private fun observeViewModel() {
+    override fun onResume() {
+        super.onResume()
+        // Luôn gọi để lấy profile mới nhất mỗi khi fragment quay trở lại màn hình
         viewModel.fetchUserProfile()
+    }
+
+    private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.userProfile.collect { userProfile ->
                 if (userProfile != null) {
@@ -248,6 +253,10 @@ class HomeFragment : Fragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupControls() {
+        binding.textFriends.setOnClickListener {
+            findNavController().navigate(R.id.action_mainContainerFragment_to_FriendsFragment)
+        }
+
         binding.btnChat.setOnClickListener {
             findNavController().navigate(R.id.action_mainContainerFragment_to_chatListFragment)
         }

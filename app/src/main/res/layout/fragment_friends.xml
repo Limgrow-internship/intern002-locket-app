@@ -13,13 +13,12 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginBottom="8dp">
-
             <ImageView
                 android:id="@+id/btnBack"
                 android:layout_width="42dp"
@@ -28,7 +27,6 @@
                 android:clickable="true"
                 android:focusable="true"
                 android:padding="2dp" />
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -52,6 +50,7 @@
             android:layout_marginBottom="16dp"/>
 
         <EditText
+            android:id="@+id/btn_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/add_a_new_friend"
@@ -61,6 +60,79 @@
             android:drawableStart="@android:drawable/ic_menu_search"
             android:drawablePadding="8dp"/>
 
+        <!-- Search Result Section (Added) -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_search_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/grey_dark"
+            app:cardCornerRadius="8dp"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <RelativeLayout
+                android:id="@+id/rl_search_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/iv_search_avatar"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bg_button_gradient_blue"
+                    tools:src="@drawable/avt_sample" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/iv_search_avatar"
+                    android:layout_marginStart="12dp"
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_search_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="search_user" />
+
+                    <TextView
+                        android:id="@+id/tv_search_discriminator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white_semitransparent"
+                        android:textSize="14sp"
+                        tools:text="#1234" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/pb_search_loading"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/iv_search_status"
+                    android:layout_width="60dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_friends"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:scaleType="centerInside"
+                    tools:src="@drawable/ic_add_friend" />
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Find Friends from other apps -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -85,6 +157,7 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/btn_messenger"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/ic_messenger"
@@ -106,6 +179,7 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/btn_instagram"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/ic_instagram"
@@ -127,6 +201,7 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/btn_twitter"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/ic_twitter"
@@ -147,10 +222,11 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:id="@+id/btn_more"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/ic_more"
-                    android:layout_marginBottom="5dp"/>
+                    android:layout_marginBottom="5dp"
+                    android:src="@drawable/ic_more" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -161,22 +237,46 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Social Media Icons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <!-- ... Social media icons ... -->
+        </LinearLayout>
+
+        <!-- Your Friends List -->
         <TextView
             android:id="@+id/tv_your_friends"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/your_friends"
+            android:text="@string/your_friends_count"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="16dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_friends"
+        
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/item_friend"/>
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_friends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_friend"/>
+
+            <ProgressBar
+                android:id="@+id/pbFriendsLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+        </FrameLayout>
 
     </LinearLayout>
 </ScrollView>
