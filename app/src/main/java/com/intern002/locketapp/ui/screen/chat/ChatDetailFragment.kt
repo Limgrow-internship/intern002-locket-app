@@ -77,7 +77,7 @@ class ChatDetailFragment : Fragment() {
         } else {
             binding.toolbarAvatar.isVisible = false
             binding.toolbarAvatarLetter.isVisible = true
-            binding.toolbarAvatarLetter.text = args.recipientName.firstOrNull()?.toString() ?: ""
+            binding.toolbarAvatarLetter.text = args.recipientName.firstOrNull()?.toString()?.uppercase() ?: ""
         }
     }
 

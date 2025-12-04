@@ -112,7 +112,7 @@ class MessageAdapter(
             } else {
                 binding.ivAvatar.isVisible = false
                 binding.tvAvatarLetter.isVisible = true
-                binding.tvAvatarLetter.text = name?.firstOrNull()?.toString() ?: ""
+                binding.tvAvatarLetter.text = name?.firstOrNull()?.toString()?.uppercase() ?: ""
             }
         }
     }
@@ -133,7 +133,7 @@ class MessageAdapter(
             } else {
                 binding.ivAvatar.isVisible = false
                 binding.tvAvatarLetter.isVisible = true
-                binding.tvAvatarLetter.text = name?.firstOrNull()?.toString() ?: ""
+                binding.tvAvatarLetter.text = name?.firstOrNull()?.toString()?.uppercase() ?: ""
             }
         }
     }

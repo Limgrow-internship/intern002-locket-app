@@ -58,21 +58,26 @@ class SignupEmailFragment: Fragment() {
         binding.buttonContinue.alpha = 0.5f
         binding.tvErrorMessage.isVisible = false
 
+        binding.emailEditText.onFocusChangeListener = View.OnFocusChangeListener {
+            _,hasFocus ->
+            if (hasFocus) {
+                binding.emailLayout.suffixText = "@gmail.com"
+            } else {
+                binding.emailLayout.suffixText = null
+            }
+        }
+
         binding.emailEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val email = s.toString().trim()
-                val isValid = email.isNotBlank() && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+                val isValid = email.isNotBlank()
 
                 binding.buttonContinue.isEnabled = isValid
                 binding.buttonContinue.alpha = if (isValid) 1.0f else 0.5f
 
-                if (!isValid && email.isNotEmpty()) {
-                    binding.tvErrorMessage.isVisible = true
-                } else {
-                    binding.tvErrorMessage.isVisible = false
-                }
+                binding.tvErrorMessage.isVisible = false
                 viewModel.resetState()
             }
 
@@ -86,7 +91,7 @@ class SignupEmailFragment: Fragment() {
         }
 
         binding.buttonContinue.setOnClickListener {
-            val email = binding.emailEditText.text.toString().trim()
+            val email = binding.emailEditText.text.toString().trim()+"@gmail.com"
             viewModel.validateEmail(email)
         }
     }

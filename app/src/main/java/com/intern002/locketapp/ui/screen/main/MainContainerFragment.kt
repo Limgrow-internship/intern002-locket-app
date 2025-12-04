@@ -36,7 +36,6 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMainContainerBinding.bind(view)
 
-        // 1. Setup ViewPager
         val adapter = MainPagerAdapter(this)
         binding.viewPagerMain.adapter = adapter
         binding.viewPagerMain.getChildAt(0).overScrollMode = View.OVER_SCROLL_NEVER
@@ -77,14 +76,13 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
             findNavController().navigate(R.id.action_mainContainerFragment_to_gridPostFragment)
         }
 
-        // Nút Share
         binding.buttonShare.setOnClickListener {
             val bottomSheet = ShareBottomSheetFragment(
                 onDeleteClick = {
-                    Toast.makeText(context, "Đã xoá bài viết!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Post deleted!", Toast.LENGTH_SHORT).show()
                 },
                 onSaveClick = {
-                    Toast.makeText(context, "Đang lưu ảnh...", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Processing and saving photo...", Toast.LENGTH_SHORT).show()
                 }
             )
             bottomSheet.show(parentFragmentManager, "ShareBottomSheet")

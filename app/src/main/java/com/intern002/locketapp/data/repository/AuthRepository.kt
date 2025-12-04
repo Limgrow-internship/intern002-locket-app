@@ -18,7 +18,7 @@ class AuthRepository @Inject constructor(
     private val userApi: UserApi,
     private val userRepository: UserRepository,
     private val authManager: AuthManager,
-    private val fcmRepository: FcmRepository // Injected FcmRepository
+    private val fcmRepository: FcmRepository
 ) {
 
     private suspend fun registerFcmToken() {
@@ -120,13 +120,9 @@ class AuthRepository @Inject constructor(
         try {
             userApi.logout()
         } catch (e: Exception) {
-            // Lỗi gọi API logout có thể bỏ qua, vì mục tiêu chính là xoá token ở client
         }
-
-        // QUAN TRỌNG: xoá token trên máy trước
         authManager.clearTokens()
 
-        // Sau đó xoá cache user trong RAM
         userRepository.clearCurrentUserProfile()
     }
 

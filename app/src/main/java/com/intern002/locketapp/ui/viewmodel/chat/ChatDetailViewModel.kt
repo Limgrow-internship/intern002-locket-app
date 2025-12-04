@@ -85,7 +85,6 @@ class ChatDetailViewModel @Inject constructor(
                 content = text
             )
             chatRepository.sendMessage(request)
-            // No need to handle the result here, the realtime subscription will update the UI.
         }
     }
 }
