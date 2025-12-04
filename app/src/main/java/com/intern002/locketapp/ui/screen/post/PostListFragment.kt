@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -35,6 +38,7 @@ class PostListFragment : Fragment(), PostItemCallBack {
     private val mainViewModel: MainViewModel by activityViewModels()
 
     private var pendingScrollPosition: Int? = null
+    private var currentPostId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +77,23 @@ class PostListFragment : Fragment(), PostItemCallBack {
                 if (types.isNotEmpty()) {
                     setupReactionButtons(types)
                 }
+            }
+        }
+
+        binding.btnMore.setOnClickListener {
+            val allReactions = viewModel.reactionTypes.value
+
+            if (allReactions.isNotEmpty()) {
+                val pickerSheet = ReactionPickerFragment(allReactions) { selectedReaction ->
+                    onReactionClicked(selectedReaction.id)
+                    binding.root.postDelayed({ showFlyingEmoji(selectedReaction.emoji) }, 150)
+                    binding.root.postDelayed({ showFlyingEmoji(selectedReaction.emoji) }, 300)
+                    binding.root.postDelayed({ showFlyingEmoji(selectedReaction.emoji) }, 200)
+                    binding.root.postDelayed({ showFlyingEmoji(selectedReaction.emoji) }, 120)
+                }
+                pickerSheet.show(parentFragmentManager, "ReactionPicker")
+            } else {
+                Toast.makeText(context, "Đang tải icon...", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -176,10 +197,7 @@ class PostListFragment : Fragment(), PostItemCallBack {
         binding.recyclerViewPosts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                // Khi lướt xong và dừng lại (IDLE)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    // 👇 CHỈ CẦN GỌI DÒNG NÀY THÔI
-                    // (Nó sẽ tự tìm view đang snap và update UI)
                     checkCurrentVisibleItem()
                 }
             }
@@ -231,6 +249,7 @@ class PostListFragment : Fragment(), PostItemCallBack {
                 val currentList = adapter.getCurrentList()
                 if (position in currentList.indices) {
                     val currentPost = currentList[position]
+                    currentPostId = currentPost.id
                     adapter.updateVisibleItemType(currentPost)
                 }
             }
@@ -248,21 +267,110 @@ class PostListFragment : Fragment(), PostItemCallBack {
     }
 
     private fun setupReactionButtons(types: List<ReactionTypeResponse>) {
-        if (types.size > 0) {
-            binding.tvEmoji1.text = types[0].emoji // Ví dụ ID view là tvEmoji1
-            binding.btnReact1.setOnClickListener {
-                onReactionClicked(types[0].id)
+        binding.containerReactions.removeAllViews()
+
+        val previewTypes = types.take(3)
+
+        for (type in previewTypes) {
+            val reactionBtn = ImageView(context)
+
+            val params = LinearLayout.LayoutParams(
+                dpToPx(32), // Width 32dp
+                dpToPx(32)  // Height 32dp
+            )
+            params.marginStart = dpToPx(8)
+            reactionBtn.layoutParams = params
+
+            reactionBtn.setPadding(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4))
+            reactionBtn.setBackgroundResource(R.color.grey_dark)
+
+            val emojiBtn = TextView(context)
+            emojiBtn.layoutParams = params
+            emojiBtn.text = type.emoji
+            emojiBtn.textSize = 20f
+            emojiBtn.gravity = android.view.Gravity.CENTER
+            emojiBtn.setBackgroundResource(R.color.grey_dark)
+
+            emojiBtn.setOnClickListener {
+                onReactionClicked(type.id)
+                showFlyingEmoji(type.emoji)
+
+                binding.root.postDelayed({ showFlyingEmoji(type.emoji) }, 150)
+                binding.root.postDelayed({ showFlyingEmoji(type.emoji) }, 300)
+                binding.root.postDelayed({ showFlyingEmoji(type.emoji) }, 200)
+                binding.root.postDelayed({ showFlyingEmoji(type.emoji) }, 120)
             }
+
+            binding.containerReactions.addView(emojiBtn)
         }
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
     }
 
     private fun onReactionClicked(reactionId: Int) {
         if (currentPostId != null) {
             viewModel.reactToPost(currentPostId!!, reactionId)
-
-            // Hiệu ứng bay tim (Animation) nếu thích
-            showHeartAnimation()
         }
+    }
+
+
+    private fun showFlyingEmoji(emojiChuoi: String) {
+        val emojiView = android.widget.TextView(requireContext())
+        emojiView.text = emojiChuoi
+        emojiView.textSize = 32f
+        emojiView.gravity = android.view.Gravity.CENTER
+
+        val params = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams(
+            androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.WRAP_CONTENT
+        )
+        params.bottomToBottom =
+            androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
+        params.endToEnd = androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
+        params.bottomMargin = dpToPx(80)
+        params.marginEnd = dpToPx(60)
+
+        emojiView.layoutParams = params
+
+        (binding.root as android.view.ViewGroup).addView(emojiView)
+
+
+        val animatorY =
+            android.animation.ObjectAnimator.ofFloat(emojiView, "translationY", 0f, -1200f)
+        val animatorAlpha = android.animation.ObjectAnimator.ofFloat(emojiView, "alpha", 1f, 0f)
+        val animatorScaleX =
+            android.animation.ObjectAnimator.ofFloat(emojiView, "scaleX", 0.8f, 1.5f)
+        val animatorScaleY =
+            android.animation.ObjectAnimator.ofFloat(emojiView, "scaleY", 0.8f, 1.5f)
+        val randomX = java.util.Random().nextFloat() * 300f - 150f
+        val animatorX =
+            android.animation.ObjectAnimator.ofFloat(emojiView, "translationX", 0f, randomX)
+        val randomRotate = java.util.Random().nextFloat() * 90f - 45f
+        val animatorRotate =
+            android.animation.ObjectAnimator.ofFloat(emojiView, "rotation", 0f, randomRotate)
+
+
+        val set = android.animation.AnimatorSet()
+        set.playTogether(
+            animatorY,
+            animatorAlpha,
+            animatorScaleX,
+            animatorScaleY,
+            animatorX,
+            animatorRotate
+        )
+        set.duration = 1800
+        set.interpolator = android.view.animation.DecelerateInterpolator()
+
+        set.addListener(object : android.animation.AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: android.animation.Animator) {
+                (binding.root as android.view.ViewGroup).removeView(emojiView)
+            }
+        })
+
+        set.start()
     }
 
     override fun onDestroyView() {

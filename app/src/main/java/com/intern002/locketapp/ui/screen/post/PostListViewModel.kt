@@ -96,8 +96,8 @@ class PostListViewModel @Inject constructor(
 
     private fun loadReactionTypes() {
         viewModelScope.launch {
-            reactionRepository.getReactionTypes().onSuccess {
-                _reactionTypes.value = it
+            reactionRepository.getReactionTypes().onSuccess { list ->
+                _reactionTypes.value = list
             }
         }
     }
