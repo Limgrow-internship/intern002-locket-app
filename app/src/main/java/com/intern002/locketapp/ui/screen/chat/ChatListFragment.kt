@@ -51,7 +51,6 @@ class ChatListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Luôn gọi để lấy danh sách cuộc trò chuyện mới nhất mỗi khi quay lại màn hình
         viewModel.getConversations()
     }
 
@@ -85,7 +84,6 @@ class ChatListFragment : Fragment() {
                             Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                         }
                         is ChatListState.Loading -> {
-                            // Handled by isVisible
                         }
                     }
                 }
