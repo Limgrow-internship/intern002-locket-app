@@ -44,7 +44,6 @@ class LoginPasswordViewModel @Inject constructor(
                     _loginState.value = PasswordLoginState.Error(result.message ?: "An unknown error occurred")
                 }
                 is Result.Loading -> {
-                    // Already handled
                 }
                 else -> {
                     _loginState.value = PasswordLoginState.Error("An unexpected state occurred during login.")

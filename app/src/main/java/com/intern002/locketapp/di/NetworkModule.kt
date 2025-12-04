@@ -5,6 +5,7 @@ import com.intern002.locketapp.BuildConfig
 import com.intern002.locketapp.data.prefs.AuthManager
 import com.intern002.locketapp.data.remote.api.AuthApi
 import com.intern002.locketapp.data.remote.api.ChatApi
+import com.intern002.locketapp.data.remote.api.FcmApi
 import com.intern002.locketapp.data.remote.api.PostApi
 import com.intern002.locketapp.data.remote.model.auth.RefreshRequest
 import com.intern002.locketapp.data.remote.response.AuthResponse
@@ -50,6 +51,11 @@ object NetworkModule {
                     setPrettyPrinting()
                     serializeNulls()
                 }
+                json(Json {
+                    prettyPrint = true
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                })
             }
 
             install(Logging) {
@@ -61,13 +67,6 @@ object NetworkModule {
                 }
             }
 
-            install(ContentNegotiation) {
-                json(Json {
-                    prettyPrint = true
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                })
-            }
             install(Auth) {
                 bearer {
                     loadTokens {
@@ -139,5 +138,11 @@ object NetworkModule {
     @Singleton
     fun providePostApi(client: HttpClient): PostApi {
         return PostApi(client)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFcmApi(client: HttpClient): FcmApi {
+        return FcmApi(client)
     }
 }
