@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.intern002.locketapp.R
-import com.intern002.locketapp.data.remote.model.friend.FriendUserResponse
+import com.intern002.locketapp.data.model.Friend
 import com.intern002.locketapp.databinding.ItemFriendSelectBinding
 
 class FriendsSelectAdapter(
@@ -88,7 +88,7 @@ class FriendsSelectAdapter(
         }
     }
 
-    fun updateData(newList: List<FriendUserResponse>) {
+    fun updateData(newList: List<Friend>) {
         val newItems = newList.map { user ->
             FriendItem(
                 id = user.id,

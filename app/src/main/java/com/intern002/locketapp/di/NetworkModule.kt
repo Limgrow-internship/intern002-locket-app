@@ -5,8 +5,9 @@ import com.intern002.locketapp.BuildConfig
 import com.intern002.locketapp.data.prefs.AuthManager
 import com.intern002.locketapp.data.remote.api.AuthApi
 import com.intern002.locketapp.data.remote.api.ChatApi
-import com.intern002.locketapp.data.remote.api.FriendApi
+import com.intern002.locketapp.data.remote.api.FriendshipApi
 import com.intern002.locketapp.data.remote.api.PostApi
+import com.intern002.locketapp.data.remote.api.ReactionApi
 import com.intern002.locketapp.data.remote.model.auth.RefreshRequest
 import com.intern002.locketapp.data.remote.response.AuthResponse
 import dagger.Module
@@ -144,7 +145,14 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideFriendApi(client: HttpClient): FriendApi {
-        return FriendApi(client)
+    fun provideFriendApi(client: HttpClient): FriendshipApi {
+        return FriendshipApi(client)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReactionApi(client: HttpClient): ReactionApi {
+        return ReactionApi(client)
     }
 }
+

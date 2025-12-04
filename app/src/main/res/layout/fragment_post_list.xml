@@ -91,43 +91,21 @@
             android:textSize="16sp"
             android:maxLines="4" />
 
-        <ImageView
-            android:id="@+id/btn_react_love"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_heart_emoji"
-            android:layout_marginStart="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="4dp" />
-
-        <ImageView
-            android:id="@+id/btn_react_haha"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_haha_emoji"
-            android:layout_marginStart="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="4dp" />
-
-        <ImageView
-            android:id="@+id/btn_react_like"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_thumb_up"
-            android:layout_marginStart="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="4dp" />
+        <LinearLayout
+            android:id="@+id/container_reactions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="8dp" />
 
         <ImageView
             android:id="@+id/btn_more"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/ic_add"
-            android:layout_marginStart="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="4dp" />
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

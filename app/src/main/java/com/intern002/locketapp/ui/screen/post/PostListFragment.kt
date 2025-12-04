@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.remote.model.Reactor
+import com.intern002.locketapp.data.remote.model.reaction.ReactionTypeResponse
 import com.intern002.locketapp.databinding.FragmentPostListBinding
 import com.intern002.locketapp.ui.screen.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,6 +65,14 @@ class PostListFragment : Fragment(), PostItemCallBack {
                 pendingScrollPosition = index
                 consumePendingScroll()
                 mainViewModel.scrollRequest.value = null
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.reactionTypes.collectLatest { types ->
+                if (types.isNotEmpty()) {
+                    setupReactionButtons(types)
+                }
             }
         }
     }
@@ -235,6 +244,24 @@ class PostListFragment : Fragment(), PostItemCallBack {
         if (index >= 0 && index < adapter.itemCount) {
             scrollToPosition(index)
             pendingScrollPosition = null
+        }
+    }
+
+    private fun setupReactionButtons(types: List<ReactionTypeResponse>) {
+        if (types.size > 0) {
+            binding.tvEmoji1.text = types[0].emoji // Ví dụ ID view là tvEmoji1
+            binding.btnReact1.setOnClickListener {
+                onReactionClicked(types[0].id)
+            }
+        }
+    }
+
+    private fun onReactionClicked(reactionId: Int) {
+        if (currentPostId != null) {
+            viewModel.reactToPost(currentPostId!!, reactionId)
+
+            // Hiệu ứng bay tim (Animation) nếu thích
+            showHeartAnimation()
         }
     }
 

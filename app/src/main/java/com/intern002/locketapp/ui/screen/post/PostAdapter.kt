@@ -34,6 +34,8 @@ class PostAdapter(
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
+        if (position < 0 || position >= list.size) return
+        
         val post = list[position]
 
         val isMine = post.authorId == currentUserId
