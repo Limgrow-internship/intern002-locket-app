@@ -13,7 +13,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -243,10 +242,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal">
-            <!-- ... Social media icons ... -->
         </LinearLayout>
 
-        <!-- Your Friends List -->
         <TextView
             android:id="@+id/tv_your_friends"
             android:layout_width="wrap_content"

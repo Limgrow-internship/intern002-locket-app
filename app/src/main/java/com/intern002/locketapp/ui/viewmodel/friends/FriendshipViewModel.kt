@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -66,17 +67,21 @@ class FriendshipViewModel @Inject constructor(
     private var searchJob: Job? = null
 
     fun initializeForFriendsScreen() {
+        repository.clearCache()
         getFriendsData()
     }
 
     fun initializeForSuggestionsScreen() {
+        repository.clearCache()
         getFriendsData()
         getSuggestionsData()
     }
 
     private fun getFriendsData() {
         viewModelScope.launch {
-            _friendsListState.value = FriendListState.Loading
+            if (_friendsListState.value !is FriendListState.Success) {
+                _friendsListState.value = FriendListState.Loading
+            }
             try {
                 coroutineScope {
                     val friendsDeferred = async { repository.getFriends() }
@@ -97,7 +102,9 @@ class FriendshipViewModel @Inject constructor(
 
     private fun getSuggestionsData() {
         viewModelScope.launch {
-            _suggestionsState.value = SuggestionsState.Loading
+            if (_suggestionsState.value !is SuggestionsState.Success) {
+                _suggestionsState.value = SuggestionsState.Loading
+            }
             try {
                 coroutineScope {
                     val suggestionsDeferred = async { repository.getSuggestions() }
@@ -135,6 +142,27 @@ class FriendshipViewModel @Inject constructor(
                 val shareText = "Add me on Locket! My username is ${user.username}#${user.discriminator}"
                 _shareEvent.send(ShareEvent(shareText, target))
             } catch (e: Exception) {
+            }
+        }
+    }
+
+    private fun setUpdatingStateForFriend(friendId: String, isUpdating: Boolean) {
+        _friendsListState.update {
+            if (it is FriendListState.Success) {
+                it.copy(users = it.users.map {
+                    if (it.id == friendId) it.copy(isUpdating = isUpdating) else it
+                })
+            } else {
+                it
+            }
+        }
+        _suggestionsState.update {
+            if (it is SuggestionsState.Success) {
+                it.copy(users = it.users.map {
+                    if (it.id == friendId) it.copy(isUpdating = isUpdating) else it
+                })
+            } else {
+                it
             }
         }
     }
@@ -183,41 +211,49 @@ class FriendshipViewModel @Inject constructor(
 
     fun addFriend(friend: Friend) {
         viewModelScope.launch {
+            setUpdatingStateForFriend(friend.id, true)
             try {
                 repository.sendFriendRequest(friend.username, friend.discriminator)
                 refreshStatesAfterMutation()
             } catch (e: Exception) {
                 _searchResultState.value = SearchState.Error("Failed to send request: ${e.message}")
+                setUpdatingStateForFriend(friend.id, false)
             }
         }
     }
 
     fun acceptRequest(friend: Friend) {
         viewModelScope.launch {
+            setUpdatingStateForFriend(friend.id, true)
             try {
                 repository.acceptFriendRequest(friend.id)
                 refreshStatesAfterMutation()
             } catch (e: Exception) {
+                setUpdatingStateForFriend(friend.id, false)
             }
         }
     }
 
     fun deleteFriendship(friend: Friend) {
         viewModelScope.launch {
+            setUpdatingStateForFriend(friend.id, true)
             try {
                 repository.deleteFriendship(friend.id)
                 refreshStatesAfterMutation()
             } catch (e: Exception) {
+                setUpdatingStateForFriend(friend.id, false)
             }
         }
     }
 
     fun rejectRequest(friend: Friend) {
         viewModelScope.launch {
+            setUpdatingStateForFriend(friend.id, true)
             try {
                 repository.rejectFriendRequest(friend.id)
                 refreshStatesAfterMutation()
             } catch (e: Exception) {
+                setUpdatingStateForFriend(friend.id, false)
             }
         }
     }

@@ -7,5 +7,6 @@ data class Friend(
     val username: String,
     val discriminator: Int,
     val avatarUrl: String?,
-    var status: FriendshipStatus
+    var status: FriendshipStatus,
+    val isUpdating: Boolean = false
 )
