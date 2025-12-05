@@ -35,7 +35,7 @@ class PostAdapter(
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         if (position < 0 || position >= list.size) return
-        
+
         val post = list[position]
 
         val isMine = post.authorId == currentUserId
@@ -89,20 +89,38 @@ class PostAdapter(
 
             if (isMine) {
                 layoutMyActivity.isVisible = true
-
-                val reactors = post.reactors ?: emptyList()
+                val reactors = post.latestReactions
+                val count = post.reactionCount
 
                 layoutMyActivity.setOnClickListener {
                     callback.onShowReactions(reactors)
                 }
 
+                imgReactor1.isVisible = false
+                imgReactor2.isVisible = false
+                imgReactor3.isVisible = false
+
                 if (reactors.isEmpty()) {
                     tvActivityText.text = "No activity yet"
                 } else {
-                    tvActivityText.text = "Activity"
-                    // TODO: Logic load 3 avatar chồng lên nhau ở đây (dùng Glide)
-                }
+                    tvActivityText.text = "My Activity"
 
+                    val previewCount = minOf(reactors.size, 3)
+                    val imageViews = listOf(imgReactor1, imgReactor2, imgReactor3)
+
+                    for (i in 0 until previewCount) {
+                        val reactor = reactors[i]
+                        val imageView = imageViews[i]
+
+                        imageView.isVisible = true
+
+                        Glide.with(root)
+                            .load(reactor.avatarUrl)
+                            .placeholder(R.drawable.avt_sample)
+                            .circleCrop()
+                            .into(imageView)
+                    }
+                }
             } else {
                 layoutMyActivity.isVisible = false
             }
