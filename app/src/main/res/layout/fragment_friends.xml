@@ -59,7 +59,6 @@
             android:drawableStart="@android:drawable/ic_menu_search"
             android:drawablePadding="8dp"/>
 
-        <!-- Search Result Section (Added) -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_search_result"
             android:layout_width="match_parent"
@@ -131,7 +130,6 @@
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Find Friends from other apps -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -151,7 +149,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="28dp"
+                android:layout_marginEnd="38dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
@@ -173,7 +171,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="28dp"
+                android:layout_marginEnd="38dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
@@ -195,7 +193,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="28dp"
+                android:layout_marginEnd="38dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 

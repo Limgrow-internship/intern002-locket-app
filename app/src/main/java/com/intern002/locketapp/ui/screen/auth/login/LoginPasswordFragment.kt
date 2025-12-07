@@ -34,10 +34,6 @@ class LoginPasswordFragment : Fragment() {
     private val viewModel: LoginPasswordViewModel by viewModels()
     private val args: LoginPasswordFragmentArgs by navArgs()
 
-    private val initialMarginTopDp = 170
-    private val keyboardVisibleMarginTopDp = 50
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -57,21 +53,12 @@ class LoginPasswordFragment : Fragment() {
     }
 
     private fun setupKeyboardAdjustment() {
-        val initialMarginTopPx = (initialMarginTopDp * resources.displayMetrics.density).toInt()
-        val keyboardVisibleMarginTopPx = (keyboardVisibleMarginTopDp * resources.displayMetrics.density).toInt()
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
-
-            val isImeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-
-            binding.textHeadline.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                topMargin = if (isImeVisible) {
-                    keyboardVisibleMarginTopPx
-                } else {
-                    initialMarginTopPx
-                }
-            }
-            insets
+        // This is a simpler and more robust way to handle the keyboard
+        // It adjusts the bottom padding of the root view, pushing all content up
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, insets.bottom)
+            windowInsets
         }
     }
 

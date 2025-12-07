@@ -50,6 +50,8 @@ class ChangeEmailFragment : Fragment() {
         binding.buttonSave.isEnabled = false
         binding.buttonSave.alpha = 0.5f
 
+        binding.tvErrorMessage.isVisible = false
+
         binding.emailEditText.onFocusChangeListener = View.OnFocusChangeListener {
             _, hasFocus ->
             if (hasFocus) {
@@ -66,6 +68,11 @@ class ChangeEmailFragment : Fragment() {
                 val email = s.toString().trim()
                 val isValid = email.isNotBlank()
 
+                if (binding.tvErrorMessage.isVisible) {
+                    binding.tvErrorMessage.isVisible = false
+                    viewModel.resetState()
+                }
+
                 binding.buttonSave.isEnabled = isValid
                 binding.buttonSave.alpha = if (isValid) 1.0f else 0.5f
             }
@@ -76,11 +83,11 @@ class ChangeEmailFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigate(R.id.enterPasswordFragment)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            findNavController().popBackStack()
+            findNavController().navigate(R.id.enterPasswordFragment)
         }
 
         binding.buttonSave.setOnClickListener {
@@ -95,15 +102,24 @@ class ChangeEmailFragment : Fragment() {
                 binding.progressBar.isVisible = state is UpdateEmailState.Loading
                 binding.buttonSave.isEnabled = state !is UpdateEmailState.Loading
 
+                if (state !is UpdateEmailState.Error) {
+                    binding.tvErrorMessage.isVisible = false
+                }
+
                 when (state) {
                     is UpdateEmailState.Success -> {
                         Toast.makeText(requireContext(), "Email updated successfully!", Toast.LENGTH_SHORT).show()
                         findNavController().popBackStack(R.id.settingsFragment, false)
                     }
                     is UpdateEmailState.Error -> {
-                        Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_LONG).show()
+                        if (state.message == "EMAIL_EXISTS") {
+                            binding.tvErrorMessage.text = getString(R.string.invalid_email_error)
+                            binding.tvErrorMessage.isVisible = true
+                        } else {
+                            Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_LONG).show()
+                        }
                     }
-                    else -> {}
+                    else -> { }
                 }
             }
         }

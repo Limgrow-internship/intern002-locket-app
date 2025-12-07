@@ -53,7 +53,6 @@ class SessionManager @Inject constructor(
 class HttpClientFactory @Inject constructor() {
     fun create(authManager: AuthManager): HttpClient {
         return HttpClient(Android) {
-            expectSuccess = true
 
             install(ContentNegotiation) {
                 gson {
@@ -64,11 +63,12 @@ class HttpClientFactory @Inject constructor() {
                     prettyPrint = true
                     isLenient = true
                     ignoreUnknownKeys = true
+                    encodeDefaults = true
                 })
             }
 
             install(Logging) {
-                level = LogLevel.ALL
+                level = LogLevel.BODY
                 logger = object : Logger {
                     override fun log(message: String) {
                         Log.d("KtorLogger", message)
