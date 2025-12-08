@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 interface ChatRepository {
     fun getConversations(currentUserId: String): Flow<List<Conversation>>
-    suspend fun refreshConversations()
+    suspend fun refreshConversations(currentUserId: String): Result<Unit>
     suspend fun clearConversations()
     fun getMessages(conversationId: String): Flow<List<Message>>
     suspend fun refreshMessages(conversationId: String, page: Int, pageSize: Int): Result<Unit>
@@ -54,12 +54,14 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun refreshConversations() {
-        try {
+    override suspend fun refreshConversations(currentUserId: String): Result<Unit> {
+        return try {
             val remoteConversations = chatApi.getConversations()
             conversationDao.insertOrUpdateConversations(remoteConversations.map { it.toEntity() })
+            Result.Success(Unit)
         } catch (e: Exception) {
             Log.e("ChatRepository", "Failed to refresh conversations: ${e.message}")
+            Result.Error("Failed to refresh conversations. Please check your network.")
         }
     }
 

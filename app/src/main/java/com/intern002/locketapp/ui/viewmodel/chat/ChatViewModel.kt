@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.intern002.locketapp.data.repository.ChatRepository
 import com.intern002.locketapp.data.repository.UserRepository
 import com.intern002.locketapp.ui.screen.chat.Conversation
+import com.intern002.locketapp.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,37 +29,49 @@ class ChatViewModel @Inject constructor(
 
     private val _chatListState = MutableStateFlow<ChatListState>(ChatListState.Loading)
     val chatListState: StateFlow<ChatListState> = _chatListState
+    private var currentUserId: String? = null
 
     init {
-        getConversations()
-    }
-
-    private fun getConversations() {
         viewModelScope.launch {
-            _chatListState.value = ChatListState.Loading
-            val user = userRepository.getCurrentUserProfile()
-            if (user == null) {
-                _chatListState.value = ChatListState.Error("User not found")
-                return@launch
-            }
-
-            chatRepository.getConversations(user.id)
-                .onEach { conversations ->
-                    _chatListState.value = ChatListState.Success(conversations)
-                }
-                .catch { e ->
-                    _chatListState.value = ChatListState.Error(e.message ?: "An unknown error occurred")
-                }
-                .launchIn(viewModelScope)
-
-            chatRepository.refreshConversations()
+            currentUserId = userRepository.getCurrentUserProfile()?.id
+            loadConversations()
         }
     }
-    
+
+    private fun loadConversations() {
+        val userId = currentUserId
+        if (userId == null) {
+            _chatListState.value = ChatListState.Error("User not logged in")
+            return
+        }
+
+        chatRepository.getConversations(userId)
+            .onEach { conversations ->
+                if (_chatListState.value is ChatListState.Loading && conversations.isEmpty()) {
+                } else {
+                    _chatListState.value = ChatListState.Success(conversations)
+                }
+            }
+            .catch { e ->
+                _chatListState.value = ChatListState.Error(e.message ?: "Failed to load from local cache.")
+            }
+            .launchIn(viewModelScope)
+
+        onRefresh()
+    }
+
     fun onRefresh() {
+        val userId = currentUserId
+        if (userId == null) {
+            _chatListState.value = ChatListState.Error("User not logged in")
+            return
+        }
+
         viewModelScope.launch {
-            chatRepository.clearConversations()
-            chatRepository.refreshConversations()
+            val result = chatRepository.refreshConversations(userId)
+            if (result is Result.Error) {
+                _chatListState.value = ChatListState.Error(result.message ?: "An unknown error occurred")
+            }
         }
     }
 }

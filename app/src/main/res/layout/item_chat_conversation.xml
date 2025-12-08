@@ -60,6 +60,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:textColor="@android:color/white"
+            android:background="@drawable/profile_gradient_border"
             android:textSize="10sp"
             android:textStyle="bold"
             android:visibility="gone"

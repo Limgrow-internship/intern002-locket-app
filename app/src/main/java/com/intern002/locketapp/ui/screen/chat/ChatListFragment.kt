@@ -49,11 +49,6 @@ class ChatListFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.onRefresh()
-    }
-
     private fun setupRecyclerView() {
         chatListAdapter = ChatListAdapter { conversation ->
             val action = ChatListFragmentDirections.actionChatListFragmentToChatDetailFragment(
@@ -73,17 +68,23 @@ class ChatListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.chatListState.collect { state ->
+                    // Show loading only when the state is Loading
                     binding.pbLoading.isVisible = state is ChatListState.Loading
-                    binding.rvChatList.isVisible = state is ChatListState.Success
 
                     when (state) {
                         is ChatListState.Success -> {
+                            // Show the list and submit data
+                            binding.rvChatList.isVisible = true
                             chatListAdapter.submitList(state.conversations)
                         }
                         is ChatListState.Error -> {
+                            // Hide loading, keep the list visible, and show a toast
+                            binding.pbLoading.isVisible = false
                             Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                         }
                         is ChatListState.Loading -> {
+                            // Optional: Hide the list while in initial loading state
+                            binding.rvChatList.isVisible = false
                         }
                     }
                 }

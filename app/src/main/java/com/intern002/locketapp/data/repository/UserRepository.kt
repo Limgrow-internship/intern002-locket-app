@@ -1,5 +1,6 @@
 package com.intern002.locketapp.data.repository
 
+import com.intern002.locketapp.data.prefs.AuthManager
 import com.intern002.locketapp.data.remote.dto.UpdateUserRequest
 import com.intern002.locketapp.data.model.UserProfile
 import com.intern002.locketapp.data.remote.api.UserApi
@@ -23,7 +24,8 @@ interface UserRepository {
 class UserRepositoryImpl @Inject constructor(
     private val userApi: UserApi,
     private val chatRepository: ChatRepository,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val authManager: AuthManager
 ) : UserRepository {
 
     private var cachedProfile: UserProfile? = null
@@ -71,6 +73,7 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun logout() {
         sessionManager.clearSession()
+        authManager.clearTokens()
         chatRepository.clearAllLocalData()
         clearCurrentUserProfile()
     }

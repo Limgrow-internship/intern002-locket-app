@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.intern002.locketapp.data.model.Message
 import com.intern002.locketapp.data.model.SendStatus
-import com.intern002.locketapp.data.model.toMessage
 import com.intern002.locketapp.data.remote.api.SendMessageRequest
 import com.intern002.locketapp.data.repository.ChatRepository
 import com.intern002.locketapp.data.repository.UserRepository
@@ -16,9 +15,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -45,7 +46,7 @@ class ChatDetailViewModel @Inject constructor(
     private val _messageState = MutableStateFlow<MessageListState>(MessageListState.Loading)
     val messageState: StateFlow<MessageListState> = _messageState.asStateFlow()
 
-    private val _currentMessages = mutableListOf<Message>()
+    private val _temporaryMessagesFlow = MutableStateFlow<List<Message>>(emptyList())
     private var currentUserId: String? = null
 
     init {
@@ -60,11 +61,12 @@ class ChatDetailViewModel @Inject constructor(
 
     private fun observeMessages() {
         chatRepository.getMessages(conversationId)
-            .onEach { messagesFromDb ->
-                val combinedList = (messagesFromDb + _currentMessages.filter { it.sendStatus == SendStatus.SENDING || it.sendStatus == SendStatus.FAILED })
-                    .distinctBy { it.localId }
+            .combine(_temporaryMessagesFlow) { dbMessages, tempMessages ->
+                (dbMessages + tempMessages)
+                    .distinctBy { it.localId } // Use localId to prevent duplicates
                     .sortedBy { it.createdAt }
-
+            }
+            .onEach { combinedList ->
                 _messageState.value = MessageListState.Success(processMessagesWithTimestamps(combinedList))
             }
             .catch { e ->
@@ -73,44 +75,55 @@ class ChatDetailViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
+    private fun parseIsoString(isoString: String): Date? {
+        val patterns = listOf(
+            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", // With milliseconds
+            "yyyy-MM-dd'T'HH:mm:ss'Z'"       // Without milliseconds
+        )
+        for (pattern in patterns) {
+            try {
+                val parser = SimpleDateFormat(pattern, Locale.US).apply {
+                    timeZone = TimeZone.getTimeZone("UTC")
+                }
+                return parser.parse(isoString)
+            } catch (e: ParseException) {
+                // Continue to next pattern
+            }
+        }
+        return null
+    }
+
     private fun processMessagesWithTimestamps(messages: List<Message>): List<Message> {
         if (messages.isEmpty()) return emptyList()
 
-        fun parseDate(dateString: String): Date? {
-            return try {
-                val pattern = if (dateString.contains(".")) "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" else "yyyy-MM-dd'T'HH:mm:ss'Z'"
-                val localParser = SimpleDateFormat(pattern, Locale.US).apply {
-                    timeZone = TimeZone.getTimeZone("UTC")
-                }
-                localParser.parse(dateString)
-            } catch (e: Exception) {
-                null
-            }
+        val displayFormatter = SimpleDateFormat("EEE h:mm a", Locale.getDefault()).apply {
+            timeZone = TimeZone.getDefault()
         }
 
         return messages.mapIndexed { index, message ->
+            val currentDate = parseIsoString(message.createdAt)
+            val prevDate = if (index > 0) parseIsoString(messages[index - 1].createdAt) else null
+
+            var shouldShowTimestamp = false
             if (index == 0) {
-                message.copy(showTimestamp = true)
-            } else {
-                val prevMessage = messages[index - 1]
-                val prevDate = parseDate(prevMessage.createdAt)
-                val currentDate = parseDate(message.createdAt)
+                shouldShowTimestamp = true
+            } else if (prevDate != null && currentDate != null) {
+                val calPrev = Calendar.getInstance().apply { time = prevDate }
+                val calCurrent = Calendar.getInstance().apply { time = currentDate }
 
-                if (prevDate != null && currentDate != null) {
-                    val calPrev = Calendar.getInstance().apply { time = prevDate }
-                    val calCurrent = Calendar.getInstance().apply { time = currentDate }
+                val isDifferentDay = calPrev.get(Calendar.DAY_OF_YEAR) != calCurrent.get(Calendar.DAY_OF_YEAR) ||
+                        calPrev.get(Calendar.YEAR) != calCurrent.get(Calendar.YEAR)
 
-                    val isDifferentDay = calPrev.get(Calendar.DAY_OF_YEAR) != calCurrent.get(Calendar.DAY_OF_YEAR) ||
-                            calPrev.get(Calendar.YEAR) != calCurrent.get(Calendar.YEAR)
+                val diffInMinutes = (currentDate.time - prevDate.time) / 60000
+                val timeDiffExceeded = diffInMinutes > 10
 
-                    val diffInMinutes = (currentDate.time - prevDate.time) / 60000
-                    val timeDiffExceeded = diffInMinutes > 10
-
-                    message.copy(showTimestamp = isDifferentDay || timeDiffExceeded)
-                } else {
-                    message.copy(showTimestamp = false)
-                }
+                shouldShowTimestamp = isDifferentDay || timeDiffExceeded
             }
+
+            message.copy(
+                showTimestamp = shouldShowTimestamp,
+                displayTimestamp = if (shouldShowTimestamp && currentDate != null) displayFormatter.format(currentDate) else ""
+            )
         }
     }
 
@@ -124,15 +137,9 @@ class ChatDetailViewModel @Inject constructor(
     private fun subscribeToNewMessages() {
         chatRepository.subscribeToMessages(conversationId)
             .onEach { newMessageDto ->
-                val newMessage = newMessageDto.toMessage()
-                if (newMessage.senderId == currentUserId) {
-                    val index = _currentMessages.indexOfFirst { it.sendStatus == SendStatus.SENDING && it.content == newMessage.content }
-                    if (index != -1) {
-                        _currentMessages.removeAt(index)
-                    }
+                if (newMessageDto.senderId != currentUserId) {
+                    chatRepository.saveNewMessage(newMessageDto, conversationId)
                 }
-                chatRepository.saveNewMessage(newMessageDto, conversationId)
-
             }
             .catch { e ->
                 Log.e("RealtimeDebug", "[ERROR] ViewModel subscription failed: ", e)
@@ -142,46 +149,45 @@ class ChatDetailViewModel @Inject constructor(
 
     fun sendMessage(text: String) {
         viewModelScope.launch {
-            if (currentUserId == null) return@launch
-
-            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
-            sdf.timeZone = TimeZone.getTimeZone("UTC")
-            val timestamp = sdf.format(Date())
+            val userId = currentUserId ?: return@launch
 
             val tempMessage = Message(
-                senderId = currentUserId!!,
+                senderId = userId,
                 messageType = "text",
                 content = text,
                 imageUrl = null,
-                createdAt = timestamp,
+                createdAt = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).apply { timeZone = TimeZone.getTimeZone("UTC") }.format(Date()),
                 localId = UUID.randomUUID().toString(),
                 sendStatus = SendStatus.SENDING
             )
 
-            _currentMessages.add(tempMessage)
-            val currentSuccessState = (_messageState.value as? MessageListState.Success)
-            val updatedList = ((currentSuccessState?.messages ?: emptyList()) + tempMessage)
-                .sortedBy { it.createdAt }
-            _messageState.value = MessageListState.Success(processMessagesWithTimestamps(updatedList))
-
+            _temporaryMessagesFlow.value = _temporaryMessagesFlow.value + tempMessage
 
             val request = SendMessageRequest(
                 conversationId = conversationId,
                 messageType = "text",
                 content = text
             )
-
             val result = chatRepository.sendMessage(request)
 
-            if (result is Result.Error) {
-                val index = _currentMessages.indexOfFirst { it.localId == tempMessage.localId }
-                if (index != -1) {
-                    val failedMessage = _currentMessages[index].copy(sendStatus = SendStatus.FAILED)
-                    _currentMessages[index] = failedMessage
-
-                    val currentMessagesList = (_messageState.value as? MessageListState.Success)?.messages ?: emptyList()
-                    val finalList = currentMessagesList.map { if (it.localId == failedMessage.localId) failedMessage else it }
-                    _messageState.value = MessageListState.Success(processMessagesWithTimestamps(finalList.sortedBy { it.createdAt }))
+            when (result) {
+                is Result.Success -> {
+                    _temporaryMessagesFlow.value = _temporaryMessagesFlow.value.filterNot { it.localId == tempMessage.localId }
+                    result.data?.let { sentMessage ->
+                        chatRepository.saveNewMessage(sentMessage, conversationId)
+                    }
+                }
+                is Result.Error -> {
+                    val currentTemps = _temporaryMessagesFlow.value
+                    val index = currentTemps.indexOfFirst { it.localId == tempMessage.localId }
+                    if (index != -1) {
+                        val updatedList = currentTemps.toMutableList()
+                        updatedList[index] = updatedList[index].copy(sendStatus = SendStatus.FAILED)
+                        _temporaryMessagesFlow.value = updatedList
+                    }
+                }
+                else -> {
+                    Log.d("SendMessage", "Received unexpected result state: $result")
                 }
             }
         }

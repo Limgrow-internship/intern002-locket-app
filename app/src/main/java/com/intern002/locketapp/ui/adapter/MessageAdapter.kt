@@ -12,6 +12,7 @@ import com.intern002.locketapp.data.model.Message
 import com.intern002.locketapp.databinding.ItemMessageImageSentBinding
 import com.intern002.locketapp.databinding.ItemMessageReceivedBinding
 import com.intern002.locketapp.databinding.ItemMessageSentBinding
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -29,25 +30,6 @@ class MessageAdapter(
         private const val VIEW_TYPE_SENT_IMAGE = 2
         private const val VIEW_TYPE_RECEIVED_TEXT = 3
         private const val VIEW_TYPE_RECEIVED_IMAGE = 4
-    }
-
-    private fun formatDisplayTimestamp(isoString: String): String {
-        return try {
-            // Parser for the incoming UTC string
-            val pattern = if (isoString.contains(".")) "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" else "yyyy-MM-dd'T'HH:mm:ss'Z'"
-            val parser = SimpleDateFormat(pattern, Locale.US)
-            parser.timeZone = TimeZone.getTimeZone("UTC")
-            val date = parser.parse(isoString) ?: return ""
-
-            // Formatter for displaying in the device's local timezone
-            val displayFormatter = SimpleDateFormat("EEE h:mm a", Locale.getDefault())
-            displayFormatter.timeZone = TimeZone.getDefault()
-            
-            displayFormatter.format(date)
-        } catch (e: Exception) {
-            Log.e("MessageAdapter", "Error formatting timestamp: $isoString", e)
-            ""
-        }
     }
 
     fun setCurrentUserId(newUserId: String) {
@@ -113,7 +95,7 @@ class MessageAdapter(
             binding.tvMessageBody.text = message.content
             binding.tvTimestamp.isVisible = message.showTimestamp
             if(message.showTimestamp) {
-                binding.tvTimestamp.text = formatDisplayTimestamp(message.createdAt)
+                binding.tvTimestamp.text = message.displayTimestamp
             }
         }
     }
@@ -134,7 +116,7 @@ class MessageAdapter(
 
             binding.tvTimestamp.isVisible = message.showTimestamp
             if(message.showTimestamp) {
-                binding.tvTimestamp.text = formatDisplayTimestamp(message.createdAt)
+                binding.tvTimestamp.text = message.displayTimestamp
             }
         }
 
@@ -160,7 +142,7 @@ class MessageAdapter(
 
             binding.tvTimestamp.isVisible = message.showTimestamp
             if(message.showTimestamp) {
-                binding.tvTimestamp.text = formatDisplayTimestamp(message.createdAt)
+                binding.tvTimestamp.text = message.displayTimestamp
             }
         }
 
@@ -183,6 +165,7 @@ class MessageDiffCallback(private val oldList: List<Message>, private val newLis
     override fun getNewListSize(): Int = newList.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        // Using localId for temporary messages and createdAt for synced messages provides better stability
         return oldList[oldItemPosition].localId == newList[newItemPosition].localId || oldList[oldItemPosition].createdAt == newList[newItemPosition].createdAt
     }
 

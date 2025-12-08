@@ -19,6 +19,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.intern002.locketapp.BuildConfig
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.prefs.AuthManager
+import com.intern002.locketapp.data.repository.ChatRepository
 import com.intern002.locketapp.databinding.FragmentSettingsBinding
 import com.intern002.locketapp.ui.viewmodel.setting.AvatarUpdateState
 import com.intern002.locketapp.ui.viewmodel.setting.SettingsViewModel
@@ -37,6 +38,9 @@ class SettingsFragment : Fragment(), EditAvatarBottomSheetFragment.EditAvatarLis
 
     @Inject
     lateinit var authManager: AuthManager
+
+    @Inject
+    lateinit var chatRepository: ChatRepository
 
     private var latestTmpUri: Uri? = null
 
@@ -90,9 +94,10 @@ class SettingsFragment : Fragment(), EditAvatarBottomSheetFragment.EditAvatarLis
             .setPositiveButton(getString(R.string.logout_dialog_ok)) { d, _ ->
                 viewLifecycleOwner.lifecycleScope.launch {
                     authManager.clearTokens()
+                    chatRepository.clearAllLocalData()
+                    viewModel.onLogoutClicked()
+                    d.dismiss()
                 }
-                viewModel.onLogoutClicked()
-                d.dismiss()
             }
             .show()
     }
