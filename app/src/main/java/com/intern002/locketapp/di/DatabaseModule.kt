@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.intern002.locketapp.data.local.ConversationDao
 import com.intern002.locketapp.data.local.LocketAppDatabase
+import com.intern002.locketapp.data.local.MessageDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,13 +25,19 @@ object DatabaseModule {
             context,
             LocketAppDatabase::class.java,
             "locket_app.db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Provides
     @Singleton
     fun provideConversationDao(database: LocketAppDatabase): ConversationDao {
         return database.conversationDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMessageDao(database: LocketAppDatabase): MessageDao {
+        return database.messageDao()
     }
     
 }

@@ -2,8 +2,10 @@ package com.intern002.locketapp.data.repository
 
 import android.util.Log
 import com.intern002.locketapp.data.local.ConversationDao
+import com.intern002.locketapp.data.local.MessageDao
 import com.intern002.locketapp.data.local.toEntity
 import com.intern002.locketapp.data.local.toUiModel
+import com.intern002.locketapp.data.model.Message
 import com.intern002.locketapp.data.remote.api.ChatApi
 import com.intern002.locketapp.data.remote.api.SendMessageRequest
 import com.intern002.locketapp.data.remote.dto.MessageDTO
@@ -27,15 +29,20 @@ import javax.inject.Inject
 interface ChatRepository {
     fun getConversations(currentUserId: String): Flow<List<Conversation>>
     suspend fun refreshConversations()
-    suspend fun getMessages(conversationId: String, page: Int, pageSize: Int): Result<List<MessageDTO>>
+    suspend fun clearConversations()
+    fun getMessages(conversationId: String): Flow<List<Message>>
+    suspend fun refreshMessages(conversationId: String, page: Int, pageSize: Int): Result<Unit>
     suspend fun sendMessage(request: SendMessageRequest): Result<MessageDTO>
     fun subscribeToMessages(conversationId: String): Flow<MessageDTO>
+    suspend fun saveNewMessage(message: MessageDTO, conversationId: String)
+    suspend fun clearAllLocalData()
 }
 
 class ChatRepositoryImpl @Inject constructor(
     private val chatApi: ChatApi,
     private val supabaseClient: SupabaseClient,
-    private val conversationDao: ConversationDao
+    private val conversationDao: ConversationDao,
+    private val messageDao: MessageDao
 ) : ChatRepository {
 
     private val json = Json { ignoreUnknownKeys = true }
@@ -55,10 +62,21 @@ class ChatRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getMessages(conversationId: String, page: Int, pageSize: Int): Result<List<MessageDTO>> {
+    override suspend fun clearConversations() {
+        conversationDao.clearAll()
+    }
+
+    override fun getMessages(conversationId: String): Flow<List<Message>> {
+        return messageDao.getMessages(conversationId).map { entities ->
+            entities.map { it.toUiModel() }
+        }
+    }
+
+    override suspend fun refreshMessages(conversationId: String, page: Int, pageSize: Int): Result<Unit> {
         return try {
             val messages = chatApi.getMessages(conversationId, page, pageSize)
-            Result.Success(messages)
+            messageDao.insertOrUpdateMessages(messages.map { it.toEntity(conversationId) })
+            Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(e.message ?: "An unknown error occurred")
         }
@@ -92,5 +110,18 @@ class ChatRepositoryImpl @Inject constructor(
             Log.d("RealtimeDebug", "Unsubscribing from channel for conversation $conversationId")
             channel.unsubscribe()
         }
+    }
+
+    override suspend fun saveNewMessage(message: MessageDTO, conversationId: String) {
+        try {
+            messageDao.insertOrUpdateMessages(listOf(message.toEntity(conversationId)))
+        } catch (e: Exception) {
+            Log.e("ChatRepository", "Failed to save new message: ${e.message}")
+        }
+    }
+
+    override suspend fun clearAllLocalData() {
+        conversationDao.clearAll()
+        messageDao.clearAll()
     }
 }

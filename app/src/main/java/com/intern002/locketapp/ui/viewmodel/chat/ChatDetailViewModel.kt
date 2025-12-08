@@ -50,28 +50,30 @@ class ChatDetailViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             currentUserId = userRepository.getCurrentUserProfile()?.id
-            loadInitialMessages()
+            observeMessages()
+            refreshMessages()
             subscribeToNewMessages()
         }
     }
 
-    private fun loadInitialMessages() {
-        viewModelScope.launch {
-            _messageState.value = MessageListState.Loading
-            when (val result = chatRepository.getMessages(conversationId, 1, 50)) {
-                is Result.Success -> {
-                    val initialMessages = result.data?.map { it.toMessage() }?.reversed() ?: emptyList()
-                    _currentMessages.addAll(initialMessages)
-                    _messageState.value = MessageListState.Success(_currentMessages.toList())
-                }
-                is Result.Error -> {
-                    _messageState.value = MessageListState.Error(result.message ?: "Failed to load messages")
-                    _messageState.value = MessageListState.Success(emptyList())
-                }
-                else -> {
-                    _messageState.value = MessageListState.Success(emptyList())
-                }
+    private fun observeMessages() {
+        chatRepository.getMessages(conversationId)
+            .onEach { messagesFromDb ->
+                val combinedList = (messagesFromDb + _currentMessages.filter { it.sendStatus == SendStatus.SENDING || it.sendStatus == SendStatus.FAILED })
+                    .distinctBy { it.createdAt }
+                    .sortedBy { it.createdAt }
+
+                _messageState.value = MessageListState.Success(combinedList)
             }
+            .catch { e ->
+                _messageState.value = MessageListState.Error(e.message ?: "Failed to load messages")
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun refreshMessages() {
+        viewModelScope.launch {
+            chatRepository.refreshMessages(conversationId, 1, 50)
         }
     }
 
@@ -83,19 +85,12 @@ class ChatDetailViewModel @Inject constructor(
                 if (newMessage.senderId == currentUserId) {
                     val index = _currentMessages.indexOfFirst { it.sendStatus == SendStatus.SENDING }
                     if (index != -1) {
-                        _currentMessages[index] = newMessage.copy(sendStatus = SendStatus.SENT)
-                    } else {
-
-                        if (_currentMessages.none { it.createdAt == newMessage.createdAt }) {
-                            _currentMessages.add(newMessage)
-                        }
-                    }
-                } else {
-                    if (_currentMessages.none { it.createdAt == newMessage.createdAt }) {
-                        _currentMessages.add(newMessage)
+                        _currentMessages.removeAt(index)
                     }
                 }
-                _messageState.value = MessageListState.Success(_currentMessages.toList())
+                // Thay vì tải lại toàn bộ, chỉ lưu tin nhắn mới
+                chatRepository.saveNewMessage(newMessageDto, conversationId)
+
             }
             .catch { e ->
                 Log.e("RealtimeDebug", "[ERROR] ViewModel subscription failed: ", e)
@@ -122,7 +117,10 @@ class ChatDetailViewModel @Inject constructor(
             )
 
             _currentMessages.add(tempMessage)
-            _messageState.value = MessageListState.Success(_currentMessages.toList())
+            val currentSuccessState = (_messageState.value as? MessageListState.Success)
+            val updatedList = (currentSuccessState?.messages ?: emptyList()) + tempMessage
+            _messageState.value = MessageListState.Success(updatedList.distinctBy { it.createdAt }.sortedBy { it.createdAt })
+
 
             val request = SendMessageRequest(
                 conversationId = conversationId,
@@ -132,12 +130,15 @@ class ChatDetailViewModel @Inject constructor(
 
             val result = chatRepository.sendMessage(request)
 
-
             if (result is Result.Error) {
                 val index = _currentMessages.indexOfFirst { it.localId == tempMessage.localId }
                 if (index != -1) {
-                    _currentMessages[index] = _currentMessages[index].copy(sendStatus = SendStatus.FAILED)
-                    _messageState.value = MessageListState.Success(_currentMessages.toList())
+                    val failedMessage = _currentMessages[index].copy(sendStatus = SendStatus.FAILED)
+                    _currentMessages[index] = failedMessage
+
+                    val currentMessages = (_messageState.value as? MessageListState.Success)?.messages ?: emptyList()
+                    val finalMessages = currentMessages.map { if (it.localId == failedMessage.localId) failedMessage else it }
+                    _messageState.value = MessageListState.Success(finalMessages)
                 }
             }
         }

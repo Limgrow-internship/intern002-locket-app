@@ -35,6 +35,7 @@ class ChatViewModel @Inject constructor(
 
     private fun getConversations() {
         viewModelScope.launch {
+            _chatListState.value = ChatListState.Loading
             val user = userRepository.getCurrentUserProfile()
             if (user == null) {
                 _chatListState.value = ChatListState.Error("User not found")
@@ -56,6 +57,7 @@ class ChatViewModel @Inject constructor(
     
     fun onRefresh() {
         viewModelScope.launch {
+            chatRepository.clearConversations()
             chatRepository.refreshConversations()
         }
     }
