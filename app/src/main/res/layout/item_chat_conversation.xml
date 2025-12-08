@@ -36,8 +36,8 @@
 
     <FrameLayout
         android:id="@+id/read_status_container"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true">
 
@@ -53,6 +53,18 @@
             android:layout_height="match_parent"
             android:visibility="gone"
             tools:src="@drawable/avt_sample" />
+
+        <TextView
+            android:id="@+id/tv_read_status_initial"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="X"
+            tools:visibility="visible" />
 
     </FrameLayout>
 
@@ -74,7 +86,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@android:color/white"
-            android:textSize="16sp"
+            android:textSize="18sp"
             tools:text="Linh Trần" />
 
         <RelativeLayout

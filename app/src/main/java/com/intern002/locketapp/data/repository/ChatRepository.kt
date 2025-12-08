@@ -1,21 +1,32 @@
 package com.intern002.locketapp.data.repository
 
 import android.util.Log
+import com.intern002.locketapp.data.local.ConversationDao
+import com.intern002.locketapp.data.local.toEntity
+import com.intern002.locketapp.data.local.toUiModel
 import com.intern002.locketapp.data.remote.api.ChatApi
 import com.intern002.locketapp.data.remote.api.SendMessageRequest
-import com.intern002.locketapp.data.remote.dto.* // Import all DTOs including the new one
+import com.intern002.locketapp.data.remote.dto.MessageDTO
+import com.intern002.locketapp.data.remote.dto.RealtimeMessageDTO
+import com.intern002.locketapp.data.remote.dto.toMessageDTO
+import com.intern002.locketapp.ui.screen.chat.Conversation
 import com.intern002.locketapp.utils.Result
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.realtime.PostgresAction
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.realtime.postgresChangeFlow
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import javax.inject.Inject
 
 interface ChatRepository {
-    suspend fun getConversations(): Result<List<ConversationListItemDTO>>
+    fun getConversations(currentUserId: String): Flow<List<Conversation>>
+    suspend fun refreshConversations()
     suspend fun getMessages(conversationId: String, page: Int, pageSize: Int): Result<List<MessageDTO>>
     suspend fun sendMessage(request: SendMessageRequest): Result<MessageDTO>
     fun subscribeToMessages(conversationId: String): Flow<MessageDTO>
@@ -23,17 +34,24 @@ interface ChatRepository {
 
 class ChatRepositoryImpl @Inject constructor(
     private val chatApi: ChatApi,
-    private val supabaseClient: SupabaseClient
+    private val supabaseClient: SupabaseClient,
+    private val conversationDao: ConversationDao
 ) : ChatRepository {
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    override suspend fun getConversations(): Result<List<ConversationListItemDTO>> {
-        return try {
-            val conversations = chatApi.getConversations()
-            Result.Success(conversations)
+    override fun getConversations(currentUserId: String): Flow<List<Conversation>> {
+        return conversationDao.getConversations().map { entities ->
+            entities.map { it.toUiModel(currentUserId) }
+        }
+    }
+
+    override suspend fun refreshConversations() {
+        try {
+            val remoteConversations = chatApi.getConversations()
+            conversationDao.insertOrUpdateConversations(remoteConversations.map { it.toEntity() })
         } catch (e: Exception) {
-            Result.Error(e.message ?: "An unknown error occurred")
+            Log.e("ChatRepository", "Failed to refresh conversations: ${e.message}")
         }
     }
 

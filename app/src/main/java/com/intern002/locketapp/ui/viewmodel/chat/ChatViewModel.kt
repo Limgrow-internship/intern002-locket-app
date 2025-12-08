@@ -5,17 +5,18 @@ import androidx.lifecycle.viewModelScope
 import com.intern002.locketapp.data.repository.ChatRepository
 import com.intern002.locketapp.data.repository.UserRepository
 import com.intern002.locketapp.ui.screen.chat.Conversation
-import com.intern002.locketapp.ui.screen.chat.toConversation
-import com.intern002.locketapp.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed class ChatListState {
     object Loading : ChatListState()
-    data class Success(val conversations: List<Conversation>, val currentUserAvatarUrl: String?) : ChatListState()
+    data class Success(val conversations: List<Conversation>) : ChatListState()
     data class Error(val message: String) : ChatListState()
 }
 
@@ -28,24 +29,34 @@ class ChatViewModel @Inject constructor(
     private val _chatListState = MutableStateFlow<ChatListState>(ChatListState.Loading)
     val chatListState: StateFlow<ChatListState> = _chatListState
 
-    fun getConversations() {
+    init {
+        getConversations()
+    }
+
+    private fun getConversations() {
         viewModelScope.launch {
-            _chatListState.value = ChatListState.Loading
-            val userResult = userRepository.getCurrentUserProfile()
-            if (userResult == null) {
-                _chatListState.value = ChatListState.Error("User not logged in")
+            val user = userRepository.getCurrentUserProfile()
+            if (user == null) {
+                _chatListState.value = ChatListState.Error("User not found")
                 return@launch
             }
-            when (val result = chatRepository.getConversations()) {
-                is Result.Success -> {
-                    val conversations = result.data?.map { it.toConversation(userResult.id) } ?: emptyList()
-                    _chatListState.value = ChatListState.Success(conversations, userResult.avatarUrl)
+
+            chatRepository.getConversations(user.id)
+                .onEach { conversations ->
+                    _chatListState.value = ChatListState.Success(conversations)
                 }
-                is Result.Error -> {
-                    _chatListState.value = ChatListState.Error(result.message ?: "An unknown error occurred")
+                .catch { e ->
+                    _chatListState.value = ChatListState.Error(e.message ?: "An unknown error occurred")
                 }
-                else -> {}
-            }
+                .launchIn(viewModelScope)
+
+            chatRepository.refreshConversations()
+        }
+    }
+    
+    fun onRefresh() {
+        viewModelScope.launch {
+            chatRepository.refreshConversations()
         }
     }
 }

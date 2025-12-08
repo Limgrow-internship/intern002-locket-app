@@ -4,15 +4,11 @@ import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * This DTO is specifically for handling the snake_case JSON payload 
- * that comes directly from the Supabase Realtime subscription.
- */
 @OptIn(InternalSerializationApi::class)
 @Serializable
 data class RealtimeMessageDTO(
     @SerialName("id")
-    val id: String, // FIX: The ID from the database is a UUID String, not a Long
+    val id: String,
     @SerialName("conversation_id")
     val conversationId: String,
     @SerialName("sender_id")
@@ -27,10 +23,6 @@ data class RealtimeMessageDTO(
     val createdAt: String
 )
 
-/**
- * Maps a RealtimeMessageDTO (from Supabase) to the standard MessageDTO 
- * used throughout the Ktor client and the app.
- */
 fun RealtimeMessageDTO.toMessageDTO(): MessageDTO {
     return MessageDTO(
         conversationId = this.conversationId,

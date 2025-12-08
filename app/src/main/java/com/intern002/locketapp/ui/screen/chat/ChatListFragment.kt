@@ -51,11 +51,11 @@ class ChatListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getConversations()
+        viewModel.onRefresh()
     }
 
     private fun setupRecyclerView() {
-        chatListAdapter = ChatListAdapter(emptyList(), "") { conversation ->
+        chatListAdapter = ChatListAdapter { conversation ->
             val action = ChatListFragmentDirections.actionChatListFragmentToChatDetailFragment(
                 conversationId = conversation.id,
                 recipientName = conversation.name,
@@ -78,7 +78,7 @@ class ChatListFragment : Fragment() {
 
                     when (state) {
                         is ChatListState.Success -> {
-                            chatListAdapter.updateData(state.conversations, state.currentUserAvatarUrl)
+                            chatListAdapter.submitList(state.conversations)
                         }
                         is ChatListState.Error -> {
                             Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()

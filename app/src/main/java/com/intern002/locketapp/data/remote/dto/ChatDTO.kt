@@ -3,9 +3,6 @@ package com.intern002.locketapp.data.remote.dto
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.Serializable
 
-// DTOs are now configured to match the camelCase response from the Ktor server.
-// This will fix the conversation list loading.
-
 @OptIn(InternalSerializationApi::class)
 @Serializable
 data class ConversationPartnerDTO(
@@ -22,7 +19,8 @@ data class MessageDTO(
     val messageType: String,
     val content: String?,
     val imageUrl: String?,
-    val createdAt: String
+    val createdAt: String,
+    val isRead: Boolean = false
 )
 
 @OptIn(InternalSerializationApi::class)
@@ -31,5 +29,6 @@ data class ConversationListItemDTO(
     val conversationId: String,
     val partner: ConversationPartnerDTO,
     val lastMessage: MessageDTO?,
+    val unreadCount: Int = 0,
     val createdAt: String
 )

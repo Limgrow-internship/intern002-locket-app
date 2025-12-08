@@ -80,16 +80,18 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             action = Intent.ACTION_VIEW
             putExtra("conversation_id", conversationId)
         }
-        val bubblePendingIntent = PendingIntent.getActivity(this, conversationId.hashCode(), bubbleIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+        val bubblePendingIntent = PendingIntent.getActivity(this, conversationId.hashCode(), bubbleIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
 
         val bubbleData = NotificationCompat.BubbleMetadata.Builder(bubblePendingIntent, IconCompat.createWithResource(this, R.drawable.ic_locket_notification))
             .setDesiredHeight(600)
             .build()
 
         val contentIntent = Intent(this, MainActivity::class.java).apply {
-             putExtra("conversation_id", conversationId)
+            putExtra("conversation_id", conversationId)
         }
-        val contentPendingIntent = PendingIntent.getActivity(this, conversationId.hashCode(), contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
+        val contentPendingIntent = PendingIntent.getActivity(this, conversationId.hashCode(), contentIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
 
         val notification = NotificationCompat.Builder(this, CHANNEL_MESSAGES_ID)
             .setContentTitle(title)
@@ -102,7 +104,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setContentIntent(contentPendingIntent)
             .setAutoCancel(true)
             .setShortcutId(conversationId)
-            .setShowWhen(true) // Hiển thị thời gian
+            .setShowWhen(true)
             .build()
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -120,26 +122,26 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             data.forEach { (key, value) -> putExtra(key, value) }
         }
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE)
 
-        // Tạo RemoteViews từ layout tùy chỉnh
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_MUTABLE)
+
         val notificationLayout = RemoteViews(packageName, R.layout.notification_custom)
         notificationLayout.setTextViewText(R.id.notification_title, title)
         notificationLayout.setTextViewText(R.id.notification_text, messageBody)
         notificationLayout.setImageViewResource(R.id.notification_icon, R.drawable.ic_locket_notification)
-        notificationLayout.setTextViewText(R.id.notification_time, "Now") // Set thời gian
+        notificationLayout.setTextViewText(R.id.notification_time, "Now")
 
 
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_locket_notification) // Icon này vẫn bắt buộc
-            .setStyle(NotificationCompat.DecoratedCustomViewStyle()) // Cho phép layout tùy chỉnh
+            .setSmallIcon(R.drawable.ic_locket_notification)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setCustomContentView(notificationLayout)
-            .setCustomBigContentView(notificationLayout) // Dùng cho cả dạng mở rộng
+            .setCustomBigContentView(notificationLayout)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
-            .setWhen(System.currentTimeMillis()) 
-            .setShowWhen(true) 
+            .setWhen(System.currentTimeMillis())
+            .setShowWhen(true)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
