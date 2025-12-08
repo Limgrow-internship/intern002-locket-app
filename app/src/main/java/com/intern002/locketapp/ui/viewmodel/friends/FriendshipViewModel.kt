@@ -3,6 +3,7 @@ package com.intern002.locketapp.ui.viewmodel.friends
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.intern002.locketapp.data.model.Friend
+import com.intern002.locketapp.data.repository.ChatRepository
 import com.intern002.locketapp.data.repository.FriendshipRepository
 import com.intern002.locketapp.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,7 +50,8 @@ sealed class SearchState {
 @HiltViewModel
 class FriendshipViewModel @Inject constructor(
     private val repository: FriendshipRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val chatRepository: ChatRepository
 ) : ViewModel() {
 
     private val _friendsListState = MutableStateFlow<FriendListState>(FriendListState.Loading)
@@ -67,12 +69,10 @@ class FriendshipViewModel @Inject constructor(
     private var searchJob: Job? = null
 
     fun initializeForFriendsScreen() {
-        repository.clearCache()
         getFriendsData()
     }
 
     fun initializeForSuggestionsScreen() {
-        repository.clearCache()
         getFriendsData()
         getSuggestionsData()
     }
@@ -95,7 +95,9 @@ class FriendshipViewModel @Inject constructor(
                     _friendsListState.value = FriendListState.Success(pending + sent + friends)
                 }
             } catch (e: Exception) {
-                _friendsListState.value = FriendListState.Error(e.message ?: "Failed to load data")
+                if (_friendsListState.value !is FriendListState.Success) {
+                    _friendsListState.value = FriendListState.Error(e.message ?: "Failed to load data")
+                }
             }
         }
     }
@@ -114,7 +116,9 @@ class FriendshipViewModel @Inject constructor(
                     _suggestionsState.value = SuggestionsState.Success(suggestions)
                 }
             } catch (e: Exception) {
-                _suggestionsState.value = SuggestionsState.Error(e.message ?: "Failed to load suggestions")
+                if (_suggestionsState.value !is SuggestionsState.Success) {
+                    _suggestionsState.value = SuggestionsState.Error(e.message ?: "Failed to load suggestions")
+                }
             }
         }
     }
@@ -204,7 +208,7 @@ class FriendshipViewModel @Inject constructor(
                 }
 
             } catch (e: Exception) {
-                _searchResultState.value = SearchState.Error("User not found")
+                _searchResultState.value = SearchState.Error("Search failed. Please check your connection and try again.")
             }
         }
     }
@@ -239,6 +243,7 @@ class FriendshipViewModel @Inject constructor(
             setUpdatingStateForFriend(friend.id, true)
             try {
                 repository.deleteFriendship(friend.id)
+                chatRepository.deleteConversationByPartnerId(friend.id) // DELETES THE CONVERSATION
                 refreshStatesAfterMutation()
             } catch (e: Exception) {
                 setUpdatingStateForFriend(friend.id, false)
@@ -251,6 +256,7 @@ class FriendshipViewModel @Inject constructor(
             setUpdatingStateForFriend(friend.id, true)
             try {
                 repository.rejectFriendRequest(friend.id)
+                chatRepository.deleteConversationByPartnerId(friend.id) // DELETES THE CONVERSATION
                 refreshStatesAfterMutation()
             } catch (e: Exception) {
                 setUpdatingStateForFriend(friend.id, false)

@@ -36,6 +36,7 @@ interface ChatRepository {
     fun subscribeToMessages(conversationId: String): Flow<MessageDTO>
     suspend fun saveNewMessage(message: MessageDTO, conversationId: String)
     suspend fun markConversationAsRead(conversationId: String)
+    suspend fun deleteConversationByPartnerId(partnerId: String)
     suspend fun clearAllLocalData()
 }
 
@@ -129,6 +130,10 @@ class ChatRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e("ChatRepository", "Failed to mark conversation as read: ${e.message}")
         }
+    }
+
+    override suspend fun deleteConversationByPartnerId(partnerId: String) {
+        conversationDao.deleteConversationByPartnerId(partnerId)
     }
 
     override suspend fun clearAllLocalData() {

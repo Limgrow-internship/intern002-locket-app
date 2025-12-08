@@ -20,6 +20,7 @@ import com.intern002.locketapp.BuildConfig
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.prefs.AuthManager
 import com.intern002.locketapp.data.repository.ChatRepository
+import com.intern002.locketapp.data.repository.FriendshipRepository
 import com.intern002.locketapp.databinding.FragmentSettingsBinding
 import com.intern002.locketapp.ui.viewmodel.setting.AvatarUpdateState
 import com.intern002.locketapp.ui.viewmodel.setting.SettingsViewModel
@@ -41,6 +42,9 @@ class SettingsFragment : Fragment(), EditAvatarBottomSheetFragment.EditAvatarLis
 
     @Inject
     lateinit var chatRepository: ChatRepository
+
+    @Inject
+    lateinit var friendshipRepository: FriendshipRepository
 
     private var latestTmpUri: Uri? = null
 
@@ -95,6 +99,7 @@ class SettingsFragment : Fragment(), EditAvatarBottomSheetFragment.EditAvatarLis
                 viewLifecycleOwner.lifecycleScope.launch {
                     authManager.clearTokens()
                     chatRepository.clearAllLocalData()
+                    friendshipRepository.clearCache()
                     viewModel.onLogoutClicked()
                     d.dismiss()
                 }

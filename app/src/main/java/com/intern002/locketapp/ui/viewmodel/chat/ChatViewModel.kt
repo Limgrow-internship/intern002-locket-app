@@ -47,10 +47,7 @@ class ChatViewModel @Inject constructor(
 
         chatRepository.getConversations(userId)
             .onEach { conversations ->
-                if (_chatListState.value is ChatListState.Loading && conversations.isEmpty()) {
-                } else {
-                    _chatListState.value = ChatListState.Success(conversations)
-                }
+                _chatListState.value = ChatListState.Success(conversations)
             }
             .catch { e ->
                 _chatListState.value = ChatListState.Error(e.message ?: "Failed to load from local cache.")
@@ -63,14 +60,15 @@ class ChatViewModel @Inject constructor(
     fun onRefresh() {
         val userId = currentUserId
         if (userId == null) {
-            _chatListState.value = ChatListState.Error("User not logged in")
             return
         }
 
         viewModelScope.launch {
             val result = chatRepository.refreshConversations(userId)
             if (result is Result.Error) {
-                _chatListState.value = ChatListState.Error(result.message ?: "An unknown error occurred")
+                if (_chatListState.value !is ChatListState.Success) {
+                    _chatListState.value = ChatListState.Error(result.message ?: "An unknown error occurred")
+                }
             }
         }
     }

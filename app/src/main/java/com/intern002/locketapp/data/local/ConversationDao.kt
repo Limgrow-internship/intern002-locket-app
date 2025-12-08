@@ -15,6 +15,9 @@ interface ConversationDao {
     @Query("SELECT * FROM conversations ORDER BY lastMessageTimestamp DESC")
     fun getConversations(): Flow<List<ConversationEntity>>
 
+    @Query("DELETE FROM conversations WHERE partnerId = :partnerId")
+    suspend fun deleteConversationByPartnerId(partnerId: String)
+
     @Query("DELETE FROM conversations")
     suspend fun clearAll()
 

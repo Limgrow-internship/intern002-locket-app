@@ -68,7 +68,6 @@ class SuggestionFriendsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Luôn gọi để lấy dữ liệu mới nhất mỗi khi fragment quay trở lại màn hình
         viewModel.initializeForSuggestionsScreen()
     }
 
