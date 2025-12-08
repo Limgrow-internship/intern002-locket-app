@@ -35,6 +35,7 @@ interface ChatRepository {
     suspend fun sendMessage(request: SendMessageRequest): Result<MessageDTO>
     fun subscribeToMessages(conversationId: String): Flow<MessageDTO>
     suspend fun saveNewMessage(message: MessageDTO, conversationId: String)
+    suspend fun markConversationAsRead(conversationId: String)
     suspend fun clearAllLocalData()
 }
 
@@ -117,6 +118,14 @@ class ChatRepositoryImpl @Inject constructor(
             messageDao.insertOrUpdateMessages(listOf(message.toEntity(conversationId)))
         } catch (e: Exception) {
             Log.e("ChatRepository", "Failed to save new message: ${e.message}")
+        }
+    }
+
+    override suspend fun markConversationAsRead(conversationId: String) {
+        try {
+            chatApi.markConversationAsRead(conversationId)
+        } catch (e: Exception) {
+            Log.e("ChatRepository", "Failed to mark conversation as read: ${e.message}")
         }
     }
 

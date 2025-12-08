@@ -6,13 +6,31 @@
     android:layout_height="wrap_content"
     android:padding="4dp">
 
+    <TextView
+        android:id="@+id/tv_timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="4dp"
+        android:textColor="#8E8E93"
+        android:textSize="12sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/fl_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Today at 12:40 AM"
+        tools:visibility="visible" />
+
     <FrameLayout
         android:id="@+id/fl_avatar"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/profile_gradient_border"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/profile_gradient_border">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_timestamp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_avatar"
@@ -51,10 +69,10 @@
         android:textSize="16sp"
         android:visibility="gone"
         app:layout_constrainedWidth="true"
-        app:layout_constraintStart_toEndOf="@+id/fl_avatar"
+        app:layout_constraintBottom_toBottomOf="@+id/fl_avatar"
         app:layout_constraintEnd_toStartOf="@id/guideline_end"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/fl_avatar"
         tools:text="Hi there! This is a received message." />
 
     <androidx.cardview.widget.CardView
@@ -62,14 +80,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="0dp"
         android:visibility="gone"
         app:cardBackgroundColor="@android:color/transparent"
-        app:layout_constraintStart_toEndOf="@+id/fl_avatar"
-        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@+id/fl_avatar"
         app:layout_constraintEnd_toStartOf="@id/guideline_end"
-        app:layout_constrainedWidth="true">
+        app:layout_constraintStart_toEndOf="@+id/fl_avatar"
+        app:layout_constraintTop_toTopOf="@+id/fl_avatar">
 
         <ImageView
             android:id="@+id/iv_message_image"

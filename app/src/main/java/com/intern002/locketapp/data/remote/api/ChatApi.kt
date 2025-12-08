@@ -48,4 +48,8 @@ class ChatApi @Inject constructor(private val sessionManager: SessionManager) {
             setBody(request)
         }.body()
     }
+
+    suspend fun markConversationAsRead(conversationId: String) {
+        client().post("$baseUrl/chat/messages/$conversationId/read")
+    }
 }

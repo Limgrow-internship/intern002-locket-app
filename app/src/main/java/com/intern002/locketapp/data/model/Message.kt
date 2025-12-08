@@ -16,7 +16,8 @@ data class Message(
     val imageUrl: String?,
     val createdAt: String,
     val localId: String = UUID.randomUUID().toString(),
-    var sendStatus: SendStatus = SendStatus.SENT
+    var sendStatus: SendStatus = SendStatus.SENT,
+    var showTimestamp: Boolean = false
 )
 
 fun MessageDTO.toMessage(): Message {

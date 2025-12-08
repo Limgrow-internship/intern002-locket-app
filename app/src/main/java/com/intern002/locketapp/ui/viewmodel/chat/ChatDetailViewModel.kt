@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
@@ -53,6 +54,7 @@ class ChatDetailViewModel @Inject constructor(
             observeMessages()
             refreshMessages()
             subscribeToNewMessages()
+            markConversationAsRead()
         }
     }
 
@@ -60,16 +62,58 @@ class ChatDetailViewModel @Inject constructor(
         chatRepository.getMessages(conversationId)
             .onEach { messagesFromDb ->
                 val combinedList = (messagesFromDb + _currentMessages.filter { it.sendStatus == SendStatus.SENDING || it.sendStatus == SendStatus.FAILED })
-                    .distinctBy { it.createdAt }
+                    .distinctBy { it.localId }
                     .sortedBy { it.createdAt }
 
-                _messageState.value = MessageListState.Success(combinedList)
+                _messageState.value = MessageListState.Success(processMessagesWithTimestamps(combinedList))
             }
             .catch { e ->
                 _messageState.value = MessageListState.Error(e.message ?: "Failed to load messages")
             }
             .launchIn(viewModelScope)
     }
+
+    private fun processMessagesWithTimestamps(messages: List<Message>): List<Message> {
+        if (messages.isEmpty()) return emptyList()
+
+        fun parseDate(dateString: String): Date? {
+            return try {
+                val pattern = if (dateString.contains(".")) "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" else "yyyy-MM-dd'T'HH:mm:ss'Z'"
+                val localParser = SimpleDateFormat(pattern, Locale.US).apply {
+                    timeZone = TimeZone.getTimeZone("UTC")
+                }
+                localParser.parse(dateString)
+            } catch (e: Exception) {
+                null
+            }
+        }
+
+        return messages.mapIndexed { index, message ->
+            if (index == 0) {
+                message.copy(showTimestamp = true)
+            } else {
+                val prevMessage = messages[index - 1]
+                val prevDate = parseDate(prevMessage.createdAt)
+                val currentDate = parseDate(message.createdAt)
+
+                if (prevDate != null && currentDate != null) {
+                    val calPrev = Calendar.getInstance().apply { time = prevDate }
+                    val calCurrent = Calendar.getInstance().apply { time = currentDate }
+
+                    val isDifferentDay = calPrev.get(Calendar.DAY_OF_YEAR) != calCurrent.get(Calendar.DAY_OF_YEAR) ||
+                            calPrev.get(Calendar.YEAR) != calCurrent.get(Calendar.YEAR)
+
+                    val diffInMinutes = (currentDate.time - prevDate.time) / 60000
+                    val timeDiffExceeded = diffInMinutes > 10
+
+                    message.copy(showTimestamp = isDifferentDay || timeDiffExceeded)
+                } else {
+                    message.copy(showTimestamp = false)
+                }
+            }
+        }
+    }
+
 
     private fun refreshMessages() {
         viewModelScope.launch {
@@ -81,14 +125,12 @@ class ChatDetailViewModel @Inject constructor(
         chatRepository.subscribeToMessages(conversationId)
             .onEach { newMessageDto ->
                 val newMessage = newMessageDto.toMessage()
-
                 if (newMessage.senderId == currentUserId) {
-                    val index = _currentMessages.indexOfFirst { it.sendStatus == SendStatus.SENDING }
+                    val index = _currentMessages.indexOfFirst { it.sendStatus == SendStatus.SENDING && it.content == newMessage.content }
                     if (index != -1) {
                         _currentMessages.removeAt(index)
                     }
                 }
-                // Thay vì tải lại toàn bộ, chỉ lưu tin nhắn mới
                 chatRepository.saveNewMessage(newMessageDto, conversationId)
 
             }
@@ -118,8 +160,9 @@ class ChatDetailViewModel @Inject constructor(
 
             _currentMessages.add(tempMessage)
             val currentSuccessState = (_messageState.value as? MessageListState.Success)
-            val updatedList = (currentSuccessState?.messages ?: emptyList()) + tempMessage
-            _messageState.value = MessageListState.Success(updatedList.distinctBy { it.createdAt }.sortedBy { it.createdAt })
+            val updatedList = ((currentSuccessState?.messages ?: emptyList()) + tempMessage)
+                .sortedBy { it.createdAt }
+            _messageState.value = MessageListState.Success(processMessagesWithTimestamps(updatedList))
 
 
             val request = SendMessageRequest(
@@ -136,11 +179,17 @@ class ChatDetailViewModel @Inject constructor(
                     val failedMessage = _currentMessages[index].copy(sendStatus = SendStatus.FAILED)
                     _currentMessages[index] = failedMessage
 
-                    val currentMessages = (_messageState.value as? MessageListState.Success)?.messages ?: emptyList()
-                    val finalMessages = currentMessages.map { if (it.localId == failedMessage.localId) failedMessage else it }
-                    _messageState.value = MessageListState.Success(finalMessages)
+                    val currentMessagesList = (_messageState.value as? MessageListState.Success)?.messages ?: emptyList()
+                    val finalList = currentMessagesList.map { if (it.localId == failedMessage.localId) failedMessage else it }
+                    _messageState.value = MessageListState.Success(processMessagesWithTimestamps(finalList.sortedBy { it.createdAt }))
                 }
             }
+        }
+    }
+
+    private fun markConversationAsRead() {
+        viewModelScope.launch {
+            chatRepository.markConversationAsRead(conversationId)
         }
     }
 }

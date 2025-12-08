@@ -80,18 +80,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/tv_timestamp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Today at 12:40 AM"
-        android:textColor="#8E8E93"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_messages"
         android:layout_width="0dp"
@@ -102,7 +90,7 @@
         app:layout_constraintBottom_toTopOf="@+id/input_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_timestamp"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
         tools:listitem="@layout/item_message_sent" />
 
     <ProgressBar
@@ -110,10 +98,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/rv_messages"
-        app:layout_constraintEnd_toEndOf="@+id/rv_messages"
-        app:layout_constraintStart_toStartOf="@+id/rv_messages"
-        app:layout_constraintTop_toTopOf="@+id/rv_messages" />
+        app:layout_constraintBottom_toBottomOf="@id/rv_messages"
+        app:layout_constraintEnd_toEndOf="@id/rv_messages"
+        app:layout_constraintStart_toStartOf="@id/rv_messages"
+        app:layout_constraintTop_toTopOf="@id/rv_messages" />
 
     <LinearLayout
         android:id="@+id/input_container"
