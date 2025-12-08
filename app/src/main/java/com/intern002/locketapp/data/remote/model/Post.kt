@@ -5,8 +5,10 @@ import com.google.gson.annotations.SerializedName
 data class Post(
     @SerializedName("id") val id: String,
     @SerializedName("authorId") val authorId: String,
-    @SerializedName("mediaUrl") val mediaUrl: String, // JSON anh gửi là "mediaUrl"
-    @SerializedName("mediaType") val mediaType: String, // JSON anh gửi là "mediaType"
+    @SerializedName("author_name") val userName: String,
+    @SerializedName("author_avatar") val userAvatarUrl: String?,
+    @SerializedName("mediaUrl") val mediaUrl: String,
+    @SerializedName("mediaType") val mediaType: String,
     @SerializedName("caption") val caption: String?,
     @SerializedName("createdAt") val createdAt: String,
 
@@ -15,7 +17,4 @@ data class Post(
 
     @SerializedName("latest_reactions")
     val latestReactions: List<Reactor> = emptyList(),
-
-    var userName: String = "",
-    var userAvatarUrl: String? = null
 )
