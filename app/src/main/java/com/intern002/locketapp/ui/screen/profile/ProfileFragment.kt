@@ -44,7 +44,6 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Luôn gọi để lấy profile mới nhất mỗi khi fragment quay trở lại màn hình
         viewModel.fetchUserProfile()
     }
 

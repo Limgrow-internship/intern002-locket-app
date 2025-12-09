@@ -9,20 +9,24 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.remote.model.Reactor
 import com.intern002.locketapp.data.remote.model.reaction.ReactionTypeResponse
 import com.intern002.locketapp.databinding.FragmentPostListBinding
+import com.intern002.locketapp.ui.screen.main.MainContainerFragmentDirections
 import com.intern002.locketapp.ui.screen.main.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -54,11 +58,46 @@ class PostListFragment : Fragment(), PostItemCallBack {
 
         binding.recyclerViewPosts.layoutManager = LinearLayoutManager(context)
 
+        setupViewModelObservers()
+        setupClickListeners()
+    }
+
+    private fun setupViewModelObservers() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.currentUserId.collectLatest { myId ->
-                    if (myId != null) {
-                        setupAdapter(myId)
+                launch {
+                    viewModel.userProfile.collectLatest { userProfile ->
+                        if (userProfile != null) {
+                            if (userProfile.avatarUrl.isNullOrEmpty()) {
+                                binding.avatar.isVisible = false
+                                binding.textAvatarInitial.isVisible = true
+                                binding.textAvatarInitial.text = userProfile.username.first().uppercase()
+                            } else {
+                                binding.avatar.isVisible = true
+                                binding.textAvatarInitial.isVisible = false
+                                Glide.with(requireContext())
+                                    .load(userProfile.avatarUrl)
+                                    .placeholder(R.drawable.avt_sample)
+                                    .error(R.drawable.avt_sample)
+                                    .into(binding.avatar)
+                            }
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.currentUserId.collectLatest { myId ->
+                        if (myId != null) {
+                            setupAdapter(myId)
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.reactionTypes.collectLatest { types ->
+                        if (types.isNotEmpty()) {
+                            setupReactionButtons(types)
+                        }
                     }
                 }
             }
@@ -94,6 +133,32 @@ class PostListFragment : Fragment(), PostItemCallBack {
                 pickerSheet.show(parentFragmentManager, "ReactionPicker")
             } else {
                 Toast.makeText(context, "Đang tải icon...", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun setupClickListeners() {
+        binding.avatarContainer.setOnClickListener {
+            findNavController().navigate(R.id.action_mainContainerFragment_to_profileFragment)
+        }
+
+        binding.buttonChat.setOnClickListener {
+            findNavController().navigate(R.id.action_mainContainerFragment_to_chatListFragment)
+        }
+
+        binding.btnMore.setOnClickListener {
+            val allReactions = viewModel.reactionTypes.value
+            if (allReactions.isNotEmpty()) {
+                val pickerSheet = ReactionPickerFragment(allReactions) { selectedReaction ->
+                    onReactionClicked(selectedReaction.id)
+                    binding.root.postDelayed({ showFlyingEmoji(selectedReaction.emoji) }, 150)
+                    binding.root.postDelayed({ showFlyingEmoji(selectedReaction.emoji) }, 300)
+                    binding.root.postDelayed({ showFlyingEmoji(selectedReaction.emoji) }, 200)
+                    binding.root.postDelayed({ showFlyingEmoji(selectedReaction.emoji) }, 120)
+                }
+                pickerSheet.show(parentFragmentManager, "ReactionPicker")
+            } else {
+                Toast.makeText(context, "Loading icon...", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -231,7 +296,7 @@ class PostListFragment : Fragment(), PostItemCallBack {
             val bottomSheet = ReactionsBottomSheetFragment(reactors)
             bottomSheet.show(parentFragmentManager, "ReactionsSheet")
         } else {
-            Toast.makeText(context, "Chưa có ai thả tim cả huhu 😢", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "No one has reacted yet 😢", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -275,8 +340,8 @@ class PostListFragment : Fragment(), PostItemCallBack {
             val reactionBtn = ImageView(context)
 
             val params = LinearLayout.LayoutParams(
-                dpToPx(32), // Width 32dp
-                dpToPx(32)  // Height 32dp
+                dpToPx(32),
+                dpToPx(32)
             )
             params.marginStart = dpToPx(8)
             reactionBtn.layoutParams = params

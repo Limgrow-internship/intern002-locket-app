@@ -7,6 +7,7 @@ import com.intern002.locketapp.ui.viewmodel.friends.FriendshipStatus
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
+import javax.inject.Singleton
 
 interface FriendshipRepository {
     suspend fun getFriends(): List<Friend>
@@ -18,15 +19,24 @@ interface FriendshipRepository {
     suspend fun getPendingRequests(): List<Friend>
     suspend fun getSentRequests(): List<Friend>
     suspend fun getSuggestions(): List<Friend>
+    fun clearCache()
 }
 
+@Singleton
 class FriendshipRepositoryImpl @Inject constructor(
     private val api: FriendshipApi
 ) : FriendshipRepository {
 
+    private var friendsCache: List<Friend>? = null
+    private var pendingRequestsCache: List<Friend>? = null
+    private var sentRequestsCache: List<Friend>? = null
+    private var suggestionsCache: List<Friend>? = null
+
+
     override suspend fun getFriends(): List<Friend> {
-        return api.getFriends().map { friendshipDto ->
-            val user = friendshipDto.user
+        friendsCache?.let { return it }
+        return api.getFriends().map {
+            val user = it.user
             Friend(
                 id = user.id,
                 username = user.username,
@@ -34,7 +44,7 @@ class FriendshipRepositoryImpl @Inject constructor(
                 avatarUrl = user.avatarUrl,
                 status = FriendshipStatus.FRIEND
             )
-        }
+        }.also { friendsCache = it }
     }
 
     override suspend fun searchUser(username: String, discriminator: Int): Friend = coroutineScope {
@@ -86,21 +96,26 @@ class FriendshipRepositoryImpl @Inject constructor(
     override suspend fun sendFriendRequest(username: String, discriminator: Int) {
         val request = FriendRequestDTO(username, discriminator)
         api.sendFriendRequest(request)
+        clearCache()
     }
 
     override suspend fun acceptFriendRequest(friendshipId: String) {
         api.acceptFriendRequest(friendshipId)
+        clearCache()
     }
 
     override suspend fun rejectFriendRequest(friendshipId: String) {
         api.rejectFriendRequest(friendshipId)
+        clearCache()
     }
 
     override suspend fun deleteFriendship(friendshipId: String) {
         api.deleteFriendship(friendshipId)
+        clearCache()
     }
 
     override suspend fun getPendingRequests(): List<Friend> {
+        pendingRequestsCache?.let { return it }
         return api.getPendingRequests().map { pendingRequest ->
             val userDto = pendingRequest.requester
             Friend(
@@ -110,10 +125,11 @@ class FriendshipRepositoryImpl @Inject constructor(
                 avatarUrl = userDto.avatarUrl,
                 status = FriendshipStatus.PENDING_INCOMING
             )
-        }
+        }.also { pendingRequestsCache = it }
     }
 
     override suspend fun getSentRequests(): List<Friend> {
+        sentRequestsCache?.let { return it }
         return api.getSentRequests().map { sentRequest ->
             val userDto = sentRequest.addressee
             Friend(
@@ -123,10 +139,11 @@ class FriendshipRepositoryImpl @Inject constructor(
                 avatarUrl = userDto.avatarUrl,
                 status = FriendshipStatus.PENDING_OUTGOING
             )
-        }
+        }.also { sentRequestsCache = it }
     }
 
     override suspend fun getSuggestions(): List<Friend> {
+        suggestionsCache?.let { return it }
         return api.getSuggestions().map { friendDto ->
             Friend(
                 id = friendDto.id,
@@ -135,6 +152,13 @@ class FriendshipRepositoryImpl @Inject constructor(
                 avatarUrl = friendDto.avatarUrl,
                 status = FriendshipStatus.NOT_FRIEND
             )
-        }
+        }.also { suggestionsCache = it }
+    }
+
+    override fun clearCache() {
+        friendsCache = null
+        pendingRequestsCache = null
+        sentRequestsCache = null
+        suggestionsCache = null
     }
 }

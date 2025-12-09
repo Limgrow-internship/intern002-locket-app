@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 data class UpdateUserRequest(
     val email: String? = null,
     val username: String? = null,
+    val password: String? = null,
     val birthday: String? = null,
     val avatarUrl: String? = null
 )

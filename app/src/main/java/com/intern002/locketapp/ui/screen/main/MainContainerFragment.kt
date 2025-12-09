@@ -36,7 +36,6 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentMainContainerBinding.bind(view)
 
-        // 1. Setup ViewPager
         val adapter = MainPagerAdapter(this)
         binding.viewPagerMain.adapter = adapter
         binding.viewPagerMain.getChildAt(0).overScrollMode = View.OVER_SCROLL_NEVER
@@ -77,7 +76,6 @@ class MainContainerFragment : Fragment(R.layout.fragment_main_container) {
             findNavController().navigate(R.id.action_mainContainerFragment_to_gridPostFragment)
         }
 
-        // Nút Share
         binding.buttonShare.setOnClickListener {
             val bottomSheet = ShareBottomSheetFragment(
                 onDeleteClick = {

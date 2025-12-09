@@ -2,6 +2,7 @@ package com.intern002.locketapp.ui.screen.post
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.intern002.locketapp.data.model.UserProfile
 import com.intern002.locketapp.data.remote.model.Post
 import com.intern002.locketapp.data.remote.model.reaction.ReactionTypeResponse
 import com.intern002.locketapp.data.repository.PostRepository
@@ -28,6 +29,12 @@ class PostListViewModel @Inject constructor(
     private val _reactionTypes = MutableStateFlow<List<ReactionTypeResponse>>(emptyList())
     val reactionTypes: StateFlow<List<ReactionTypeResponse>> = _reactionTypes
 
+    private val _userProfile = MutableStateFlow<UserProfile?>(null)
+    val userProfile: StateFlow<UserProfile?> = _userProfile
+
+    private val _reactionTypes = MutableStateFlow<List<ReactionTypeResponse>>(emptyList())
+    val reactionTypes: StateFlow<List<ReactionTypeResponse>> = _reactionTypes
+
     init {
         fetchCurrentUser()
         loadReactionTypes()
@@ -38,18 +45,13 @@ class PostListViewModel @Inject constructor(
     private var isLastPage = false
     private var isLoading = false
 
-    init {
-        loadPosts(isRefresh = true)
-    }
-
     private fun fetchCurrentUser() {
         viewModelScope.launch {
             try {
                 val userProfile = userRepository.getCurrentUserProfile()
+                _userProfile.value = userProfile
                 _currentUserId.value = userProfile.id
-
                 loadPosts(isRefresh = true)
-
             } catch (e: Exception) {
                 e.printStackTrace()
             }

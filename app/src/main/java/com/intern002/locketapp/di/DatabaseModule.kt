@@ -2,6 +2,9 @@ package com.intern002.locketapp.di
 
 import android.content.Context
 import androidx.room.Room
+import com.intern002.locketapp.data.local.ConversationDao
+import com.intern002.locketapp.data.local.LocketAppDatabase
+import com.intern002.locketapp.data.local.MessageDao
 import com.intern002.locketapp.data.local.AppDatabase
 import com.intern002.locketapp.data.local.dao.PostDao
 import dagger.Module
@@ -17,11 +20,28 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
-        return Room.databaseBuilder(context, AppDatabase::class.java, "locket_db")
-            .fallbackToDestructiveMigration()
-            .build()
+    fun provideLocketAppDatabase(
+        @ApplicationContext context: Context
+    ): LocketAppDatabase {
+        return Room.databaseBuilder(
+            context,
+            LocketAppDatabase::class.java,
+            "locket_app.db"
+        ).fallbackToDestructiveMigration().build()
     }
+
+    @Provides
+    @Singleton
+    fun provideConversationDao(database: LocketAppDatabase): ConversationDao {
+        return database.conversationDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMessageDao(database: LocketAppDatabase): MessageDao {
+        return database.messageDao()
+    }
+
 
     @Provides
     fun providePostDao(db: AppDatabase): PostDao = db.postDao()

@@ -39,6 +39,18 @@
 
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/pb_item_loading"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/iv_status"
+        android:layout_alignBottom="@id/iv_status"
+        android:layout_alignStart="@id/iv_status"
+        android:layout_alignEnd="@id/iv_status"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
     <ImageView
         android:id="@+id/iv_status"
         android:layout_width="60dp"

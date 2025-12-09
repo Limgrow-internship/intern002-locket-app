@@ -24,9 +24,9 @@ class LoginEmailViewModel: ViewModel() {
             delay(1000)
 
             if (email.isBlank()) {
-                _loginState.value = EmailLoginState.Error("Email không được để trống")
+                _loginState.value = EmailLoginState.Error("Email not empty")
             } else if (!email.contains("@gmail.com")) {
-                _loginState.value = EmailLoginState.Error("Email không đúng định dạng quá")
+                _loginState.value = EmailLoginState.Error("Email don't correct format. That email has must container @gmail.com")
             } else {
                 _loginState.value = EmailLoginState.Success
             }

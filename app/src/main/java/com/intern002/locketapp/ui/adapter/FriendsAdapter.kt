@@ -65,18 +65,24 @@ class FriendsAdapter : ListAdapter<Friend, FriendsAdapter.FriendViewHolder>(Frie
                 binding.ivAvatar.setImageDrawable(createInitialDrawable(itemView.context, friend.username))
             }
 
-            val statusIcon = when (friend.status) {
-                FriendshipStatus.FRIEND -> R.drawable.ic_friend
-                FriendshipStatus.NOT_FRIEND -> R.drawable.ic_add_friend
-                FriendshipStatus.PENDING_INCOMING, FriendshipStatus.PENDING_OUTGOING -> R.drawable.ic_invited
-                FriendshipStatus.SELF -> 0
-            }
-
-            if (statusIcon != 0) {
-                binding.ivStatus.setImageResource(statusIcon)
-                binding.ivStatus.visibility = View.VISIBLE
+            if (friend.isUpdating) {
+                binding.pbItemLoading.visibility = View.VISIBLE
+                binding.ivStatus.visibility = View.GONE
             } else {
-                binding.ivStatus.visibility = View.INVISIBLE
+                binding.pbItemLoading.visibility = View.GONE
+                val statusIcon = when (friend.status) {
+                    FriendshipStatus.FRIEND -> R.drawable.ic_friend
+                    FriendshipStatus.NOT_FRIEND -> R.drawable.ic_add_friend
+                    FriendshipStatus.PENDING_INCOMING, FriendshipStatus.PENDING_OUTGOING -> R.drawable.ic_invited
+                    FriendshipStatus.SELF -> 0
+                }
+
+                if (statusIcon != 0) {
+                    binding.ivStatus.setImageResource(statusIcon)
+                    binding.ivStatus.visibility = View.VISIBLE
+                } else {
+                    binding.ivStatus.visibility = View.INVISIBLE
+                }
             }
         }
 
@@ -106,7 +112,7 @@ class FriendsAdapter : ListAdapter<Friend, FriendsAdapter.FriendViewHolder>(Frie
 
     class FriendDiffCallback : DiffUtil.ItemCallback<Friend>() {
         override fun areItemsTheSame(oldItem: Friend, newItem: Friend): Boolean {
-            return oldItem.username == newItem.username && oldItem.discriminator == newItem.discriminator
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: Friend, newItem: Friend): Boolean {

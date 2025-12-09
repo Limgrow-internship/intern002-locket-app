@@ -79,14 +79,14 @@ class EditPreviewFragment : Fragment(R.layout.fragment_edit_preview) {
                         is SendState.Loading -> {
                             binding.buttonSend.isEnabled = false
                             binding.buttonSend.alpha = 0.5f
-                            Toast.makeText(context, "Đang gửi ảnh...", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Sending photo...", Toast.LENGTH_SHORT).show()
                         }
 
                         is SendState.Success -> {
                             binding.buttonSend.isEnabled = true
                             binding.buttonSend.alpha = 1f
                             mainViewModel.refreshTrigger.value = true
-                            Toast.makeText(context, "Gửi thành công!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Sent successfully!", Toast.LENGTH_SHORT).show()
                             findNavController().popBackStack()
                         }
 
@@ -97,7 +97,7 @@ class EditPreviewFragment : Fragment(R.layout.fragment_edit_preview) {
                                 .show()
                         }
 
-                        else -> {} // Idle
+                        else -> {}
                     }
                 }
             }
@@ -106,10 +106,9 @@ class EditPreviewFragment : Fragment(R.layout.fragment_edit_preview) {
 
     private fun setupFriendsList() {
         val adapter =
-            FriendsSelectAdapter(arrayListOf()) // Cần sửa Adapter để nhận List<FriendUserResponse>
+            FriendsSelectAdapter(arrayListOf())
         binding.recyclerFriends.adapter = adapter
 
-        // 2. Lắng nghe dữ liệu từ ViewModel
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.friendsList.collectLatest { friends ->
@@ -158,7 +157,7 @@ class EditPreviewFragment : Fragment(R.layout.fragment_edit_preview) {
             val selectedFriends = adapter.getSelectedFriends()
 
             if (selectedFriends.isEmpty()) {
-                Toast.makeText(context, "Chọn ít nhất 1 người bạn!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Select at least 1 friend!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

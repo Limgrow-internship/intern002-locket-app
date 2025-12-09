@@ -1,9 +1,11 @@
 package com.intern002.locketapp.data.repository
 
+import com.intern002.locketapp.data.prefs.AuthManager
 import com.intern002.locketapp.data.remote.dto.UpdateUserRequest
 import com.intern002.locketapp.data.model.UserProfile
 import com.intern002.locketapp.data.remote.api.UserApi
 import com.intern002.locketapp.data.remote.dto.VerifyPasswordRequest
+import com.intern002.locketapp.di.SessionManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,11 +17,15 @@ interface UserRepository {
     suspend fun updateBirthday(birthday: String)
     suspend fun updateAvatar(avatarUrl: String?)
     fun clearCurrentUserProfile()
+    suspend fun logout()
 }
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(
-    private val userApi: UserApi
+    private val userApi: UserApi,
+    private val chatRepository: ChatRepository,
+    private val sessionManager: SessionManager,
+    private val authManager: AuthManager
 ) : UserRepository {
 
     private var cachedProfile: UserProfile? = null
@@ -63,5 +69,12 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun clearCurrentUserProfile() {
         cachedProfile = null
+    }
+
+    override suspend fun logout() {
+        sessionManager.clearSession()
+        authManager.clearTokens()
+        chatRepository.clearAllLocalData()
+        clearCurrentUserProfile()
     }
 }

@@ -6,5 +6,5 @@ data class ReactionTypeResponse(
     @SerializedName("id") val id: Int,
     @SerializedName("name") val name: String,
     @SerializedName("emoji") val emoji: String,
-    @SerializedName("image_url") val imageUrl: String?
+    @SerializedName("image_url") val imageUrl: String?,
 )

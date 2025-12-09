@@ -40,7 +40,14 @@
         android:id="@+id/gridPostFragment"
         android:name="com.intern002.locketapp.ui.screen.grid.GridPostFragment"
         android:label="GridPostFragment"
-        tools:layout="@layout/fragment_grid_post" />
+        tools:layout="@layout/fragment_grid_post" >
+        <action
+            android:id="@+id/action_gridPostFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_gridPostFragment_to_chatListFragment"
+            app:destination="@id/chatListFragment" />
+    </fragment>
 
 
     <fragment
@@ -417,7 +424,13 @@
         android:id="@+id/changeEmailFragment"
         android:name="com.intern002.locketapp.ui.screen.settings.change.ChangeEmailFragment"
         android:label="ChangeEmailFragment"
-        tools:layout="@layout/fragment_change_email" />
+        tools:layout="@layout/fragment_change_email" >
+        <action
+            android:id="@+id/action_changeEmailFragment_to_enterPasswordFragment"
+            app:destination="@id/enterPasswordFragment"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
 
     <fragment
         android:id="@+id/changeUserNameFragment"

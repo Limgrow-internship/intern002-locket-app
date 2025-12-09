@@ -56,9 +56,7 @@ class FriendsSelectAdapter(
 
         if (clickedItem.isAllButton) {
             if (!clickedItem.isSelected) {
-                // 1. Bỏ chọn tất cả bọn khác
                 list.forEach { it.isSelected = false }
-                // 2. Chọn nút All
                 clickedItem.isSelected = true
                 notifyDataSetChanged()
             }
