@@ -165,7 +165,6 @@ class MessageDiffCallback(private val oldList: List<Message>, private val newLis
     override fun getNewListSize(): Int = newList.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        // Using localId for temporary messages and createdAt for synced messages provides better stability
         return oldList[oldItemPosition].localId == newList[newItemPosition].localId || oldList[oldItemPosition].createdAt == newList[newItemPosition].createdAt
     }
 

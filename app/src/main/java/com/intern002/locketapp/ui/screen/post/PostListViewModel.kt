@@ -2,8 +2,11 @@ package com.intern002.locketapp.ui.screen.post
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.intern002.locketapp.data.model.UserProfile
 import com.intern002.locketapp.data.remote.model.Post
+import com.intern002.locketapp.data.remote.model.reaction.ReactionTypeResponse
 import com.intern002.locketapp.data.repository.PostRepository
+import com.intern002.locketapp.data.repository.ReactionRepository
 import com.intern002.locketapp.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PostListViewModel @Inject constructor(
     private val postRepository: PostRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val reactionRepository: ReactionRepository
 ) : ViewModel() {
 
     private val _posts = MutableStateFlow<List<Post>>(emptyList())
@@ -23,8 +27,15 @@ class PostListViewModel @Inject constructor(
     private val _currentUserId = MutableStateFlow<String?>(null)
     val currentUserId: StateFlow<String?> = _currentUserId
 
+    private val _userProfile = MutableStateFlow<UserProfile?>(null)
+    val userProfile: StateFlow<UserProfile?> = _userProfile
+
+    private val _reactionTypes = MutableStateFlow<List<ReactionTypeResponse>>(emptyList())
+    val reactionTypes: StateFlow<List<ReactionTypeResponse>> = _reactionTypes
+
     init {
         fetchCurrentUser()
+        loadReactionTypes()
     }
 
     private var currentPage = 1
@@ -32,18 +43,13 @@ class PostListViewModel @Inject constructor(
     private var isLastPage = false
     private var isLoading = false
 
-    init {
-        loadPosts(isRefresh = true)
-    }
-
     private fun fetchCurrentUser() {
         viewModelScope.launch {
             try {
                 val userProfile = userRepository.getCurrentUserProfile()
+                _userProfile.value = userProfile
                 _currentUserId.value = userProfile.id
-
                 loadPosts(isRefresh = true)
-
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -86,5 +92,23 @@ class PostListViewModel @Inject constructor(
 
     fun refreshFeed() {
         loadPosts(isRefresh = true)
+    }
+
+    private fun loadReactionTypes() {
+        viewModelScope.launch {
+            reactionRepository.getReactionTypes().onSuccess { list ->
+                _reactionTypes.value = list
+            }
+        }
+    }
+
+    fun reactToPost(postId: String, reactionTypeId: Int) {
+        viewModelScope.launch {
+            reactionRepository.reactToPost(postId, reactionTypeId)
+                .onSuccess {
+                }
+                .onFailure {
+                }
+        }
     }
 }

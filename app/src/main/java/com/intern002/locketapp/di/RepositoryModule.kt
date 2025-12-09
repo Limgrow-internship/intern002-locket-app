@@ -28,6 +28,10 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindPostRepository(postRepositoryImpl: PostRepositoryImpl): PostRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindReactionRepository(reactionRepositoryImpl: ReactionRepositoryImpl): ReactionRepository
 }
 
 @Module

@@ -46,4 +46,10 @@ object NetworkModule {
     fun provideFriendshipApi(sessionManager: SessionManager): FriendshipApi {
         return FriendshipApi(sessionManager)
     }
+
+    @Provides
+    @Singleton
+    fun provideReactionApi(sessionManager: SessionManager): ReactionApi {
+        return ReactionApi(sessionManager)
+    }
 }

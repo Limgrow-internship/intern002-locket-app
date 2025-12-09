@@ -12,7 +12,7 @@
         android:layout_height="56dp"
         android:scaleType="fitCenter"
         android:padding="0dp"
-        android:src="@drawable/ic_mess" />
+        android:src="@drawable/ic_messenger" />
 
     <TextView
         android:id="@+id/tv_name"

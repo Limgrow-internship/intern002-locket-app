@@ -10,7 +10,7 @@
         android:id="@+id/img_icon"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:src="@drawable/ic_ins"
+        android:src="@drawable/ic_instagram"
         android:padding="0dp"
         android:scaleType="fitCenter" />
 

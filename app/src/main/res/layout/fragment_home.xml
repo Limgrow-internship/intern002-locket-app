@@ -9,8 +9,8 @@
 
     <FrameLayout
         android:id="@+id/avatar_container"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="25dp"
         android:background="@drawable/bg_button_outline"
@@ -126,7 +126,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="80dp"
         android:animateLayoutChanges="true"
-        android:paddingBottom="20dp"
+        android:paddingBottom="12dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
@@ -170,10 +170,10 @@
             android:id="@+id/tv_info_shutter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="22dp"
             android:text="@string/text_shutter_instruction"
             android:textColor="@color/white"
-            android:textSize="12dp"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/button_shutter" />
@@ -181,8 +181,8 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_history_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_marginEnd="12dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
@@ -204,7 +204,7 @@
         android:layout_height="wrap_content"
         android:text="@string/text_history"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/card_history_image"
         app:layout_constraintEnd_toEndOf="parent"
