@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.intern002.locketapp.data.local.ConversationDao
 import com.intern002.locketapp.data.local.LocketAppDatabase
 import com.intern002.locketapp.data.local.MessageDao
-import com.intern002.locketapp.data.local.AppDatabase
 import com.intern002.locketapp.data.local.dao.PostDao
 import dagger.Module
 import dagger.Provides
@@ -44,5 +43,8 @@ object DatabaseModule {
 
 
     @Provides
-    fun providePostDao(db: AppDatabase): PostDao = db.postDao()
+    @Singleton
+    fun providePostDao(database: LocketAppDatabase): PostDao {
+        return database.postDao()
+    }
 }

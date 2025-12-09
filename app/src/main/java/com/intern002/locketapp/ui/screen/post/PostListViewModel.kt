@@ -32,9 +32,6 @@ class PostListViewModel @Inject constructor(
     private val _userProfile = MutableStateFlow<UserProfile?>(null)
     val userProfile: StateFlow<UserProfile?> = _userProfile
 
-    private val _reactionTypes = MutableStateFlow<List<ReactionTypeResponse>>(emptyList())
-    val reactionTypes: StateFlow<List<ReactionTypeResponse>> = _reactionTypes
-
     init {
         fetchCurrentUser()
         loadReactionTypes()
