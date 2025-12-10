@@ -1,7 +1,9 @@
 package com.intern002.locketapp.ui.screen.chat
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -135,6 +137,43 @@ class ChatDetailFragment : Fragment() {
                 binding.etMessage.text.clear()
             }
         }
+
+        binding.btnMore.setOnClickListener { 
+            toggleMenuVisibility(true)
+        }
+
+        binding.scrimView.setOnClickListener {
+            toggleMenuVisibility(false)
+        }
+
+        binding.chatMenu.optionRemoveFriend.setOnClickListener {
+            // TODO: Handle remove friend action
+            Toast.makeText(context, "Remove Friend clicked", Toast.LENGTH_SHORT).show()
+            toggleMenuVisibility(false)
+        }
+
+        binding.chatMenu.optionBlockFriend.setOnClickListener {
+            // TODO: Handle block friend action
+            Toast.makeText(context, "Block Friend clicked", Toast.LENGTH_SHORT).show()
+            toggleMenuVisibility(false)
+        }
+
+        val parent = binding.btnMore.parent as View
+        parent.post {
+            val rect = Rect()
+            binding.btnMore.getHitRect(rect)
+            val expansion = (24 * resources.displayMetrics.density).toInt() // 24dp
+            rect.top -= expansion
+            rect.bottom += expansion
+            rect.left -= expansion
+            rect.right += expansion
+            parent.touchDelegate = TouchDelegate(rect, binding.btnMore)
+        }
+    }
+
+    private fun toggleMenuVisibility(show: Boolean) {
+        binding.chatMenu.root.isVisible = show
+        binding.scrimView.isVisible = show
     }
 
     override fun onDestroyView() {

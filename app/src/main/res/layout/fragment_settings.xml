@@ -630,7 +630,9 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:checked="false"/>
+                            android:checked="false"
+                            app:trackTint="@color/switch_track_color_selector"
+                            app:thumbTint="@color/switch_thumb_color_selector"/>
                     </RelativeLayout>
 
                     <View

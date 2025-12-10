@@ -60,7 +60,6 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: HomeViewModel by viewModels()
-
     private var cameraProvider: ProcessCameraProvider? = null
     private var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private var camera: Camera? = null
@@ -343,10 +342,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    //Feature: Zoom Camera
     private fun setupZoomGesture() {
 
-        //ScaleGestureDetector is Android\'s class can listen when user touch more than one finger
         val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
                 val currentZoomRatio = camera?.cameraInfo?.zoomState?.value?.zoomRatio ?: 1f
@@ -374,10 +371,9 @@ class HomeFragment : Fragment() {
         val name = SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS", Locale.US)
             .format(System.currentTimeMillis())
 
-        // Save photo in external cache directory
         val photoFile = File(requireContext().externalCacheDir, "$name.jpg")
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-        // Animation
+
         binding.viewFlashOverlay.alpha = 0.8f
         binding.viewFlashOverlay.visibility = View.VISIBLE
         binding.viewFlashOverlay.animate()
