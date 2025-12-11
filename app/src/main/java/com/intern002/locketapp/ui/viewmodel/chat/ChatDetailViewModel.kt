@@ -26,6 +26,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 sealed class MessageListState {
@@ -63,7 +64,7 @@ class ChatDetailViewModel @Inject constructor(
         chatRepository.getMessages(conversationId)
             .combine(_temporaryMessagesFlow) { dbMessages, tempMessages ->
                 (dbMessages + tempMessages)
-                    .distinctBy { it.localId } // Use localId to prevent duplicates
+                    .distinctBy { it.localId }
                     .sortedBy { it.createdAt }
             }
             .onEach { combinedList ->
@@ -77,8 +78,8 @@ class ChatDetailViewModel @Inject constructor(
 
     private fun parseIsoString(isoString: String): Date? {
         val patterns = listOf(
-            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", // With milliseconds
-            "yyyy-MM-dd'T'HH:mm:ss'Z'"       // Without milliseconds
+            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+            "yyyy-MM-dd'T'HH:mm:ss'Z'"
         )
         for (pattern in patterns) {
             try {
@@ -87,7 +88,6 @@ class ChatDetailViewModel @Inject constructor(
                 }
                 return parser.parse(isoString)
             } catch (e: ParseException) {
-                // Continue to next pattern
             }
         }
         return null
@@ -96,37 +96,47 @@ class ChatDetailViewModel @Inject constructor(
     private fun processMessagesWithTimestamps(messages: List<Message>): List<Message> {
         if (messages.isEmpty()) return emptyList()
 
-        val displayFormatter = SimpleDateFormat("EEE h:mm a", Locale.getDefault()).apply {
-            timeZone = TimeZone.getDefault()
-        }
+        val displayFormatter = SimpleDateFormat("EEE h:mm a", Locale.US)
 
         return messages.mapIndexed { index, message ->
-            val currentDate = parseIsoString(message.createdAt)
-            val prevDate = if (index > 0) parseIsoString(messages[index - 1].createdAt) else null
+            val utcDate = parseIsoString(message.createdAt)
 
+            var displayString = ""
             var shouldShowTimestamp = false
-            if (index == 0) {
-                shouldShowTimestamp = true
-            } else if (prevDate != null && currentDate != null) {
-                val calPrev = Calendar.getInstance().apply { time = prevDate }
-                val calCurrent = Calendar.getInstance().apply { time = currentDate }
 
-                val isDifferentDay = calPrev.get(Calendar.DAY_OF_YEAR) != calCurrent.get(Calendar.DAY_OF_YEAR) ||
-                        calPrev.get(Calendar.YEAR) != calCurrent.get(Calendar.YEAR)
+            if (utcDate != null) {
+                val localDate = Date(utcDate.time + TimeUnit.HOURS.toMillis(7))
 
-                val diffInMinutes = (currentDate.time - prevDate.time) / 60000
-                val timeDiffExceeded = diffInMinutes > 10
+                val prevUtcDate = if (index > 0) parseIsoString(messages[index - 1].createdAt) else null
 
-                shouldShowTimestamp = isDifferentDay || timeDiffExceeded
+                if (index == 0) {
+                    shouldShowTimestamp = true
+                } else if (prevUtcDate != null) {
+                    val prevLocalDate = Date(prevUtcDate.time + TimeUnit.HOURS.toMillis(7))
+
+                    val calPrev = Calendar.getInstance().apply { time = prevLocalDate }
+                    val calCurrent = Calendar.getInstance().apply { time = localDate }
+
+                    val isDifferentDay = calPrev.get(Calendar.DAY_OF_YEAR) != calCurrent.get(Calendar.DAY_OF_YEAR) ||
+                            calPrev.get(Calendar.YEAR) != calCurrent.get(Calendar.YEAR)
+
+                    val diffInMinutes = (utcDate.time - prevUtcDate.time) / 60000
+                    val timeDiffExceeded = diffInMinutes > 10
+
+                    shouldShowTimestamp = isDifferentDay || timeDiffExceeded
+                }
+
+                if (shouldShowTimestamp) {
+                    displayString = displayFormatter.format(localDate)
+                }
             }
 
             message.copy(
                 showTimestamp = shouldShowTimestamp,
-                displayTimestamp = if (shouldShowTimestamp && currentDate != null) displayFormatter.format(currentDate) else ""
+                displayTimestamp = displayString
             )
         }
     }
-
 
     private fun refreshMessages() {
         viewModelScope.launch {
@@ -151,12 +161,16 @@ class ChatDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = currentUserId ?: return@launch
 
+            val utcTimestampString = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).apply {
+                timeZone = TimeZone.getTimeZone("UTC")
+            }.format(Date())
+
             val tempMessage = Message(
                 senderId = userId,
                 messageType = "text",
                 content = text,
                 imageUrl = null,
-                createdAt = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).apply { timeZone = TimeZone.getTimeZone("UTC") }.format(Date()),
+                createdAt = utcTimestampString,
                 localId = UUID.randomUUID().toString(),
                 sendStatus = SendStatus.SENDING
             )
