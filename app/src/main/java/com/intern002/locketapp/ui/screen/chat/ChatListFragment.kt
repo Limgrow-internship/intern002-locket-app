@@ -49,6 +49,11 @@ class ChatListFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.onRefresh()
+    }
+
     private fun setupRecyclerView() {
         chatListAdapter = ChatListAdapter { conversation ->
             val action = ChatListFragmentDirections.actionChatListFragmentToChatDetailFragment(

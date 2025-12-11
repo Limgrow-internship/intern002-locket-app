@@ -1,4 +1,4 @@
-package com.intern002.locketapp.data.local
+package com.intern002.locketapp.data.local.entity
 
 import androidx.room.Entity
 import com.intern002.locketapp.data.model.Message

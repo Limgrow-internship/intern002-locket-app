@@ -8,9 +8,11 @@ import com.intern002.locketapp.data.model.Message
 import com.intern002.locketapp.data.model.SendStatus
 import com.intern002.locketapp.data.remote.api.SendMessageRequest
 import com.intern002.locketapp.data.repository.ChatRepository
+import com.intern002.locketapp.data.repository.FriendshipRepository
 import com.intern002.locketapp.data.repository.UserRepository
 import com.intern002.locketapp.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -39,6 +42,7 @@ sealed class MessageListState {
 class ChatDetailViewModel @Inject constructor(
     private val chatRepository: ChatRepository,
     private val userRepository: UserRepository,
+    private val friendshipRepository: FriendshipRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -49,6 +53,9 @@ class ChatDetailViewModel @Inject constructor(
 
     private val _temporaryMessagesFlow = MutableStateFlow<List<Message>>(emptyList())
     private var currentUserId: String? = null
+
+    private val _removeFriendEvent = Channel<Unit>()
+    val removeFriendEvent = _removeFriendEvent.receiveAsFlow()
 
     init {
         viewModelScope.launch {
@@ -149,6 +156,7 @@ class ChatDetailViewModel @Inject constructor(
             .onEach { newMessageDto ->
                 if (newMessageDto.senderId != currentUserId) {
                     chatRepository.saveNewMessage(newMessageDto, conversationId)
+                    chatRepository.updateConversationWithNewMessage(conversationId, newMessageDto)
                 }
             }
             .catch { e ->
@@ -189,6 +197,7 @@ class ChatDetailViewModel @Inject constructor(
                     _temporaryMessagesFlow.value = _temporaryMessagesFlow.value.filterNot { it.localId == tempMessage.localId }
                     result.data?.let { sentMessage ->
                         chatRepository.saveNewMessage(sentMessage, conversationId)
+                        chatRepository.updateConversationWithNewMessage(conversationId, sentMessage)
                     }
                 }
                 is Result.Error -> {
@@ -210,6 +219,23 @@ class ChatDetailViewModel @Inject constructor(
     private fun markConversationAsRead() {
         viewModelScope.launch {
             chatRepository.markConversationAsRead(conversationId)
+        }
+    }
+
+    fun removeFriend() {
+        viewModelScope.launch {
+            val partnerId = chatRepository.getPartnerIdByConversationId(conversationId)
+            if (partnerId != null) {
+                try {
+                    friendshipRepository.deleteFriendship(partnerId)
+                    chatRepository.deleteConversationByPartnerId(partnerId)
+                    _removeFriendEvent.send(Unit)
+                } catch (e: Exception) {
+                    // Handle error
+                }
+            } else {
+                // Handle error
+            }
         }
     }
 }

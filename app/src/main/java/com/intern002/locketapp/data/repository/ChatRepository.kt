@@ -1,13 +1,14 @@
 package com.intern002.locketapp.data.repository
 
 import android.util.Log
-import com.intern002.locketapp.data.local.ConversationDao
-import com.intern002.locketapp.data.local.MessageDao
-import com.intern002.locketapp.data.local.toEntity
-import com.intern002.locketapp.data.local.toUiModel
+import com.intern002.locketapp.data.local.dao.ConversationDao
+import com.intern002.locketapp.data.local.dao.MessageDao
+import com.intern002.locketapp.data.local.entity.toEntity
+import com.intern002.locketapp.data.local.entity.toUiModel
 import com.intern002.locketapp.data.model.Message
 import com.intern002.locketapp.data.remote.api.ChatApi
 import com.intern002.locketapp.data.remote.api.SendMessageRequest
+import com.intern002.locketapp.data.remote.dto.ConversationListItemDTO
 import com.intern002.locketapp.data.remote.dto.MessageDTO
 import com.intern002.locketapp.data.remote.dto.RealtimeMessageDTO
 import com.intern002.locketapp.data.remote.dto.toMessageDTO
@@ -38,6 +39,10 @@ interface ChatRepository {
     suspend fun markConversationAsRead(conversationId: String)
     suspend fun deleteConversationByPartnerId(partnerId: String)
     suspend fun clearAllLocalData()
+    fun subscribeToConversationUpdates(): Flow<ConversationListItemDTO>
+    suspend fun saveConversation(conversation: ConversationListItemDTO)
+    suspend fun getPartnerIdByConversationId(conversationId: String): String?
+    suspend fun updateConversationWithNewMessage(conversationId: String, message: MessageDTO)
 }
 
 class ChatRepositoryImpl @Inject constructor(
@@ -139,5 +144,50 @@ class ChatRepositoryImpl @Inject constructor(
     override suspend fun clearAllLocalData() {
         conversationDao.clearAll()
         messageDao.clearAll()
+    }
+
+    override fun subscribeToConversationUpdates(): Flow<ConversationListItemDTO> {
+        val channel = supabaseClient.channel("conversations-updates")
+        return channel.postgresChangeFlow<PostgresAction.Update>(schema = "public") {
+            table = "conversations"
+        }.map {
+            Log.d("ChatRepository", "Conversation update received: ${it.record}")
+            json.decodeFromJsonElement<ConversationListItemDTO>(it.record)
+        }.catch { e ->
+            Log.e("ChatRepository", "Error subscribing to conversation updates: ${e.message}")
+        }.onStart {
+            Log.d("ChatRepository", "Subscribing to conversation updates")
+            channel.subscribe()
+        }.onCompletion {
+            Log.d("ChatRepository", "Unsubscribing from conversation updates")
+            channel.unsubscribe()
+        }
+    }
+
+    override suspend fun saveConversation(conversation: ConversationListItemDTO) {
+        try {
+            conversationDao.insertOrUpdateConversations(listOf(conversation.toEntity()))
+        } catch (e: Exception) {
+            Log.e("ChatRepository", "Failed to save conversation: ${e.message}")
+        }
+    }
+
+    override suspend fun getPartnerIdByConversationId(conversationId: String): String? {
+        return conversationDao.getPartnerIdByConversationId(conversationId)
+    }
+
+    override suspend fun updateConversationWithNewMessage(conversationId: String, message: MessageDTO) {
+        val conversation = conversationDao.getConversationById(conversationId)
+        if (conversation != null) {
+            val updatedConversation = conversation.copy(
+                lastMessageText = message.content,
+                lastMessageType = message.messageType,
+                lastMessageTimestamp = message.createdAt,
+                lastMessageSenderId = message.senderId,
+                lastMessageIsRead = message.isRead,
+                unreadCount = if (message.senderId == conversation.partnerId) conversation.unreadCount + 1 else 0
+            )
+            conversationDao.insertOrUpdateConversations(listOf(updatedConversation))
+        }
     }
 }

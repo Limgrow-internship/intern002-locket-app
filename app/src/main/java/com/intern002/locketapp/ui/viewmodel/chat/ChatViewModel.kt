@@ -35,6 +35,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             currentUserId = userRepository.getCurrentUserProfile()?.id
             loadConversations()
+            subscribeToConversationUpdates()
         }
     }
 
@@ -71,5 +72,15 @@ class ChatViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun subscribeToConversationUpdates() {
+        chatRepository.subscribeToConversationUpdates()
+            .onEach { updatedConversation ->
+                chatRepository.saveConversation(updatedConversation)
+            }
+            .catch { e ->
+            }
+            .launchIn(viewModelScope)
     }
 }

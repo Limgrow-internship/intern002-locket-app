@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.repository.UserRepository
 import com.intern002.locketapp.databinding.FragmentChatDetailBinding
@@ -101,24 +102,31 @@ class ChatDetailFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.messageState.collect { state ->
-                    binding.progressBar.isVisible = state is MessageListState.Loading
-                    binding.rvMessages.isVisible = state is MessageListState.Success
+                launch {
+                    viewModel.messageState.collect { state ->
+                        binding.progressBar.isVisible = state is MessageListState.Loading
+                        binding.rvMessages.isVisible = state is MessageListState.Success
 
-                    when (state) {
-                        is MessageListState.Success -> {
-                            val newMessages = state.messages
-                            if (messageAdapter.itemCount < newMessages.size) {
-                                messageAdapter.setMessages(newMessages)
-                                binding.rvMessages.scrollToPosition(newMessages.size - 1)
-                            } else {
-                                messageAdapter.setMessages(newMessages)
+                        when (state) {
+                            is MessageListState.Success -> {
+                                val newMessages = state.messages
+                                if (messageAdapter.itemCount < newMessages.size) {
+                                    messageAdapter.setMessages(newMessages)
+                                    binding.rvMessages.scrollToPosition(newMessages.size - 1)
+                                } else {
+                                    messageAdapter.setMessages(newMessages)
+                                }
                             }
+                            is MessageListState.Error -> {
+                                Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+                            }
+                            else -> {}
                         }
-                        is MessageListState.Error -> {
-                            Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
-                        }
-                        else -> {}
+                    }
+                }
+                launch {
+                    viewModel.removeFriendEvent.collect { 
+                        findNavController().navigate(R.id.action_chatDetailFragment_to_chatListFragment)
                     }
                 }
             }
@@ -147,8 +155,7 @@ class ChatDetailFragment : Fragment() {
         }
 
         binding.chatMenu.optionRemoveFriend.setOnClickListener {
-            // TODO: Handle remove friend action
-            Toast.makeText(context, "Remove Friend clicked", Toast.LENGTH_SHORT).show()
+            showRemoveFriendDialog()
             toggleMenuVisibility(false)
         }
 
@@ -169,6 +176,17 @@ class ChatDetailFragment : Fragment() {
             rect.right += expansion
             parent.touchDelegate = TouchDelegate(rect, binding.btnMore)
         }
+    }
+
+    private fun showRemoveFriendDialog() {
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle("Unfriend")
+            .setMessage("Are you sure you want to unfriend ${args.recipientName}?")
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Unfriend") { _, _ ->
+                viewModel.removeFriend()
+            }
+            .show()
     }
 
     private fun toggleMenuVisibility(show: Boolean) {
