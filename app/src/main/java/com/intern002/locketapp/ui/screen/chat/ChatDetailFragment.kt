@@ -124,8 +124,16 @@ class ChatDetailFragment : Fragment() {
                         }
                     }
                 }
+
                 launch {
-                    viewModel.removeFriendEvent.collect { 
+                    viewModel.isBlocked.collect { isBlocked ->
+                        binding.inputContainer.isVisible = !isBlocked
+                        binding.tvBlockedMessage.isVisible = isBlocked
+                    }
+                }
+
+                launch {
+                    viewModel.removeFriendEvent.collect {
                         findNavController().navigate(R.id.action_chatDetailFragment_to_chatListFragment)
                     }
                 }
@@ -146,7 +154,7 @@ class ChatDetailFragment : Fragment() {
             }
         }
 
-        binding.btnMore.setOnClickListener { 
+        binding.btnMore.setOnClickListener {
             toggleMenuVisibility(true)
         }
 
@@ -160,8 +168,7 @@ class ChatDetailFragment : Fragment() {
         }
 
         binding.chatMenu.optionBlockFriend.setOnClickListener {
-            // TODO: Handle block friend action
-            Toast.makeText(context, "Block Friend clicked", Toast.LENGTH_SHORT).show()
+            showBlockFriendDialog()
             toggleMenuVisibility(false)
         }
 
@@ -185,6 +192,17 @@ class ChatDetailFragment : Fragment() {
             .setNegativeButton("Cancel", null)
             .setPositiveButton("Unfriend") { _, _ ->
                 viewModel.removeFriend()
+            }
+            .show()
+    }
+
+    private fun showBlockFriendDialog() {
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle("Block User")
+            .setMessage("Are you sure you want to block ${args.recipientName}? You will no longer be able to send or receive messages.")
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Block") { _, _ ->
+                viewModel.blockUser()
             }
             .show()
     }

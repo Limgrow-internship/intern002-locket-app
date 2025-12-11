@@ -138,7 +138,19 @@
 
     </LinearLayout>
 
-    <!-- Lớp phủ mờ -->
+    <TextView
+        android:id="@+id/tv_blocked_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You can't reply to this conversation."
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="#101010"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible"/>
+
     <View
         android:id="@+id/scrim_view"
         android:layout_width="match_parent"
@@ -147,7 +159,6 @@
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Menu (được đặt cuối cùng để nổi lên trên) -->
     <include
         android:id="@+id/chat_menu"
         layout="@layout/layout_chat_menu"

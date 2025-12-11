@@ -51,6 +51,9 @@ class ChatDetailViewModel @Inject constructor(
     private val _messageState = MutableStateFlow<MessageListState>(MessageListState.Loading)
     val messageState: StateFlow<MessageListState> = _messageState.asStateFlow()
 
+    private val _isBlocked = MutableStateFlow(false)
+    val isBlocked: StateFlow<Boolean> = _isBlocked.asStateFlow()
+
     private val _temporaryMessagesFlow = MutableStateFlow<List<Message>>(emptyList())
     private var currentUserId: String? = null
 
@@ -219,6 +222,20 @@ class ChatDetailViewModel @Inject constructor(
     private fun markConversationAsRead() {
         viewModelScope.launch {
             chatRepository.markConversationAsRead(conversationId)
+        }
+    }
+
+    fun blockUser() {
+        viewModelScope.launch {
+            val partnerId = chatRepository.getPartnerIdByConversationId(conversationId)
+            if (partnerId != null) {
+                try {
+                    friendshipRepository.blockFriend(partnerId)
+                    _isBlocked.value = true
+                } catch (e: Exception) {
+                    // Optionally handle error, e.g., show a toast
+                }
+            }
         }
     }
 

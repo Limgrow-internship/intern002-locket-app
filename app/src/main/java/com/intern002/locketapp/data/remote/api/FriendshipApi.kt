@@ -67,6 +67,11 @@ class FriendshipApi @Inject constructor(private val sessionManager: SessionManag
     suspend fun deleteFriendship(friendshipId: String) {
         client().delete("$baseUrl/friends/$friendshipId")
     }
+
+    suspend fun blockFriend(friendId: String) {
+        client().post("$baseUrl/friends/block/$friendId")
+    }
+
     suspend fun getPendingRequests(): List<PendingRequestDTO> {
         return client().get("$baseUrl/friends/requests/pending").body()
     }

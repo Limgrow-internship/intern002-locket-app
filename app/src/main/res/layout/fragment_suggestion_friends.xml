@@ -53,13 +53,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/add_a_new_friend"
+            android:textColor="@color/white"
             android:textColorHint="@color/white_semitransparent"
             android:background="@drawable/bg_search_box"
             android:padding="12dp"
             android:drawableStart="@android:drawable/ic_menu_search"
             android:drawablePadding="8dp"/>
 
-        <!-- Search Result Section (Added) -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_search_result"
             android:layout_width="match_parent"

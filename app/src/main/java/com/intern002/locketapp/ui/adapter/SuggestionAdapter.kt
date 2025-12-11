@@ -64,12 +64,11 @@ class SuggestionsAdapter : ListAdapter<Friend, SuggestionsAdapter.SuggestionView
                 binding.ivAvatar.setImageDrawable(createInitialDrawable(itemView.context, friend.username))
             }
 
-            // CORRECTED: The icon now changes based on the friend's status
             val statusIcon = when (friend.status) {
                 FriendshipStatus.FRIEND -> R.drawable.ic_friend
                 FriendshipStatus.NOT_FRIEND -> R.drawable.ic_add_friend
                 FriendshipStatus.PENDING_INCOMING, FriendshipStatus.PENDING_OUTGOING -> R.drawable.ic_invited
-                FriendshipStatus.SELF -> 0 // Hide icon for self
+                FriendshipStatus.SELF -> 0
             }
 
             if (statusIcon != 0) {

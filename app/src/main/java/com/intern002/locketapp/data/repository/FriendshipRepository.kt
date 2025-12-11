@@ -16,6 +16,7 @@ interface FriendshipRepository {
     suspend fun acceptFriendRequest(friendshipId: String)
     suspend fun rejectFriendRequest(friendshipId: String)
     suspend fun deleteFriendship(friendshipId: String)
+    suspend fun blockFriend(friendId: String)
     suspend fun getPendingRequests(): List<Friend>
     suspend fun getSentRequests(): List<Friend>
     suspend fun getSuggestions(): List<Friend>
@@ -111,6 +112,11 @@ class FriendshipRepositoryImpl @Inject constructor(
 
     override suspend fun deleteFriendship(friendshipId: String) {
         api.deleteFriendship(friendshipId)
+        clearCache()
+    }
+
+    override suspend fun blockFriend(friendId: String) {
+        api.blockFriend(friendId)
         clearCache()
     }
 
