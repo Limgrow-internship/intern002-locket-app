@@ -11,12 +11,15 @@ import javax.inject.Singleton
 
 interface FriendshipRepository {
     suspend fun getFriends(): List<Friend>
+    suspend fun getBlockedFriends(): List<Friend>
     suspend fun searchUser(username: String, discriminator: Int): Friend
     suspend fun sendFriendRequest(username: String, discriminator: Int)
     suspend fun acceptFriendRequest(friendshipId: String)
     suspend fun rejectFriendRequest(friendshipId: String)
     suspend fun deleteFriendship(friendshipId: String)
     suspend fun blockFriend(friendId: String)
+    suspend fun unblockFriend(friendId: String)
+    suspend fun isBlocked(userId: String, friendId: String): Boolean
     suspend fun getPendingRequests(): List<Friend>
     suspend fun getSentRequests(): List<Friend>
     suspend fun getSuggestions(): List<Friend>
@@ -29,6 +32,7 @@ class FriendshipRepositoryImpl @Inject constructor(
 ) : FriendshipRepository {
 
     private var friendsCache: List<Friend>? = null
+    private var blockedFriendsCache: List<Friend>? = null
     private var pendingRequestsCache: List<Friend>? = null
     private var sentRequestsCache: List<Friend>? = null
     private var suggestionsCache: List<Friend>? = null
@@ -48,25 +52,45 @@ class FriendshipRepositoryImpl @Inject constructor(
         }.also { friendsCache = it }
     }
 
+    override suspend fun getBlockedFriends(): List<Friend> {
+        blockedFriendsCache?.let { return it }
+        return api.getBlockedFriends().map {
+            Friend(
+                id = it.id,
+                username = it.username,
+                discriminator = it.discriminator,
+                avatarUrl = it.avatarUrl,
+                status = FriendshipStatus.BLOCKED
+            )
+        }.also { blockedFriendsCache = it }
+    }
+
     override suspend fun searchUser(username: String, discriminator: Int): Friend = coroutineScope {
         val foundUserDto = api.searchUser(username, discriminator)
 
         val friendsDeferred = async { getFriends() }
         val pendingRequestsDeferred = async { getPendingRequests() }
         val sentRequestsDeferred = async { getSentRequests() }
+        val blockedFriendsDeferred = async { getBlockedFriends() }
 
         val friends = friendsDeferred.await()
         val pendingRequests = pendingRequestsDeferred.await()
         val sentRequests = sentRequestsDeferred.await()
+        val blockedFriends = blockedFriendsDeferred.await()
 
         val existingFriend = friends.find { it.username == foundUserDto.username && it.discriminator == foundUserDto.discriminator }
         val existingPending = pendingRequests.find { it.username == foundUserDto.username && it.discriminator == foundUserDto.discriminator }
         val existingSent = sentRequests.find { it.username == foundUserDto.username && it.discriminator == foundUserDto.discriminator }
+        val existingBlocked = blockedFriends.find { it.username == foundUserDto.username && it.discriminator == foundUserDto.discriminator }
 
         val finalStatus: FriendshipStatus
         val finalId: String
 
         when {
+            existingBlocked != null -> {
+                finalStatus = FriendshipStatus.BLOCKED
+                finalId = existingBlocked.id
+            }
             existingFriend != null -> {
                 finalStatus = FriendshipStatus.FRIEND
                 finalId = existingFriend.id
@@ -120,6 +144,16 @@ class FriendshipRepositoryImpl @Inject constructor(
         clearCache()
     }
 
+    override suspend fun unblockFriend(friendId: String) {
+        api.unblockFriend(friendId)
+        clearCache()
+    }
+
+    override suspend fun isBlocked(userId: String, friendId: String): Boolean {
+        val blockedFriends = getBlockedFriends()
+        return blockedFriends.any { it.id == friendId }
+    }
+
     override suspend fun getPendingRequests(): List<Friend> {
         pendingRequestsCache?.let { return it }
         return api.getPendingRequests().map { pendingRequest ->
@@ -163,6 +197,7 @@ class FriendshipRepositoryImpl @Inject constructor(
 
     override fun clearCache() {
         friendsCache = null
+        blockedFriendsCache = null
         pendingRequestsCache = null
         sentRequestsCache = null
         suggestionsCache = null

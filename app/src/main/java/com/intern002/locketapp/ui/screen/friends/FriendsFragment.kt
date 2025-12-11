@@ -267,6 +267,7 @@ class FriendsFragment : Fragment() {
             FriendshipStatus.FRIEND -> R.drawable.ic_friend
             FriendshipStatus.NOT_FRIEND -> R.drawable.ic_add_friend
             FriendshipStatus.PENDING_INCOMING, FriendshipStatus.PENDING_OUTGOING -> R.drawable.ic_invited
+            FriendshipStatus.BLOCKED -> R.drawable.ic_lock
             FriendshipStatus.SELF -> 0
         }
 

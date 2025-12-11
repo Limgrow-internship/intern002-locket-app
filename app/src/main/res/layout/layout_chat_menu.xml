@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:elevation="8dp" 
+    android:elevation="8dp"
     app:cardBackgroundColor="#2C2C2E"
     app:cardCornerRadius="14dp"
     app:strokeColor="#5A5A5A"
     app:strokeWidth="1dp">
 
     <LinearLayout
+        android:id="@+id/menu_options_standard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -40,6 +41,19 @@
             android:textColor="#FF453A"
             android:textSize="16sp"
             app:drawableStartCompat="@drawable/ic_block_friend" />
+
+        <TextView
+            android:id="@+id/option_unblock_friend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="12dp"
+            android:gravity="center_vertical"
+            android:paddingVertical="8dp"
+            android:text="Unblock Friend"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:visibility="gone" 
+            app:drawableStartCompat="@drawable/ic_lock_small" />
 
     </LinearLayout>
 

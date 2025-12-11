@@ -5,5 +5,6 @@ enum class FriendshipStatus {
     NOT_FRIEND,
     PENDING_INCOMING,
     PENDING_OUTGOING,
+    BLOCKED,
     SELF
 }

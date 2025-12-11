@@ -129,11 +129,15 @@ class ChatDetailFragment : Fragment() {
                     viewModel.isBlocked.collect { isBlocked ->
                         binding.inputContainer.isVisible = !isBlocked
                         binding.tvBlockedMessage.isVisible = isBlocked
+                        // Update menu based on block status
+                        binding.chatMenu.optionUnblockFriend.isVisible = isBlocked
+                        binding.chatMenu.optionRemoveFriend.isVisible = !isBlocked
+                        binding.chatMenu.optionBlockFriend.isVisible = !isBlocked
                     }
                 }
 
                 launch {
-                    viewModel.removeFriendEvent.collect {
+                    viewModel.removeFriendEvent.collect { 
                         findNavController().navigate(R.id.action_chatDetailFragment_to_chatListFragment)
                     }
                 }
@@ -146,7 +150,7 @@ class ChatDetailFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        binding.btnSend.setOnClickListener {
+        binding.btnSend.setOnClickListener { 
             val messageText = binding.etMessage.text.toString()
             if (messageText.isNotBlank()) {
                 viewModel.sendMessage(messageText)
@@ -169,6 +173,11 @@ class ChatDetailFragment : Fragment() {
 
         binding.chatMenu.optionBlockFriend.setOnClickListener {
             showBlockFriendDialog()
+            toggleMenuVisibility(false)
+        }
+
+        binding.chatMenu.optionUnblockFriend.setOnClickListener {
+            showUnblockFriendDialog()
             toggleMenuVisibility(false)
         }
 
@@ -203,6 +212,17 @@ class ChatDetailFragment : Fragment() {
             .setNegativeButton("Cancel", null)
             .setPositiveButton("Block") { _, _ ->
                 viewModel.blockUser()
+            }
+            .show()
+    }
+
+    private fun showUnblockFriendDialog() {
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle("Unblock User")
+            .setMessage("Are you sure you want to unblock ${args.recipientName}?")
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Unblock") { _, _ ->
+                viewModel.unblockUser()
             }
             .show()
     }

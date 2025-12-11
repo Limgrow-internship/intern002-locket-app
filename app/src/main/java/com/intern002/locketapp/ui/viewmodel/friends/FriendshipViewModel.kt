@@ -69,10 +69,12 @@ class FriendshipViewModel @Inject constructor(
     private var searchJob: Job? = null
 
     fun initializeForFriendsScreen() {
+        repository.clearCache()
         getFriendsData()
     }
 
     fun initializeForSuggestionsScreen() {
+        repository.clearCache()
         getFriendsData()
         getSuggestionsData()
     }

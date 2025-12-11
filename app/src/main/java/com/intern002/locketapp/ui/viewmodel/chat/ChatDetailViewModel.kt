@@ -63,6 +63,7 @@ class ChatDetailViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             currentUserId = userRepository.getCurrentUserProfile()?.id
+            checkInitialBlockStatus()
             observeMessages()
             refreshMessages()
             subscribeToNewMessages()
@@ -70,21 +71,35 @@ class ChatDetailViewModel @Inject constructor(
         }
     }
 
-    private fun observeMessages() {
-        chatRepository.getMessages(conversationId)
-            .combine(_temporaryMessagesFlow) { dbMessages, tempMessages ->
-                (dbMessages + tempMessages)
-                    .distinctBy { it.localId }
-                    .sortedBy { it.createdAt }
-            }
-            .onEach { combinedList ->
-                _messageState.value = MessageListState.Success(processMessagesWithTimestamps(combinedList))
-            }
-            .catch { e ->
-                _messageState.value = MessageListState.Error(e.message ?: "Failed to load messages")
-            }
-            .launchIn(viewModelScope)
+    private suspend fun checkInitialBlockStatus() {
+        val partnerId = chatRepository.getPartnerIdByConversationId(conversationId)
+        if (partnerId != null && currentUserId != null) {
+            _isBlocked.value = friendshipRepository.isBlocked(currentUserId!!, partnerId)
+        }
     }
+
+
+    private fun observeMessages() {
+        // Get messages from the local database, already sorted by time
+        val dbMessagesFlow = chatRepository.getMessages(conversationId)
+
+        // Combine the stable list from DB with the volatile list of temporary messages
+        dbMessagesFlow.combine(_temporaryMessagesFlow) { dbMessages, tempMessages ->
+            // Simply append temporary messages to the end of the database list.
+            // The DB list is the "source of truth" for order.
+            dbMessages + tempMessages
+        }
+        .onEach { combinedList ->
+            // Process the combined list to add timestamps where needed
+            val processedList = processMessagesWithTimestamps(combinedList)
+            _messageState.value = MessageListState.Success(processedList)
+        }
+        .catch { e ->
+            _messageState.value = MessageListState.Error(e.message ?: "Failed to load messages")
+        }
+        .launchIn(viewModelScope)
+    }
+
 
     private fun parseIsoString(isoString: String): Date? {
         val patterns = listOf(
@@ -234,6 +249,20 @@ class ChatDetailViewModel @Inject constructor(
                     _isBlocked.value = true
                 } catch (e: Exception) {
                     // Optionally handle error, e.g., show a toast
+                }
+            }
+        }
+    }
+
+    fun unblockUser() {
+        viewModelScope.launch {
+            val partnerId = chatRepository.getPartnerIdByConversationId(conversationId)
+            if (partnerId != null) {
+                try {
+                    friendshipRepository.unblockFriend(partnerId)
+                    _isBlocked.value = false
+                } catch (e: Exception) {
+                    // Optionally handle error
                 }
             }
         }

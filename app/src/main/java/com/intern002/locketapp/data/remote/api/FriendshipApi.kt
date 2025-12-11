@@ -42,6 +42,10 @@ class FriendshipApi @Inject constructor(private val sessionManager: SessionManag
         return client().get("$baseUrl/friends").body()
     }
 
+    suspend fun getBlockedFriends(): List<FriendDTO> {
+        return client().get("$baseUrl/friends/blocked").body()
+    }
+
     suspend fun searchUser(username: String, discriminator: Int): FriendDTO {
         return client().get("$baseUrl/friends/search") {
             parameter("username", username)
@@ -70,6 +74,10 @@ class FriendshipApi @Inject constructor(private val sessionManager: SessionManag
 
     suspend fun blockFriend(friendId: String) {
         client().post("$baseUrl/friends/block/$friendId")
+    }
+
+    suspend fun unblockFriend(friendId: String) {
+        client().post("$baseUrl/friends/unblock/$friendId")
     }
 
     suspend fun getPendingRequests(): List<PendingRequestDTO> {

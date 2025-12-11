@@ -84,7 +84,7 @@ class AddFriendsFragment : Fragment() {
         when (friend.status) {
             FriendshipStatus.NOT_FRIEND -> viewModel.addFriend(friend)
             FriendshipStatus.PENDING_OUTGOING -> showSentRequestDialog(friend)
-            else -> { }
+            else -> { /* Do nothing for FRIEND, PENDING_INCOMING, SELF */ }
         }
     }
 
@@ -248,6 +248,7 @@ class AddFriendsFragment : Fragment() {
             FriendshipStatus.FRIEND -> R.drawable.ic_friend
             FriendshipStatus.NOT_FRIEND -> R.drawable.ic_add_friend
             FriendshipStatus.PENDING_INCOMING, FriendshipStatus.PENDING_OUTGOING -> R.drawable.ic_invited
+            FriendshipStatus.BLOCKED -> R.drawable.ic_block_friend
             FriendshipStatus.SELF -> 0
         }
 

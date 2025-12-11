@@ -88,7 +88,7 @@
         android:clipToPadding="false"
         android:paddingHorizontal="16dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/input_container"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_barrier"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
@@ -103,6 +103,13 @@
         app:layout_constraintEnd_toEndOf="@id/rv_messages"
         app:layout_constraintStart_toStartOf="@id/rv_messages"
         app:layout_constraintTop_toTopOf="@id/rv_messages" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/bottom_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="input_container,tv_blocked_message" />
 
     <LinearLayout
         android:id="@+id/input_container"
@@ -168,7 +175,7 @@
         android:layout_marginEnd="16dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
