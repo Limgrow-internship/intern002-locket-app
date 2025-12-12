@@ -80,17 +80,12 @@ class ChatDetailViewModel @Inject constructor(
 
 
     private fun observeMessages() {
-        // Get messages from the local database, already sorted by time
         val dbMessagesFlow = chatRepository.getMessages(conversationId)
 
-        // Combine the stable list from DB with the volatile list of temporary messages
         dbMessagesFlow.combine(_temporaryMessagesFlow) { dbMessages, tempMessages ->
-            // Simply append temporary messages to the end of the database list.
-            // The DB list is the "source of truth" for order.
             dbMessages + tempMessages
         }
         .onEach { combinedList ->
-            // Process the combined list to add timestamps where needed
             val processedList = processMessagesWithTimestamps(combinedList)
             _messageState.value = MessageListState.Success(processedList)
         }
@@ -248,8 +243,10 @@ class ChatDetailViewModel @Inject constructor(
                     friendshipRepository.blockFriend(partnerId)
                     _isBlocked.value = true
                 } catch (e: Exception) {
-                    // Optionally handle error, e.g., show a toast
+                    Log.e("ChatDetailViewModel", "Failed to block user: $partnerId", e)
                 }
+            } else {
+                Log.e("ChatDetailViewModel", "Could not block user, partnerId is null for conversationId: $conversationId")
             }
         }
     }
@@ -277,10 +274,8 @@ class ChatDetailViewModel @Inject constructor(
                     chatRepository.deleteConversationByPartnerId(partnerId)
                     _removeFriendEvent.send(Unit)
                 } catch (e: Exception) {
-                    // Handle error
                 }
             } else {
-                // Handle error
             }
         }
     }

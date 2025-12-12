@@ -7,8 +7,6 @@ import kotlinx.serialization.Serializable
 @OptIn(InternalSerializationApi::class)
 @Serializable
 data class RealtimeMessageDTO(
-    @SerialName("id")
-    val id: String,
     @SerialName("conversation_id")
     val conversationId: String,
     @SerialName("sender_id")
@@ -20,7 +18,9 @@ data class RealtimeMessageDTO(
     @SerialName("image_url")
     val imageUrl: String?,
     @SerialName("created_at")
-    val createdAt: String
+    val createdAt: String,
+    @SerialName("is_read")
+    val isRead: Boolean
 )
 
 fun RealtimeMessageDTO.toMessageDTO(): MessageDTO {
@@ -30,6 +30,7 @@ fun RealtimeMessageDTO.toMessageDTO(): MessageDTO {
         messageType = this.messageType,
         content = this.content,
         imageUrl = this.imageUrl,
-        createdAt = this.createdAt
+        createdAt = this.createdAt,
+        isRead = this.isRead
     )
 }

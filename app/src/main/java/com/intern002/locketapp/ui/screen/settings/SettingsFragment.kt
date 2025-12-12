@@ -82,6 +82,7 @@ class SettingsFragment : Fragment(), EditAvatarBottomSheetFragment.EditAvatarLis
         binding.btnChangeEmail.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_enterPasswordFragment) }
         binding.btnChangeBirthday.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_changeBirthdayFragment) }
         binding.btnLogout.setOnClickListener { showLogoutConfirmationDialog() }
+        binding.btnBlocked.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_blockedUsersFragment) }
 
         binding.btnEditAvatar.setOnClickListener {
             val bottomSheet = EditAvatarBottomSheetFragment()

@@ -1,5 +1,8 @@
 package com.intern002.locketapp.ui.screen.chat
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.intern002.locketapp.R
+import com.intern002.locketapp.data.model.Message
 import com.intern002.locketapp.data.repository.UserRepository
 import com.intern002.locketapp.databinding.FragmentChatDetailBinding
 import com.intern002.locketapp.ui.adapter.MessageAdapter
@@ -42,6 +46,7 @@ class ChatDetailFragment : Fragment() {
     lateinit var userRepository: UserRepository
 
     private var currentUserId: String? = null
+    private var selectedMessage: Message? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,7 +95,9 @@ class ChatDetailFragment : Fragment() {
             userId,
             args.recipientAvatarUrl,
             args.recipientName
-        )
+        ) { message, view ->
+            showMessageMenu(message, view)
+        }
         binding.rvMessages.apply {
             adapter = messageAdapter
             layoutManager = LinearLayoutManager(requireContext()).apply {
@@ -129,7 +136,6 @@ class ChatDetailFragment : Fragment() {
                     viewModel.isBlocked.collect { isBlocked ->
                         binding.inputContainer.isVisible = !isBlocked
                         binding.tvBlockedMessage.isVisible = isBlocked
-                        // Update menu based on block status
                         binding.chatMenu.optionUnblockFriend.isVisible = isBlocked
                         binding.chatMenu.optionRemoveFriend.isVisible = !isBlocked
                         binding.chatMenu.optionBlockFriend.isVisible = !isBlocked
@@ -164,6 +170,7 @@ class ChatDetailFragment : Fragment() {
 
         binding.scrimView.setOnClickListener {
             toggleMenuVisibility(false)
+            hideMessageMenu()
         }
 
         binding.chatMenu.optionRemoveFriend.setOnClickListener {
@@ -172,13 +179,26 @@ class ChatDetailFragment : Fragment() {
         }
 
         binding.chatMenu.optionBlockFriend.setOnClickListener {
-            showBlockFriendDialog()
+            val bottomSheet = BlockUserBottomSheetFragment.newInstance(args.recipientName)
+            bottomSheet.show(childFragmentManager, BlockUserBottomSheetFragment.TAG)
             toggleMenuVisibility(false)
         }
 
         binding.chatMenu.optionUnblockFriend.setOnClickListener {
             showUnblockFriendDialog()
             toggleMenuVisibility(false)
+        }
+
+        binding.messageMenu.optionCopy.setOnClickListener {
+            selectedMessage?.content?.let {
+                copyToClipboard(it)
+                hideMessageMenu()
+            }
+        }
+
+        binding.messageMenu.optionDelete.setOnClickListener {
+            hideMessageMenu()
+            selectedMessage?.let { showDeleteMessageConfirmationDialog(it) }
         }
 
         val parent = binding.btnMore.parent as View
@@ -194,6 +214,53 @@ class ChatDetailFragment : Fragment() {
         }
     }
 
+    private fun showMessageMenu(message: Message, anchorView: View) {
+        selectedMessage = message
+
+        val menu = binding.messageMenu.root
+        menu.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val menuWidth = menu.measuredWidth
+        val menuHeight = menu.measuredHeight
+
+        val location = IntArray(2)
+        anchorView.getLocationInWindow(location)
+
+        val x = location[0] + (anchorView.width / 2) - (menuWidth / 2)
+        val y = location[1] - menuHeight - 16
+
+        menu.x = x.toFloat()
+        menu.y = y.toFloat()
+
+        binding.scrimView.isVisible = true
+        menu.isVisible = true
+
+        binding.messageMenu.optionCopy.isVisible = message.messageType == "text" && !message.content.isNullOrEmpty()
+        binding.messageMenu.optionDelete.isVisible = message.senderId == currentUserId
+    }
+
+    private fun hideMessageMenu() {
+        binding.messageMenu.root.isVisible = false
+        binding.scrimView.isVisible = false
+        selectedMessage = null
+    }
+
+    private fun copyToClipboard(text: String) {
+        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("message", text)
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(requireContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showDeleteMessageConfirmationDialog(message: Message) {
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle("Delete Message")
+            .setMessage("Are you sure you want to delete this message?")
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Delete") { _, _ ->
+            }
+            .show()
+    }
+
     private fun showRemoveFriendDialog() {
         MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
             .setTitle("Unfriend")
@@ -201,17 +268,6 @@ class ChatDetailFragment : Fragment() {
             .setNegativeButton("Cancel", null)
             .setPositiveButton("Unfriend") { _, _ ->
                 viewModel.removeFriend()
-            }
-            .show()
-    }
-
-    private fun showBlockFriendDialog() {
-        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
-            .setTitle("Block User")
-            .setMessage("Are you sure you want to block ${args.recipientName}? You will no longer be able to send or receive messages.")
-            .setNegativeButton("Cancel", null)
-            .setPositiveButton("Block") { _, _ ->
-                viewModel.blockUser()
             }
             .show()
     }

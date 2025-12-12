@@ -327,6 +327,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_changeBirthdayFragment"
             app:destination="@id/changeBirthdayFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_blockedUsersFragment"
+            app:destination="@id/blockedUsersFragment" />
     </fragment>
 
     <fragment
@@ -404,6 +407,12 @@
         android:id="@+id/suggestionFriendsFragment"
         android:name="com.intern002.locketapp.ui.screen.friends.SuggestionFriendsFragment"
         android:label="SuggestionFriendsFragment" />
+
+    <fragment
+        android:id="@+id/blockedUsersFragment"
+        android:name="com.intern002.locketapp.ui.screen.settings.BlockedUsersFragment"
+        android:label="BlockedUsersFragment" 
+        tools:layout="@layout/fragment_blocked" />
 
     <activity
         android:id="@+id/main_activity"

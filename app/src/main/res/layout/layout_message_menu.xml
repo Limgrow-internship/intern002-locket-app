@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:elevation="8dp"
+    app:cardBackgroundColor="#2C2C2E"
+    app:cardCornerRadius="14dp"
+    app:strokeColor="#5A5A5A"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:id="@+id/menu_options_standard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp">
+
+        <LinearLayout
+            android:id="@+id/option_copy_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingVertical="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_copy"
+                app:tint="@android:color/white"
+                android:contentDescription="Copy icon" />
+
+            <TextView
+                android:id="@+id/option_copy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Copy the message"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/option_delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:drawablePadding="12dp"
+            android:gravity="center_vertical"
+            android:paddingVertical="8dp"
+            android:text="Delete message"
+            android:textColor="#FF453A"
+            android:textSize="16sp"
+            app:drawableStartCompat="@drawable/ic_trashcan" />
+
+        <TextView
+            android:id="@+id/option_unblock_friend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="12dp"
+            android:gravity="center_vertical"
+            android:paddingVertical="8dp"
+            android:text="Unblock Friend"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:drawableStartCompat="@drawable/ic_lock_small" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

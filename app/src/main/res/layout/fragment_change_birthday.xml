@@ -6,12 +6,23 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:contentDescription="@string/content_desc_back_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_back" />
+
     <TextView
         android:id="@+id/text_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="170dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="24dp"
         android:fontFamily="sans-serif-medium"
         android:text="@string/change_birthday_headline"
@@ -20,7 +31,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
 
     <Button
@@ -30,12 +41,12 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
-        app:backgroundTint="@null"
         android:background="@drawable/bg_selected"
+        android:fontFamily="sans-serif-medium"
         android:text="Month"
         android:textColor="@android:color/white"
         android:textSize="18sp"
-        android:fontFamily="sans-serif-medium"
+        app:backgroundTint="@null"
         app:layout_constraintEnd_toStartOf="@id/button_day"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_title" />
@@ -46,12 +57,12 @@
         android:layout_height="56dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="24dp"
-        app:backgroundTint="@null"
         android:background="@drawable/bg_selected"
+        android:fontFamily="sans-serif-medium"
         android:text="Day"
         android:textColor="@android:color/white"
         android:textSize="18sp"
-        android:fontFamily="sans-serif-medium"
+        app:backgroundTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/button_month"
         app:layout_constraintTop_toTopOf="@id/button_month" />
@@ -69,17 +80,17 @@
         android:text="You have selected January 10."
         android:textColor="@color/white_semitransparent"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_month" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_month" />
 
     <TextView
         android:id="@+id/tv_warning_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawablePadding="8dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="40dp"
+        android:drawablePadding="8dp"
         android:gravity="center"
         android:letterSpacing="0.03"
         android:lineSpacingMultiplier="1.2"
@@ -96,13 +107,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_save"
+        style="@style/Widget.Intern002LocketApp.Button.Continue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -111,18 +123,17 @@
         android:text="@string/button_save"
         android:textSize="18sp"
         app:iconGravity="textEnd"
-        style="@style/Widget.Intern002LocketApp.Button.Continue"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

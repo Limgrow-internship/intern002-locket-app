@@ -2,6 +2,7 @@ package com.intern002.locketapp.ui.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
@@ -22,7 +23,8 @@ class MessageAdapter(
     private var messages: MutableList<Message>,
     private var currentUserId: String,
     private val recipientAvatarUrl: String?,
-    private val recipientName: String?
+    private val recipientName: String?,
+    private val onMessageLongClickListener: (Message, View) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -97,6 +99,10 @@ class MessageAdapter(
             if(message.showTimestamp) {
                 binding.tvTimestamp.text = message.displayTimestamp
             }
+            itemView.setOnLongClickListener {
+                onMessageLongClickListener(message, it)
+                true
+            }
         }
     }
 
@@ -104,6 +110,10 @@ class MessageAdapter(
         fun bind(message: Message) {
             Glide.with(itemView.context).load(message.imageUrl).into(binding.ivMessageImage)
             // Note: ItemMessageImageSentBinding does not have tv_timestamp. You might need to add it.
+            itemView.setOnLongClickListener {
+                onMessageLongClickListener(message, it)
+                true
+            }
         }
     }
 
@@ -117,6 +127,10 @@ class MessageAdapter(
             binding.tvTimestamp.isVisible = message.showTimestamp
             if(message.showTimestamp) {
                 binding.tvTimestamp.text = message.displayTimestamp
+            }
+            itemView.setOnLongClickListener {
+                onMessageLongClickListener(message, it)
+                true
             }
         }
 
@@ -143,6 +157,10 @@ class MessageAdapter(
             binding.tvTimestamp.isVisible = message.showTimestamp
             if(message.showTimestamp) {
                 binding.tvTimestamp.text = message.displayTimestamp
+            }
+            itemView.setOnLongClickListener {
+                onMessageLongClickListener(message, it)
+                true
             }
         }
 

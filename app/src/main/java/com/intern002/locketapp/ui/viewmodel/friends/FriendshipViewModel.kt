@@ -34,6 +34,12 @@ sealed class FriendListState {
     data class Error(val message: String) : FriendListState()
 }
 
+sealed class BlockedUsersState {
+    object Loading : BlockedUsersState()
+    data class Success(val users: List<Friend>) : BlockedUsersState()
+    data class Error(val message: String) : BlockedUsersState()
+}
+
 sealed class SuggestionsState {
     object Loading : SuggestionsState()
     data class Success(val users: List<Friend>) : SuggestionsState()
@@ -57,6 +63,9 @@ class FriendshipViewModel @Inject constructor(
     private val _friendsListState = MutableStateFlow<FriendListState>(FriendListState.Loading)
     val friendsListState = _friendsListState.asStateFlow()
 
+    private val _blockedUsersState = MutableStateFlow<BlockedUsersState>(BlockedUsersState.Loading)
+    val blockedUsersState = _blockedUsersState.asStateFlow()
+
     private val _suggestionsState = MutableStateFlow<SuggestionsState>(SuggestionsState.Loading)
     val suggestionsState = _suggestionsState.asStateFlow()
 
@@ -79,6 +88,18 @@ class FriendshipViewModel @Inject constructor(
         getSuggestionsData()
     }
 
+    fun getBlockedUsers() {
+        viewModelScope.launch {
+            _blockedUsersState.value = BlockedUsersState.Loading
+            try {
+                val blockedUsers = repository.getBlockedFriends()
+                _blockedUsersState.value = BlockedUsersState.Success(blockedUsers)
+            } catch (e: Exception) {
+                _blockedUsersState.value = BlockedUsersState.Error(e.message ?: "Failed to load blocked users")
+            }
+        }
+    }
+
     private fun getFriendsData() {
         viewModelScope.launch {
             if (_friendsListState.value !is FriendListState.Success) {
@@ -89,12 +110,14 @@ class FriendshipViewModel @Inject constructor(
                     val friendsDeferred = async { repository.getFriends() }
                     val pendingDeferred = async { repository.getPendingRequests() }
                     val sentDeferred = async { repository.getSentRequests() }
+                    val blockedDeferred = async { repository.getBlockedFriends() }
 
                     val friends = friendsDeferred.await()
                     val pending = pendingDeferred.await()
                     val sent = sentDeferred.await()
+                    val blocked = blockedDeferred.await()
 
-                    _friendsListState.value = FriendListState.Success(pending + sent + friends)
+                    _friendsListState.value = FriendListState.Success(pending + sent + friends + blocked)
                 }
             } catch (e: Exception) {
                 if (_friendsListState.value !is FriendListState.Success) {
@@ -138,6 +161,7 @@ class FriendshipViewModel @Inject constructor(
             }
             getFriendsData()
             getSuggestionsData()
+            getBlockedUsers()
         }
     }
 
@@ -240,12 +264,24 @@ class FriendshipViewModel @Inject constructor(
         }
     }
 
+    fun unblockFriend(friend: Friend) {
+        viewModelScope.launch {
+            setUpdatingStateForFriend(friend.id, true)
+            try {
+                repository.unblockFriend(friend.id)
+                refreshStatesAfterMutation()
+            } catch (e: Exception) {
+                setUpdatingStateForFriend(friend.id, false)
+            }
+        }
+    }
+
     fun deleteFriendship(friend: Friend) {
         viewModelScope.launch {
             setUpdatingStateForFriend(friend.id, true)
             try {
                 repository.deleteFriendship(friend.id)
-                chatRepository.deleteConversationByPartnerId(friend.id) // DELETES THE CONVERSATION
+                chatRepository.deleteConversationByPartnerId(friend.id)
                 refreshStatesAfterMutation()
             } catch (e: Exception) {
                 setUpdatingStateForFriend(friend.id, false)
@@ -258,7 +294,7 @@ class FriendshipViewModel @Inject constructor(
             setUpdatingStateForFriend(friend.id, true)
             try {
                 repository.rejectFriendRequest(friend.id)
-                chatRepository.deleteConversationByPartnerId(friend.id) // DELETES THE CONVERSATION
+                chatRepository.deleteConversationByPartnerId(friend.id)
                 refreshStatesAfterMutation()
             } catch (e: Exception) {
                 setUpdatingStateForFriend(friend.id, false)

@@ -12,7 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.intern002.locketapp.databinding.FragmentBirthdayBinding
+import com.intern002.locketapp.databinding.FragmentChangeBirthdayBinding
 import com.intern002.locketapp.ui.screen.auth.welcome.NumberPickerDialogFragment
 import com.intern002.locketapp.ui.viewmodel.setting.ChangeBirthdayViewModel
 import com.intern002.locketapp.ui.viewmodel.setting.UpdateBirthdayState
@@ -22,7 +22,7 @@ import java.util.*
 
 @AndroidEntryPoint
 class ChangeBirthdayFragment : Fragment() {
-    private var _binding: FragmentBirthdayBinding? = null
+    private var _binding: FragmentChangeBirthdayBinding? = null
     private val binding get() = _binding!!
 
     private val changeBirthdayViewModel: ChangeBirthdayViewModel by viewModels()
@@ -48,7 +48,7 @@ class ChangeBirthdayFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentBirthdayBinding.inflate(inflater, container, false)
+        _binding = FragmentChangeBirthdayBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -77,6 +77,10 @@ class ChangeBirthdayFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+
         binding.buttonMonth.setOnClickListener {
             val currentMonth = selectedMonth ?: 1
             val dialog = NumberPickerDialogFragment.newInstance(
@@ -102,7 +106,7 @@ class ChangeBirthdayFragment : Fragment() {
             dialog.show(childFragmentManager, NumberPickerDialogFragment.TAG_DAY)
         }
 
-        binding.buttonContinue.setOnClickListener {
+        binding.buttonSave.setOnClickListener {
             if (selectedMonth != null && selectedDay != null) {
                 val year = Calendar.getInstance().get(Calendar.YEAR) - 20
                 val birthdayString = String.format("%d-%02d-%02d", year, selectedMonth, selectedDay)
@@ -132,7 +136,7 @@ class ChangeBirthdayFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 changeBirthdayViewModel.updateState.collect { state ->
                     binding.loadingView.isVisible = state is UpdateBirthdayState.Loading
-                    binding.buttonContinue.isEnabled = state !is UpdateBirthdayState.Loading
+                    binding.buttonSave.isEnabled = state !is UpdateBirthdayState.Loading
 
                     when (state) {
                         is UpdateBirthdayState.Success -> {
@@ -155,12 +159,12 @@ class ChangeBirthdayFragment : Fragment() {
             binding.tvInfoText.text = "You have selected $monthName $selectedDay."
             binding.tvInfoText.visibility = View.VISIBLE
             binding.tvWarningMessage.visibility = View.GONE
-            binding.buttonContinue.isEnabled = true
-            binding.buttonContinue.alpha = 1.0f
+            binding.buttonSave.isEnabled = true
+            binding.buttonSave.alpha = 1.0f
         } else {
             binding.tvInfoText.visibility = View.GONE
-            binding.buttonContinue.isEnabled = false
-            binding.buttonContinue.alpha = 0.5f
+            binding.buttonSave.isEnabled = false
+            binding.buttonSave.alpha = 0.5f
             if (selectedMonth != null) {
                 binding.tvWarningMessage.visibility = View.GONE
             }
