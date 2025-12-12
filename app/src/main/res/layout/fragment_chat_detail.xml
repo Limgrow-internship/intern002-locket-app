@@ -164,6 +164,8 @@
         android:layout_height="match_parent"
         android:background="#80000000" 
         android:visibility="gone"
+        android:clickable="false"
+        android:focusable="false"
         app:layout_constraintTop_toTopOf="parent" />
 
     <include

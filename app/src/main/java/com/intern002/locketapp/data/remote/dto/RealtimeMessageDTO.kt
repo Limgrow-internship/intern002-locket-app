@@ -7,6 +7,8 @@ import kotlinx.serialization.Serializable
 @OptIn(InternalSerializationApi::class)
 @Serializable
 data class RealtimeMessageDTO(
+    @SerialName("id")
+    val id: String,
     @SerialName("conversation_id")
     val conversationId: String,
     @SerialName("sender_id")
@@ -25,6 +27,7 @@ data class RealtimeMessageDTO(
 
 fun RealtimeMessageDTO.toMessageDTO(): MessageDTO {
     return MessageDTO(
+        id = this.id,
         conversationId = this.conversationId,
         senderId = this.senderId,
         messageType = this.messageType,

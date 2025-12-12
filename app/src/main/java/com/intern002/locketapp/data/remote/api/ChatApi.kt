@@ -5,6 +5,7 @@ import com.intern002.locketapp.data.remote.dto.ConversationListItemDTO
 import com.intern002.locketapp.data.remote.dto.MessageDTO
 import com.intern002.locketapp.di.SessionManager
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -47,6 +48,10 @@ class ChatApi @Inject constructor(private val sessionManager: SessionManager) {
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()
+    }
+
+    suspend fun deleteMessage(messageId: String) {
+        client().delete("$baseUrl/chat/messages/$messageId")
     }
 
     suspend fun markConversationAsRead(conversationId: String) {

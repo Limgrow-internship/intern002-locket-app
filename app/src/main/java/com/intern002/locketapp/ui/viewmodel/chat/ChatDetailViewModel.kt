@@ -119,6 +119,10 @@ class ChatDetailViewModel @Inject constructor(
         val displayFormatter = SimpleDateFormat("EEE h:mm a", Locale.US)
 
         return messages.mapIndexed { index, message ->
+            if (message.sendStatus != SendStatus.SENT) {
+                return@mapIndexed message.copy(showTimestamp = false)
+            }
+
             val utcDate = parseIsoString(message.createdAt)
 
             var displayString = ""
@@ -187,6 +191,7 @@ class ChatDetailViewModel @Inject constructor(
             }.format(Date())
 
             val tempMessage = Message(
+                id = UUID.randomUUID().toString(), // Or generate a proper temporary ID
                 senderId = userId,
                 messageType = "text",
                 content = text,
@@ -225,6 +230,21 @@ class ChatDetailViewModel @Inject constructor(
                 else -> {
                     Log.d("SendMessage", "Received unexpected result state: $result")
                 }
+            }
+        }
+    }
+
+    fun deleteMessage(messageId: String) {
+        viewModelScope.launch {
+            when (chatRepository.deleteMessage(messageId)) {
+                is Result.Success -> { 
+                    // No-op, UI will update via flow
+                }
+                is Result.Error -> {
+                    // Optionally handle error, e.g. show a toast
+                    Log.e("ChatDetailViewModel", "Failed to delete message: $messageId")
+                }
+                else -> {}
             }
         }
     }

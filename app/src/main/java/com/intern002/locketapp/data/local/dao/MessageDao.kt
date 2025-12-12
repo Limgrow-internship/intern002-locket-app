@@ -10,11 +10,14 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MessageDao {
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdateMessages(messages: List<MessageEntity>)
 
     @Query("SELECT * FROM messages WHERE conversationId = :conversationId ORDER BY createdAt ASC")
     fun getMessages(conversationId: String): Flow<List<MessageEntity>>
+
+    @Query("DELETE FROM messages WHERE id = :messageId")
+    suspend fun deleteMessage(messageId: String)
 
     @Query("DELETE FROM messages WHERE conversationId = :conversationId")
     suspend fun clearAllMessages(conversationId: String)

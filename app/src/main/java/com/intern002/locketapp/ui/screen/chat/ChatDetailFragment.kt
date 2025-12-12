@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.TouchDelegate
 import android.view.View
@@ -192,12 +193,11 @@ class ChatDetailFragment : Fragment() {
         binding.messageMenu.optionCopy.setOnClickListener {
             selectedMessage?.content?.let {
                 copyToClipboard(it)
-                hideMessageMenu()
             }
+            hideMessageMenu()
         }
 
         binding.messageMenu.optionDelete.setOnClickListener {
-            hideMessageMenu()
             selectedMessage?.let { showDeleteMessageConfirmationDialog(it) }
         }
 
@@ -252,13 +252,18 @@ class ChatDetailFragment : Fragment() {
     }
 
     private fun showDeleteMessageConfirmationDialog(message: Message) {
-        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+        val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
             .setTitle("Delete Message")
             .setMessage("Are you sure you want to delete this message?")
             .setNegativeButton("Cancel", null)
             .setPositiveButton("Delete") { _, _ ->
+                viewModel.deleteMessage(message.id)
             }
-            .show()
+            .create()
+
+        dialog.setOnDismissListener { hideMessageMenu() }
+
+        dialog.show()
     }
 
     private fun showRemoveFriendDialog() {

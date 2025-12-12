@@ -34,6 +34,7 @@ interface ChatRepository {
     fun getMessages(conversationId: String): Flow<List<Message>>
     suspend fun refreshMessages(conversationId: String, page: Int, pageSize: Int): Result<Unit>
     suspend fun sendMessage(request: SendMessageRequest): Result<MessageDTO>
+    suspend fun deleteMessage(messageId: String): Result<Unit>
     fun subscribeToMessages(conversationId: String): Flow<MessageDTO>
     suspend fun saveNewMessage(message: MessageDTO, conversationId: String)
     suspend fun markConversationAsRead(conversationId: String)
@@ -95,6 +96,16 @@ class ChatRepositoryImpl @Inject constructor(
         return try {
             val sentMessage = chatApi.sendMessage(request)
             Result.Success(sentMessage)
+        } catch (e: Exception) {
+            Result.Error(e.message ?: "An unknown error occurred")
+        }
+    }
+
+    override suspend fun deleteMessage(messageId: String): Result<Unit> {
+        return try {
+            chatApi.deleteMessage(messageId)
+            messageDao.deleteMessage(messageId)
+            Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(e.message ?: "An unknown error occurred")
         }

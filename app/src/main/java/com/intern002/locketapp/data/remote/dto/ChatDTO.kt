@@ -14,6 +14,7 @@ data class ConversationPartnerDTO(
 @OptIn(InternalSerializationApi::class)
 @Serializable
 data class MessageDTO(
+    val id: String,
     val conversationId: String? = null,
     val senderId: String,
     val messageType: String,

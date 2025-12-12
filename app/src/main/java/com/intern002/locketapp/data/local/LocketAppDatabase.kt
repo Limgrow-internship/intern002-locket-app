@@ -11,7 +11,7 @@ import com.intern002.locketapp.data.local.entity.PostEntity
 
 @Database(
     entities = [ConversationEntity::class, MessageEntity::class, PostEntity::class],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class LocketAppDatabase : RoomDatabase() {

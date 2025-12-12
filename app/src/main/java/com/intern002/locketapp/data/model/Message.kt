@@ -10,6 +10,7 @@ enum class SendStatus {
 }
 
 data class Message(
+    val id: String,
     val senderId: String,
     val messageType: String,
     val content: String?,
@@ -23,6 +24,7 @@ data class Message(
 
 fun MessageDTO.toMessage(): Message {
     return Message(
+        id = this.id,
         senderId = this.senderId,
         messageType = this.messageType,
         content = this.content,
