@@ -58,10 +58,12 @@ class ProfileFragment : Fragment() {
                     if (userProfile.avatarUrl.isNullOrEmpty()) {
                         binding.imgAvatar.isVisible = false
                         binding.textAvatarInitial.isVisible = true
+                        binding.icCameraBadge.isVisible = true
                         binding.textAvatarInitial.text = userProfile.username.first().uppercase()
                     } else {
                         binding.imgAvatar.isVisible = true
                         binding.textAvatarInitial.isVisible = false
+                        binding.icCameraBadge.isVisible = false
                         Glide.with(requireContext())
                             .load(userProfile.avatarUrl)
                             .placeholder(R.drawable.avt_sample)

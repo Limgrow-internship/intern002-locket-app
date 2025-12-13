@@ -4,4 +4,5 @@ import android.net.Uri
 
 interface CloudinaryRepository {
     suspend fun uploadMedia(uri: Uri, isVideo: Boolean): String
+    suspend fun deleteImage(imageUrl: String)
 }

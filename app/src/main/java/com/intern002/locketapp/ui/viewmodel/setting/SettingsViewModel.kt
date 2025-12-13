@@ -3,9 +3,7 @@ package com.intern002.locketapp.ui.viewmodel.setting
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cloudinary.android.MediaManager
-import com.cloudinary.android.callback.ErrorInfo
-import com.cloudinary.android.callback.UploadCallback
+import com.intern002.locketapp.data.repository.CloudinaryRepository
 import com.intern002.locketapp.data.repository.UserRepository
 import com.intern002.locketapp.domain.usecase.auth.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +26,7 @@ sealed class AvatarUpdateState {
 class SettingsViewModel @Inject constructor(
     private val logoutUseCase: LogoutUseCase,
     private val userRepository: UserRepository,
-    private val mediaManager: MediaManager
+    private val cloudinaryRepository: CloudinaryRepository
 ) : ViewModel() {
 
     private val _logoutEvent = MutableSharedFlow<Unit>()
@@ -45,41 +43,38 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onAvatarSelected(imageUri: Uri) {
-        _avatarUpdateState.value = AvatarUpdateState.Loading
-        mediaManager.upload(imageUri)
-            .callback(object : UploadCallback {
-                override fun onStart(requestId: String?) {}
-                override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}
+        viewModelScope.launch {
+            _avatarUpdateState.value = AvatarUpdateState.Loading
+            try {
+                val oldAvatarUrl = userRepository.getCurrentUserProfile().avatarUrl
 
-                override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
-                    val uploadedImageUrl = resultData?.get("secure_url") as? String
-                    if (uploadedImageUrl != null) {
-                        viewModelScope.launch {
-                            try {
-                                userRepository.updateAvatar(uploadedImageUrl)
-                                _avatarUpdateState.value = AvatarUpdateState.Success
-                            } catch (e: Exception) {
-                                _avatarUpdateState.value = AvatarUpdateState.Error(e.message ?: "Failed to save URL")
-                            }
-                        }
-                    } else {
-                        _avatarUpdateState.value = AvatarUpdateState.Error("Could not get URL from Cloudinary")
+                val uploadedImageUrl = cloudinaryRepository.uploadMedia(imageUri, isVideo = false)
+
+                if (oldAvatarUrl != null) {
+                    try {
+                        cloudinaryRepository.deleteImage(oldAvatarUrl)
+                    } catch (e: Exception) {
+                        // Log error but continue updating DB
                     }
                 }
 
-                override fun onError(requestId: String?, error: ErrorInfo?) {
-                    _avatarUpdateState.value = AvatarUpdateState.Error(error?.description ?: "Upload to Cloudinary failed")
-                }
-
-                override fun onReschedule(requestId: String?, error: ErrorInfo?) {}
-            }).dispatch()
+                userRepository.updateAvatar(uploadedImageUrl)
+                _avatarUpdateState.value = AvatarUpdateState.Success
+            } catch (e: Exception) {
+                _avatarUpdateState.value = AvatarUpdateState.Error(e.message ?: "Avatar update failed")
+            }
+        }
     }
 
     fun onDeleteAvatar() {
         viewModelScope.launch {
             _avatarUpdateState.value = AvatarUpdateState.Loading
             try {
-                userRepository.updateAvatar(null) // Pass null to delete
+                val currentAvatarUrl = userRepository.getCurrentUserProfile().avatarUrl
+                if (currentAvatarUrl != null) {
+                    cloudinaryRepository.deleteImage(currentAvatarUrl)
+                }
+                userRepository.updateAvatar(null)
                 _avatarUpdateState.value = AvatarUpdateState.Success
             } catch (e: Exception) {
                 _avatarUpdateState.value = AvatarUpdateState.Error(e.message ?: "Failed to delete avatar")

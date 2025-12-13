@@ -122,6 +122,7 @@ class SettingsFragment : Fragment(), EditAvatarBottomSheetFragment.EditAvatarLis
                         when (state) {
                             is AvatarUpdateState.Success -> {
                                 Toast.makeText(requireContext(), "Avatar updated!", Toast.LENGTH_SHORT).show()
+                                findNavController().popBackStack()
                             }
                             is AvatarUpdateState.Error -> {
                                 Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()

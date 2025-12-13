@@ -5,7 +5,9 @@ import android.util.Log
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -55,4 +57,17 @@ class CloudinaryRepositoryImpl @Inject constructor() : CloudinaryRepository {
                 MediaManager.get().cancelRequest(requestId)
             }
         }
+
+    override suspend fun deleteImage(imageUrl: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val publicId = imageUrl.substringAfterLast("/").substringBeforeLast(".")
+                MediaManager.get().getCloudinary().uploader().destroy(publicId, emptyMap<String, Any>())
+                Log.d(TAG, "Successfully deleted image from Cloudinary: $publicId")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to delete image from Cloudinary: ${e.message}")
+                throw e
+            }
+        }
+    }
 }
