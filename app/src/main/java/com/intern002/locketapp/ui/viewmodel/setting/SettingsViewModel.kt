@@ -32,6 +32,9 @@ class SettingsViewModel @Inject constructor(
     private val _logoutEvent = MutableSharedFlow<Unit>()
     val logoutEvent = _logoutEvent.asSharedFlow()
 
+    private val _deleteAccountEvent = MutableSharedFlow<Unit>()
+    val deleteAccountEvent = _deleteAccountEvent.asSharedFlow()
+
     private val _avatarUpdateState = MutableStateFlow<AvatarUpdateState>(AvatarUpdateState.Idle)
     val avatarUpdateState = _avatarUpdateState.asStateFlow()
 
@@ -39,6 +42,13 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             logoutUseCase()
             _logoutEvent.emit(Unit)
+        }
+    }
+
+    fun onDeleteAccountClicked() {
+        viewModelScope.launch {
+            userRepository.deleteAccount()
+            _deleteAccountEvent.emit(Unit)
         }
     }
 

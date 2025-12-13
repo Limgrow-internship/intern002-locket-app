@@ -82,6 +82,7 @@ class SettingsFragment : Fragment(), EditAvatarBottomSheetFragment.EditAvatarLis
         binding.btnChangeEmail.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_enterPasswordFragment) }
         binding.btnChangeBirthday.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_changeBirthdayFragment) }
         binding.btnLogout.setOnClickListener { showLogoutConfirmationDialog() }
+        binding.deleteAccount.setOnClickListener { showDeleteAccountConfirmationDialog() }
         binding.btnBlocked.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_blockedUsersFragment) }
 
         binding.btnEditAvatar.setOnClickListener {
@@ -108,11 +109,34 @@ class SettingsFragment : Fragment(), EditAvatarBottomSheetFragment.EditAvatarLis
             .show()
     }
 
+    private fun showDeleteAccountConfirmationDialog() {
+        MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle("Delete Account")
+            .setMessage("Are you sure you want to delete your account? This action cannot be undone.")
+            .setNegativeButton("Cancel") { d, _ -> d.dismiss() }
+            .setPositiveButton("Delete") { d, _ ->
+                viewLifecycleOwner.lifecycleScope.launch {
+                    authManager.clearTokens()
+                    chatRepository.clearAllLocalData()
+                    friendshipRepository.clearCache()
+                    viewModel.onDeleteAccountClicked()
+                    d.dismiss()
+                }
+            }
+            .show()
+    }
+
+
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.logoutEvent.collect {
+                        findNavController().navigate(R.id.action_settingsFragment_to_loginFragment)
+                    }
+                }
+                launch {
+                    viewModel.deleteAccountEvent.collect {
                         findNavController().navigate(R.id.action_settingsFragment_to_loginFragment)
                     }
                 }

@@ -38,6 +38,10 @@ class UserApi @Inject constructor(
         client().delete("$baseUrl/users/avatar")
     }
 
+    suspend fun deleteAccount() {
+        client().delete("$baseUrl/users/me")
+    }
+
     suspend fun verifyPassword(request: VerifyPasswordRequest): VerifyPasswordResponse {
         return client().post("$baseUrl/users/verify-password") {
             contentType(ContentType.Application.Json)

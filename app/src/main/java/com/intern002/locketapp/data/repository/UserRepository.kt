@@ -17,6 +17,7 @@ interface UserRepository {
     suspend fun updateBirthday(birthday: String)
     suspend fun updateAvatar(avatarUrl: String?)
     suspend fun deleteAvatar()
+    suspend fun deleteAccount()
     fun clearCurrentUserProfile()
     suspend fun logout()
 }
@@ -73,11 +74,20 @@ class UserRepositoryImpl @Inject constructor(
         clearCurrentUserProfile()
     }
 
+    override suspend fun deleteAccount() {
+        userApi.deleteAccount()
+        sessionManager.clearSession()
+        authManager.clearTokens()
+        chatRepository.clearAllLocalData()
+        clearCurrentUserProfile()
+    }
+
     override fun clearCurrentUserProfile() {
         cachedProfile = null
     }
 
     override suspend fun logout() {
+        userApi.logout()
         sessionManager.clearSession()
         authManager.clearTokens()
         chatRepository.clearAllLocalData()

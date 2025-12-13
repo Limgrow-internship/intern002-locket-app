@@ -765,6 +765,7 @@
                             android:textColor="@color/red_orange"
                             android:textSize="16sp"/>
                         <ImageView
+                            android:id="@+id/delete_account"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_arrow_forward"
