@@ -39,6 +39,8 @@ class UsernameFragment : Fragment() {
             binding.etUsername.setText(it)
         }
 
+        binding.btnContinue.isEnabled = binding.etUsername.text.trim().isNotEmpty()
+
         binding.etUsername.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
