@@ -9,17 +9,20 @@
 
     <FrameLayout
         android:id="@+id/avatar_container"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/profile_gradient_border"
-        android:padding="2dp">
+        android:background="@drawable/profile_gradient_border">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_avatar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center"
+            android:src="@drawable/avt_sample"
+            app:civ_border_color="@android:color/black"
+            app:civ_border_width="2dp" />
 
         <TextView
             android:id="@+id/tv_avatar_initial"
@@ -39,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="16dp"
-        android:layout_toEndOf="@id/avatar_container"
+        android:layout_toEndOf="@+id/avatar_container"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         android:textStyle="bold"

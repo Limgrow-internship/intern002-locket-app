@@ -70,7 +70,7 @@
         android:gravity="center"
         android:letterSpacing="0.05"
         android:lineSpacingMultiplier="1.2"
-        android:text="@string/invalid_email_error"
+        android:text="@string/invalid_username_error"
         android:textColor="@color/red_orange"
         android:textSize="14sp"
         android:visibility="gone"

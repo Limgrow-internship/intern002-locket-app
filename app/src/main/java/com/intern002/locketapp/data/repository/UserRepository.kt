@@ -16,6 +16,7 @@ interface UserRepository {
     suspend fun updateUsername(newUsername: String)
     suspend fun updateBirthday(birthday: String)
     suspend fun updateAvatar(avatarUrl: String?)
+    suspend fun deleteAvatar()
     fun clearCurrentUserProfile()
     suspend fun logout()
 }
@@ -64,6 +65,11 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun updateAvatar(avatarUrl: String?) {
         val request = UpdateUserRequest(avatarUrl = avatarUrl)
         userApi.updateUser(request)
+        clearCurrentUserProfile()
+    }
+
+    override suspend fun deleteAvatar() {
+        userApi.deleteAvatar()
         clearCurrentUserProfile()
     }
 

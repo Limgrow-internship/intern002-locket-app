@@ -74,7 +74,7 @@ class SettingsViewModel @Inject constructor(
                 if (currentAvatarUrl != null) {
                     cloudinaryRepository.deleteImage(currentAvatarUrl)
                 }
-                userRepository.updateAvatar(null)
+                userRepository.deleteAvatar()
                 _avatarUpdateState.value = AvatarUpdateState.Success
             } catch (e: Exception) {
                 _avatarUpdateState.value = AvatarUpdateState.Error(e.message ?: "Failed to delete avatar")

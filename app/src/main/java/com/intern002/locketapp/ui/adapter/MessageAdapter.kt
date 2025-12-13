@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.model.Message
+import com.intern002.locketapp.data.model.SendStatus
 import com.intern002.locketapp.databinding.ItemMessageImageSentBinding
 import com.intern002.locketapp.databinding.ItemMessageReceivedBinding
 import com.intern002.locketapp.databinding.ItemMessageSentBinding
@@ -99,6 +100,9 @@ class MessageAdapter(
             if(message.showTimestamp) {
                 binding.tvTimestamp.text = message.displayTimestamp
             }
+
+            itemView.alpha = if (message.sendStatus == SendStatus.SENT) 1.0f else 0.5f
+
             itemView.setOnLongClickListener {
                 onMessageLongClickListener(message, it)
                 true
@@ -109,7 +113,9 @@ class MessageAdapter(
     inner class SentImageViewHolder(private val binding: ItemMessageImageSentBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message) {
             Glide.with(itemView.context).load(message.imageUrl).into(binding.ivMessageImage)
-            // Note: ItemMessageImageSentBinding does not have tv_timestamp. You might need to add it.
+            
+            itemView.alpha = if (message.sendStatus == SendStatus.SENT) 1.0f else 0.5f
+
             itemView.setOnLongClickListener {
                 onMessageLongClickListener(message, it)
                 true

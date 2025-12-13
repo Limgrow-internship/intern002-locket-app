@@ -12,10 +12,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentChangeBirthdayBinding
 import com.intern002.locketapp.ui.screen.auth.welcome.NumberPickerDialogFragment
+import com.intern002.locketapp.ui.viewmodel.setting.ChangeBirthdayState
 import com.intern002.locketapp.ui.viewmodel.setting.ChangeBirthdayViewModel
-import com.intern002.locketapp.ui.viewmodel.setting.UpdateBirthdayState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.util.*
@@ -25,7 +26,7 @@ class ChangeBirthdayFragment : Fragment() {
     private var _binding: FragmentChangeBirthdayBinding? = null
     private val binding get() = _binding!!
 
-    private val changeBirthdayViewModel: ChangeBirthdayViewModel by viewModels()
+    private val viewModel: ChangeBirthdayViewModel by viewModels()
 
     private var selectedMonth: Int? = null
     private var selectedDay: Int? = null
@@ -39,7 +40,7 @@ class ChangeBirthdayFragment : Fragment() {
         return when (month) {
             1, 3, 5, 7, 8, 10, 12 -> 31
             4, 6, 9, 11 -> 30
-            2 -> 29 // Considering leap years for simplicity
+            2 -> 29
             else -> 31
         }
     }
@@ -110,7 +111,7 @@ class ChangeBirthdayFragment : Fragment() {
             if (selectedMonth != null && selectedDay != null) {
                 val year = Calendar.getInstance().get(Calendar.YEAR) - 20
                 val birthdayString = String.format("%d-%02d-%02d", year, selectedMonth, selectedDay)
-                changeBirthdayViewModel.updateBirthday(birthdayString)
+                viewModel.changeBirthday(birthdayString)
             }
         }
     }
@@ -134,16 +135,17 @@ class ChangeBirthdayFragment : Fragment() {
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                changeBirthdayViewModel.updateState.collect { state ->
-                    binding.loadingView.isVisible = state is UpdateBirthdayState.Loading
-                    binding.buttonSave.isEnabled = state !is UpdateBirthdayState.Loading
+                viewModel.uiState.collect { state ->
+                    binding.loadingView.isVisible = state is ChangeBirthdayState.Loading
+                    binding.buttonSave.isEnabled = state !is ChangeBirthdayState.Loading
+                    binding.tvErrorMessage.isVisible = state is ChangeBirthdayState.SameBirthdayError
 
                     when (state) {
-                        is UpdateBirthdayState.Success -> {
-                            Toast.makeText(requireContext(), "Birthday updated successfully!", Toast.LENGTH_SHORT).show()
+                        is ChangeBirthdayState.Success -> {
+                            Toast.makeText(requireContext(), R.string.birthday_changed_successfully, Toast.LENGTH_SHORT).show()
                             findNavController().popBackStack()
                         }
-                        is UpdateBirthdayState.Error -> {
+                        is ChangeBirthdayState.Error -> {
                             Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                         }
                         else -> {}

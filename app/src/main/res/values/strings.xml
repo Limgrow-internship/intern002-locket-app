@@ -120,9 +120,12 @@
     <!-- Change -->
     <string name="email_change_headline">Change your email</string>
     <string name="username_change_headline">Change your username</string>
-    <string name="invalid_username_error">Change your password</string>
-    <string name="change_birthday_headline">Change your birthday?</string>
+    <string name="invalid_username_error">No change detected. Please enter a new username.</string>
+    <string name="change_birthday_headline">Change your birthday</string>
     <string name="invalid_email_error">Email address already exists.</string>
+    <string name="invalid_birthday_error">No change detected. Please select a new birthday.</string>
+    <string name="username_changed_successfully">Username changed successfully!</string>
+    <string name="birthday_changed_successfully">Birthday changed successfully!</string>
 
 
 </resources>

@@ -27,7 +27,6 @@ class EnterPasswordFragment : Fragment() {
 
     private val viewModel: EnterPasswordViewModel by viewModels()
 
-    // Khai báo một biến để giữ TextWatcher
     private var passwordTextWatcher: TextWatcher? = null
 
     override fun onCreateView(
@@ -67,7 +66,7 @@ class EnterPasswordFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigate(R.id.action_enterPasswordFragment_to_settingsFragment)
         }
 
         binding.buttonContinue.setOnClickListener {

@@ -176,8 +176,7 @@
     <fragment
         android:id="@+id/SignupEmailFragment"
         android:name="com.intern002.locketapp.ui.screen.auth.signup.SignupEmailFragment"
-        android:label="fragment_signup_email"
-        tools:layout="@layout/fragment_signup_email" >
+        android:label="fragment_signup_email" >
         <action
             android:id="@+id/action_SignupEmailFragment_to_SignupPasswordFragment"
             app:destination="@id/SignupPasswordFragment" />
@@ -427,6 +426,11 @@
         <action
             android:id="@+id/action_enterPasswordFragment_to_changeEmailFragment"
             app:destination="@id/changeEmailFragment" />
+        <action
+            android:id="@+id/action_enterPasswordFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     
     <fragment
