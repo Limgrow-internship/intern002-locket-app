@@ -3,6 +3,7 @@ package com.intern002.locketapp.ui.screen.grid
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
@@ -12,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentGridPostBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +34,11 @@ class GridPostFragment : Fragment(R.layout.fragment_grid_post) {
 
         setupRecyclerView()
         observeData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchUserProfile()
     }
 
     private fun setupRecyclerView() {
@@ -62,9 +69,28 @@ class GridPostFragment : Fragment(R.layout.fragment_grid_post) {
     private fun observeData() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.posts.collectLatest { postList ->
-                    val adapter = binding.recyclerViewGrid.adapter as? GridPostAdapter
-                    adapter?.updateData(postList)
+                launch {
+                    viewModel.posts.collectLatest { postList ->
+                        val adapter = binding.recyclerViewGrid.adapter as? GridPostAdapter
+                        adapter?.updateData(postList)
+                    }
+                }
+                launch {
+                    viewModel.userProfile.collectLatest { userProfile ->
+                        if (userProfile != null) {
+                            if (userProfile.avatarUrl.isNullOrEmpty()) {
+                                binding.avatar.isVisible = false
+                                binding.textAvatarInitial.isVisible = true
+                                binding.textAvatarInitial.text = userProfile.username.first().uppercase()
+                            } else {
+                                binding.avatar.isVisible = true
+                                binding.textAvatarInitial.isVisible = false
+                                Glide.with(requireContext())
+                                    .load(userProfile.avatarUrl)
+                                    .into(binding.avatar)
+                            }
+                        }
+                    }
                 }
             }
         }
