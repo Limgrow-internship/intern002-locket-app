@@ -110,6 +110,31 @@ class PostListFragment : Fragment(), PostItemCallBack {
                 mainViewModel.scrollRequest.value = null
             }
         }
+
+        lifecycleScope.launch {
+            viewModel.reactionTypes.collectLatest { types ->
+                if (types.isNotEmpty()) {
+                    setupReactionButtons(types)
+                }
+            }
+        }
+
+        binding.btnMore.setOnClickListener {
+            val allReactions = viewModel.reactionTypes.value
+
+            if (allReactions.isNotEmpty()) {
+                val pickerSheet = ReactionPickerFragment(allReactions) { selectedReaction ->
+                    onReactionClicked(selectedReaction.id)
+                    binding.root.postDelayed({ showFlyingEmoji(selectedReaction.emoji) }, 150)
+                    binding.root.postDelayed({ showFlyingEmoji(selectedReaction.emoji) }, 300)
+                    binding.root.postDelayed({ showFlyingEmoji(selectedReaction.emoji) }, 200)
+                    binding.root.postDelayed({ showFlyingEmoji(selectedReaction.emoji) }, 120)
+                }
+                pickerSheet.show(parentFragmentManager, "ReactionPicker")
+            } else {
+                Toast.makeText(context, "Đang tải icon...", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun setupClickListeners() {

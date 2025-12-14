@@ -1,5 +1,10 @@
 package com.intern002.locketapp.di
 
+import com.intern002.locketapp.data.remote.api.AuthApi
+import com.intern002.locketapp.data.remote.api.ChatApi
+import com.intern002.locketapp.data.remote.api.FriendshipApi
+import com.intern002.locketapp.data.remote.api.PostApi
+import com.intern002.locketapp.data.remote.api.ReactionApi
 import com.intern002.locketapp.data.remote.api.*
 import dagger.Module
 import dagger.Provides

@@ -2,6 +2,7 @@ package com.intern002.locketapp.data.remote.api
 
 import com.intern002.locketapp.BuildConfig
 import com.intern002.locketapp.di.SessionManager
+import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
