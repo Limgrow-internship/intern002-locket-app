@@ -38,12 +38,10 @@ class ReportProblemBottomSheetFragment : BottomSheetDialogFragment() {
                 return@setOnClickListener
             }
 
-            // --- Handle the report submission here --- //
-            // For now, let's just show a Toast
             val reportMessage = "Email: $email\nMessage: $message"
             Toast.makeText(requireContext(), "Report submitted!\n$reportMessage", Toast.LENGTH_LONG).show()
 
-            dismiss() // Close the bottom sheet
+            dismiss()
         }
     }
 

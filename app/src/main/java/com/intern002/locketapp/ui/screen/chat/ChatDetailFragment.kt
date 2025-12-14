@@ -212,6 +212,22 @@ class ChatDetailFragment : Fragment() {
             rect.right += expansion
             parent.touchDelegate = TouchDelegate(rect, binding.btnMore)
         }
+
+        (binding.btnSend.parent as? View)?.post {
+            val delegate = binding.btnSend
+            val parent = delegate.parent as View
+
+            val rect = Rect()
+            delegate.getHitRect(rect)
+
+            val expansion = (14 * resources.displayMetrics.density).toInt() // Expand by 14dp on each side
+            rect.top -= expansion
+            rect.bottom += expansion
+            rect.left -= expansion
+            rect.right += expansion
+
+            parent.touchDelegate = TouchDelegate(rect, delegate)
+        }
     }
 
     private fun showMessageMenu(message: Message, anchorView: View) {

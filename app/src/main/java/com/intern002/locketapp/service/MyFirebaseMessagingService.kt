@@ -20,6 +20,7 @@ import com.intern002.locketapp.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
@@ -30,6 +31,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     @Inject
     lateinit var fcmRepository: FcmRepository
 
+    private val serviceJob = SupervisorJob()
+    private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
+
     companion object {
         private const val TAG = "MyFirebaseMsgService"
         private const val CHANNEL_ID = "locket_notifications"
@@ -39,22 +43,29 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         Log.d(TAG, "From: ${remoteMessage.from}")
+        Log.d(TAG, "Data: ${remoteMessage.data}")
 
-        val notification = remoteMessage.notification
         val data = remoteMessage.data
+        val title = data["title"]
+        val body = data["body"]
         val notificationType = data["type"]
 
+        if (title.isNullOrBlank() || body.isNullOrBlank()) {
+            Log.e(TAG, "FCM message is missing title or body in data payload.")
+            return
+        }
+
         if (notificationType == "NEW_MESSAGE") {
-            showBubbleNotification(notification?.title, notification?.body, data)
+            showBubbleNotification(title, body, data)
         } else {
-            sendDefaultNotification(notification?.title, notification?.body, data)
+            sendDefaultNotification(title, body, data)
         }
     }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.d(TAG, "Refreshed token: $token")
-        CoroutineScope(Dispatchers.IO).launch {
+        serviceScope.launch {
             try {
                 fcmRepository.registerToken(token)
             } catch (e: Exception) {
@@ -63,7 +74,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    private fun showBubbleNotification(title: String?, messageBody: String?, data: Map<String, String>) {
+    override fun onDestroy() {
+        super.onDestroy()
+        serviceJob.cancel()
+    }
+
+    private fun showBubbleNotification(title: String, messageBody: String, data: Map<String, String>) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             sendDefaultNotification(title, messageBody, data)
             return
@@ -72,7 +88,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val conversationId = data["entityId"] ?: return
 
         val user = Person.Builder()
-            .setName(title ?: "New Message")
+            .setName(title)
             .setIcon(IconCompat.createWithResource(this, R.drawable.ic_locket_notification))
             .build()
 
@@ -99,7 +115,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setSmallIcon(R.drawable.ic_locket_notification)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .addPerson(user)
-            .setStyle(NotificationCompat.MessagingStyle(user).addMessage(messageBody ?: "", System.currentTimeMillis(), user))
+            .setStyle(NotificationCompat.MessagingStyle(user).addMessage(messageBody, System.currentTimeMillis(), user))
             .setBubbleMetadata(bubbleData)
             .setContentIntent(contentPendingIntent)
             .setAutoCancel(true)
@@ -117,7 +133,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notificationManager.notify(conversationId.hashCode(), notification)
     }
 
-    private fun sendDefaultNotification(title: String?, messageBody: String?, data: Map<String, String>) {
+    private fun sendDefaultNotification(title: String, messageBody: String, data: Map<String, String>) {
         val intent = Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             data.forEach { (key, value) -> putExtra(key, value) }

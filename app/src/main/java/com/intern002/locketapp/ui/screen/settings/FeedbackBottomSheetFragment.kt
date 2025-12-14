@@ -38,12 +38,10 @@ class FeedbackBottomSheetFragment : BottomSheetDialogFragment() {
                 return@setOnClickListener
             }
 
-            // --- Handle the feedback submission here --- //
-            // For now, let's just show a Toast
             val feedbackMessage = "Rated: $rating stars\nMessage: $message"
             Toast.makeText(requireContext(), feedbackMessage, Toast.LENGTH_LONG).show()
 
-            dismiss() // Close the bottom sheet
+            dismiss()
         }
     }
 

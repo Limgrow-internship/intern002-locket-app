@@ -41,7 +41,6 @@ class ExtensionsFragment : Fragment() {
 
     private fun setupRecyclerView() {
         frameAdapter = WidgetFrameAdapter(frames) { selectedFrame ->
-            // Handle frame selection
             if (!selectedFrame.isLocked) {
                 frames.forEach { it.isSelected = (it.id == selectedFrame.id) }
                 frameAdapter.notifyDataSetChanged()

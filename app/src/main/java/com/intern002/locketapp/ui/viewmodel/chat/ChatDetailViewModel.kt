@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -54,7 +53,6 @@ class ChatDetailViewModel @Inject constructor(
     private val _isBlocked = MutableStateFlow(false)
     val isBlocked: StateFlow<Boolean> = _isBlocked.asStateFlow()
 
-    private val _temporaryMessagesFlow = MutableStateFlow<List<Message>>(emptyList())
     private var currentUserId: String? = null
 
     private val _removeFriendEvent = Channel<Unit>()
@@ -80,19 +78,15 @@ class ChatDetailViewModel @Inject constructor(
 
 
     private fun observeMessages() {
-        val dbMessagesFlow = chatRepository.getMessages(conversationId)
-
-        dbMessagesFlow.combine(_temporaryMessagesFlow) { dbMessages, tempMessages ->
-            dbMessages + tempMessages
-        }
-        .onEach { combinedList ->
-            val processedList = processMessagesWithTimestamps(combinedList)
-            _messageState.value = MessageListState.Success(processedList)
-        }
-        .catch { e ->
-            _messageState.value = MessageListState.Error(e.message ?: "Failed to load messages")
-        }
-        .launchIn(viewModelScope)
+        chatRepository.getMessages(conversationId)
+            .onEach { dbMessages ->
+                val processedList = processMessagesWithTimestamps(dbMessages.sortedBy { it.createdAt })
+                _messageState.value = MessageListState.Success(processedList)
+            }
+            .catch { e ->
+                _messageState.value = MessageListState.Error(e.message ?: "Failed to load messages")
+            }
+            .launchIn(viewModelScope)
     }
 
 
@@ -171,10 +165,9 @@ class ChatDetailViewModel @Inject constructor(
     private fun subscribeToNewMessages() {
         chatRepository.subscribeToMessages(conversationId)
             .onEach { newMessageDto ->
-                if (newMessageDto.senderId != currentUserId) {
-                    chatRepository.saveNewMessage(newMessageDto, conversationId)
-                    chatRepository.updateConversationWithNewMessage(conversationId, newMessageDto)
-                }
+
+                chatRepository.saveNewMessage(newMessageDto, conversationId)
+                chatRepository.updateConversationWithNewMessage(conversationId, newMessageDto)
             }
             .catch { e ->
                 Log.e("RealtimeDebug", "[ERROR] ViewModel subscription failed: ", e)
@@ -184,53 +177,13 @@ class ChatDetailViewModel @Inject constructor(
 
     fun sendMessage(text: String) {
         viewModelScope.launch {
-            val userId = currentUserId ?: return@launch
-
-            val utcTimestampString = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).apply {
-                timeZone = TimeZone.getTimeZone("UTC")
-            }.format(Date())
-
-            val tempMessage = Message(
-                id = UUID.randomUUID().toString(), // Or generate a proper temporary ID
-                senderId = userId,
-                messageType = "text",
-                content = text,
-                imageUrl = null,
-                createdAt = utcTimestampString,
-                localId = UUID.randomUUID().toString(),
-                sendStatus = SendStatus.SENDING
-            )
-
-            _temporaryMessagesFlow.value = _temporaryMessagesFlow.value + tempMessage
 
             val request = SendMessageRequest(
                 conversationId = conversationId,
                 messageType = "text",
                 content = text
             )
-            val result = chatRepository.sendMessage(request)
-
-            when (result) {
-                is Result.Success -> {
-                    _temporaryMessagesFlow.value = _temporaryMessagesFlow.value.filterNot { it.localId == tempMessage.localId }
-                    result.data?.let { sentMessage ->
-                        chatRepository.saveNewMessage(sentMessage, conversationId)
-                        chatRepository.updateConversationWithNewMessage(conversationId, sentMessage)
-                    }
-                }
-                is Result.Error -> {
-                    val currentTemps = _temporaryMessagesFlow.value
-                    val index = currentTemps.indexOfFirst { it.localId == tempMessage.localId }
-                    if (index != -1) {
-                        val updatedList = currentTemps.toMutableList()
-                        updatedList[index] = updatedList[index].copy(sendStatus = SendStatus.FAILED)
-                        _temporaryMessagesFlow.value = updatedList
-                    }
-                }
-                else -> {
-                    Log.d("SendMessage", "Received unexpected result state: $result")
-                }
-            }
+            chatRepository.sendMessage(request)
         }
     }
 
@@ -238,10 +191,8 @@ class ChatDetailViewModel @Inject constructor(
         viewModelScope.launch {
             when (chatRepository.deleteMessage(messageId)) {
                 is Result.Success -> { 
-                    // No-op, UI will update via flow
                 }
                 is Result.Error -> {
-                    // Optionally handle error, e.g. show a toast
                     Log.e("ChatDetailViewModel", "Failed to delete message: $messageId")
                 }
                 else -> {}

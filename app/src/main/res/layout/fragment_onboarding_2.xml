@@ -11,7 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.77" /> <ImageView
+        app:layout_constraintGuide_percent="0.77" />
+
+    <ImageView
         android:id="@+id/iv_onboarding"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -42,7 +44,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
     <LinearLayout
         android:id="@+id/indicatorLayout"
         android:layout_width="0dp"
@@ -58,15 +59,15 @@
         tools:background="@android:color/transparent">
 
         <TextView
-        android:id="@+id/btnPre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/previous"
-        android:textColor="@android:color/white"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:layout_weight="1"
-        android:gravity="start" />
+            android:id="@+id/btnPre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/previous"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:gravity="start" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -130,10 +131,8 @@
         android:textColor="@android:color/white"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tv_subtitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideLineHorizontal"
-        app:layout_constraintVertical_bias="0.5"
-        app:layout_constraintVertical_chainStyle="packed"/>
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
