@@ -14,6 +14,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -45,6 +47,12 @@ class LoginEmailFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, insets.bottom)
+            windowInsets
+        }
+
         setupViews()
         setupClickListeners()
         setupTermsLink()
@@ -56,16 +64,25 @@ class LoginEmailFragment: Fragment() {
         binding.buttonContinue.alpha = 0.5f
         binding.tvErrorMessage.isVisible = false
 
+        binding.emailEditText.onFocusChangeListener = View.OnFocusChangeListener {
+            _, hasFocus ->
+            if (hasFocus) {
+                binding.emailLayout.suffixText = "@gmail.com"
+            } else {
+                binding.emailLayout.suffixText = null
+            }
+        }
+
         binding.emailEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val email = s.toString().trim()
-                val isValid = email.isNotBlank() && email.endsWith("@gmail.com", ignoreCase = true)
+                val isValid = email.isNotBlank()
 
                 binding.buttonContinue.isEnabled = isValid
                 binding.buttonContinue.alpha = if (isValid) 1.0f else 0.5f
-                binding.tvErrorMessage.isVisible = !isValid && email.isNotEmpty()
+                binding.tvErrorMessage.isVisible = false
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -78,7 +95,7 @@ class LoginEmailFragment: Fragment() {
         }
 
         binding.buttonContinue.setOnClickListener {
-            val email = binding.emailEditText.text.toString().trim()
+            val email = binding.emailEditText.text.toString().trim() + "@gmail.com"
             viewModel.onContinueClicked(email)
         }
     }
@@ -101,7 +118,7 @@ class LoginEmailFragment: Fragment() {
             binding.tvErrorMessage.isVisible = false
         } else {
             val currentEmail = binding.emailEditText.text.toString().trim()
-            val isValid = currentEmail.isNotBlank() && currentEmail.endsWith("@gmail.com", ignoreCase = true)
+            val isValid = currentEmail.isNotBlank()
             binding.buttonContinue.isEnabled = isValid
             binding.buttonContinue.alpha = if (isValid) 1.0f else 0.5f
         }
@@ -110,7 +127,7 @@ class LoginEmailFragment: Fragment() {
         when(state) {
             is EmailLoginState.Loading -> {  }
             is EmailLoginState.Success -> {
-                val email = binding.emailEditText.text.toString().trim()
+                val email = binding.emailEditText.text.toString().trim() + "@gmail.com"
                 val action = LoginEmailFragmentDirections.actionLoginEmailFragmentToLoginPasswordFragment(email)
                 findNavController().navigate(action)
 

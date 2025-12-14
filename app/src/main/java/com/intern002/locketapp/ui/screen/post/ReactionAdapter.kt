@@ -24,8 +24,8 @@ class ReactionAdapter(
     override fun onBindViewHolder(holder: ReactionViewHolder, position: Int) {
         val reactor = list[position]
         with(holder.binding) {
-            tvUsername.text = reactor.userName
-            tvEmoji.text = reactor.reactionEmoji
+            tvUsername.text = reactor.username
+            tvEmoji.text = reactor.emoji
 
             Glide.with(root)
                 .load(reactor.avatarUrl)

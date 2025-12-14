@@ -11,6 +11,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -21,6 +22,7 @@ import com.intern002.locketapp.databinding.FragmentEditPreviewBinding
 import com.intern002.locketapp.ui.screen.main.MainViewModel
 import com.intern002.locketapp.utils.MediaSaver
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -77,14 +79,14 @@ class EditPreviewFragment : Fragment(R.layout.fragment_edit_preview) {
                         is SendState.Loading -> {
                             binding.buttonSend.isEnabled = false
                             binding.buttonSend.alpha = 0.5f
-                            Toast.makeText(context, "Đang gửi ảnh...", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Sending photo...", Toast.LENGTH_SHORT).show()
                         }
 
                         is SendState.Success -> {
                             binding.buttonSend.isEnabled = true
                             binding.buttonSend.alpha = 1f
                             mainViewModel.refreshTrigger.value = true
-                            Toast.makeText(context, "Gửi thành công!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Sent successfully!", Toast.LENGTH_SHORT).show()
                             findNavController().popBackStack()
                         }
 
@@ -95,7 +97,7 @@ class EditPreviewFragment : Fragment(R.layout.fragment_edit_preview) {
                                 .show()
                         }
 
-                        else -> {} // Idle
+                        else -> {}
                     }
                 }
             }
@@ -103,38 +105,17 @@ class EditPreviewFragment : Fragment(R.layout.fragment_edit_preview) {
     }
 
     private fun setupFriendsList() {
-        val mockData = arrayListOf(
-            FriendItem("", "All", isSelected = true, isAllButton = true),
-            FriendItem(
-                "b4934e28-8c90-4166-b9da-4c8ef1aa9e8a",
-                "Minh",
-                avatarUrl = "https://i.pravatar.cc/150?img=1"
-            ),
-            FriendItem(
-                "759867dc-6a21-4a78-8228-cbd4aa2399da",
-                "Trâm",
-                avatarUrl = "https://i.pravatar.cc/150?img=5"
-            ),
-            FriendItem(
-                "e235acd9-95e0-4588-9939-4bb1109173fc",
-                "Long",
-                avatarUrl = "https://i.pravatar.cc/150?img=8"
-            ),
-            FriendItem(
-                "15e478c0-4e61-4280-a88d-26c81bd8eae5",
-                "Vy",
-                avatarUrl = "https://i.pravatar.cc/150?img=10"
-            ),
-            FriendItem(
-                "4f18d2d2-724c-4e32-b29a-c5cc008dd3a6",
-                "Hùng",
-                avatarUrl = "https://i.pravatar.cc/150?img=12"
-            )
-        )
-
-        val adapter = FriendsSelectAdapter(mockData)
+        val adapter =
+            FriendsSelectAdapter(arrayListOf())
         binding.recyclerFriends.adapter = adapter
 
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.friendsList.collectLatest { friends ->
+                    adapter.updateData(friends)
+                }
+            }
+        }
     }
 
     private fun setupImage(uri: Uri) {
@@ -176,7 +157,7 @@ class EditPreviewFragment : Fragment(R.layout.fragment_edit_preview) {
             val selectedFriends = adapter.getSelectedFriends()
 
             if (selectedFriends.isEmpty()) {
-                Toast.makeText(context, "Chọn ít nhất 1 người bạn!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Select at least 1 friend!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

@@ -6,6 +6,7 @@ import com.intern002.locketapp.data.prefs.AuthManager
 import com.intern002.locketapp.domain.usecase.auth.LoginUseCase
 import com.intern002.locketapp.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -41,10 +42,9 @@ class LoginPasswordViewModel @Inject constructor(
                     }
                 }
                 is Result.Error -> {
-                    _loginState.value = PasswordLoginState.Error(result.message ?: "An unknown error occurred")
+                    _loginState.value = PasswordLoginState.Error("Incorrect email or password.")
                 }
                 is Result.Loading -> {
-                    // Already handled
                 }
                 else -> {
                     _loginState.value = PasswordLoginState.Error("An unexpected state occurred during login.")

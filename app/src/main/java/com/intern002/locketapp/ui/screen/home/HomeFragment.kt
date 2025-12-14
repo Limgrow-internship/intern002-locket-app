@@ -146,12 +146,12 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Luôn gọi để lấy profile mới nhất mỗi khi fragment quay trở lại màn hình
         viewModel.fetchUserProfile()
+        viewModel.fetchFriendCount()
     }
 
     private fun observeViewModel() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        lifecycleScope.launch {
             viewModel.userProfile.collect { userProfile ->
                 if (userProfile != null) {
                     if (userProfile.avatarUrl.isNullOrEmpty()) {
@@ -168,6 +168,11 @@ class HomeFragment : Fragment() {
                             .into(binding.avatar)
                     }
                 }
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.friendCount.collect { count ->
+                binding.textFriends.text = "$count Friends"
             }
         }
     }
@@ -285,7 +290,7 @@ class HomeFragment : Fragment() {
                 camera?.cameraControl?.enableTorch(isFlashOn)
                 updateFlashUI()
             } else {
-                Toast.makeText(context, "This camera hasn't the flash", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "This camera hasn\'t the flash", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -341,7 +346,7 @@ class HomeFragment : Fragment() {
     //Feature: Zoom Camera
     private fun setupZoomGesture() {
 
-        //ScaleGestureDetector is Android's class can listen when user touch more than one finger
+        //ScaleGestureDetector is Android\'s class can listen when user touch more than one finger
         val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
                 val currentZoomRatio = camera?.cameraInfo?.zoomState?.value?.zoomRatio ?: 1f

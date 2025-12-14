@@ -6,6 +6,9 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,13 +20,11 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.intern002.locketapp.R
 import com.intern002.locketapp.databinding.FragmentLoginPasswordBinding
-import com.intern002.locketapp.ui.viewmodel.login.PasswordLoginState
+import com.intern002.locketapp.ui.viewmodel.login.ForgotPasswordViewModel
 import com.intern002.locketapp.ui.viewmodel.login.LoginPasswordViewModel
+import com.intern002.locketapp.ui.viewmodel.login.PasswordLoginState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
 
 @AndroidEntryPoint
 class LoginPasswordFragment : Fragment() {
@@ -34,10 +35,7 @@ class LoginPasswordFragment : Fragment() {
     private val viewModel: LoginPasswordViewModel by viewModels()
     private val args: LoginPasswordFragmentArgs by navArgs()
 
-    private val initialMarginTopDp = 170
-    private val keyboardVisibleMarginTopDp = 50
-
-
+    private val forgotViewModel: ForgotPasswordViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -57,21 +55,12 @@ class LoginPasswordFragment : Fragment() {
     }
 
     private fun setupKeyboardAdjustment() {
-        val initialMarginTopPx = (initialMarginTopDp * resources.displayMetrics.density).toInt()
-        val keyboardVisibleMarginTopPx = (keyboardVisibleMarginTopDp * resources.displayMetrics.density).toInt()
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
-
-            val isImeVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-
-            binding.textHeadline.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                topMargin = if (isImeVisible) {
-                    keyboardVisibleMarginTopPx
-                } else {
-                    initialMarginTopPx
-                }
-            }
-            insets
+        // This is a simpler and more robust way to handle the keyboard
+        // It adjusts the bottom padding of the root view, pushing all content up
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, insets.bottom)
+            windowInsets
         }
     }
 
@@ -80,6 +69,24 @@ class LoginPasswordFragment : Fragment() {
         binding.tvErrorMessage.isVisible = false
         binding.tvCorrectMessage.isVisible = false
 
+        binding.forgotPassword.setOnClickListener {
+            val email = args.email
+            binding.progressBar.isVisible = true
+            forgotViewModel.sendOtp(email) {
+                binding.progressBar.isVisible = false
+
+                val action = LoginPasswordFragmentDirections
+                    .actionLoginPasswordFragmentToForgotPasswordOtpFragment(email)
+                findNavController().navigate(action)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            forgotViewModel.errorEvent.collect { msg ->
+                binding.progressBar.isVisible = false
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            }
+        }
         binding.passwordEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -136,13 +143,16 @@ class LoginPasswordFragment : Fragment() {
 
         when (state) {
             is PasswordLoginState.Success -> {
-                val action = LoginPasswordFragmentDirections.actionLoginPasswordFragmentToMainContainerFragment()
+                val action =
+                    LoginPasswordFragmentDirections.actionLoginPasswordFragmentToMainContainerFragment()
                 findNavController().navigate(action)
             }
+
             is PasswordLoginState.Error -> {
                 showErrorDialog(state.message)
             }
-            else -> { }
+
+            else -> {}
         }
     }
 

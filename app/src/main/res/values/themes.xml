@@ -7,6 +7,15 @@
 
     <style name="Theme.Intern002LocketApp" parent="Base.Theme.Intern002LocketApp" />
 
+    <!-- Theme for the BubbleActivity -->
+    <style name="Theme.Intern002LocketApp.Bubble" parent="Theme.Intern002LocketApp">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
     <style name="LoadingDot">
         <item name="android:layout_width">8dp</item>
         <item name="android:layout_height">8dp</item>

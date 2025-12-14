@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
         android:text="@string/email_headline"
-        android:layout_marginTop="170dp"
+        android:layout_marginTop="150dp"
         android:textColor="@color/white"
         android:textSize="25sp"
         android:textStyle="bold"

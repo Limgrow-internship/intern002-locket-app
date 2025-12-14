@@ -71,7 +71,6 @@ class ChangeUsernameFragment : Fragment() {
                 when (state) {
                     is UpdateUsernameState.Success -> {
                         Toast.makeText(requireContext(), "Username updated successfully!", Toast.LENGTH_SHORT).show()
-                        // Quay về màn hình Settings sau khi thành công
                         findNavController().popBackStack(R.id.settingsFragment, false)
                     }
                     is UpdateUsernameState.Error -> {

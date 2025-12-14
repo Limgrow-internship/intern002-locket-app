@@ -49,14 +49,8 @@ class ChatListFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Luôn gọi để lấy danh sách cuộc trò chuyện mới nhất mỗi khi quay lại màn hình
-        viewModel.getConversations()
-    }
-
     private fun setupRecyclerView() {
-        chatListAdapter = ChatListAdapter(emptyList(), "") { conversation ->
+        chatListAdapter = ChatListAdapter { conversation ->
             val action = ChatListFragmentDirections.actionChatListFragmentToChatDetailFragment(
                 conversationId = conversation.id,
                 recipientName = conversation.name,
@@ -75,17 +69,21 @@ class ChatListFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.chatListState.collect { state ->
                     binding.pbLoading.isVisible = state is ChatListState.Loading
-                    binding.rvChatList.isVisible = state is ChatListState.Success
 
                     when (state) {
                         is ChatListState.Success -> {
-                            chatListAdapter.updateData(state.conversations, state.currentUserAvatarUrl)
+                            val conversations = state.conversations
+                            binding.rvChatList.isVisible = conversations.isNotEmpty()
+                            binding.tvNoConversations.isVisible = conversations.isEmpty()
+                            chatListAdapter.submitList(conversations)
                         }
                         is ChatListState.Error -> {
+                            binding.pbLoading.isVisible = false
                             Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                         }
                         is ChatListState.Loading -> {
-                            // Handled by isVisible
+                            binding.rvChatList.isVisible = false
+                            binding.tvNoConversations.isVisible = false
                         }
                     }
                 }

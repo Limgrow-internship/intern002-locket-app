@@ -118,6 +118,7 @@ dependencies {
     implementation(platform(libs.supabase.bom))
     implementation(libs.supabase.realtime)
     implementation(libs.supabase.postgrest)
+    implementation("io.ktor:ktor-serialization-gson:2.3.10") // Quan trọng: Gson cho Ktor
 
     // Network
     implementation(libs.serialization.json)

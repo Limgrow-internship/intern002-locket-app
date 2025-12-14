@@ -14,6 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.intern002.locketapp.R
 import com.intern002.locketapp.data.repository.UserRepository
 import com.intern002.locketapp.databinding.FragmentChatDetailBinding
@@ -51,7 +52,7 @@ class ChatDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbarTitle.text = args.recipientName
+        setupToolbar()
 
         lifecycleScope.launch {
             currentUserId = userRepository.getCurrentUserProfile()?.id
@@ -62,6 +63,22 @@ class ChatDetailFragment : Fragment() {
 
         observeViewModel()
         setupClickListeners()
+    }
+
+    private fun setupToolbar() {
+        binding.toolbarTitle.text = args.recipientName
+        val avatarUrl = args.recipientAvatarUrl
+        if (!avatarUrl.isNullOrEmpty()) {
+            binding.toolbarAvatar.isVisible = true
+            binding.toolbarAvatarLetter.isVisible = false
+            Glide.with(this)
+                .load(avatarUrl)
+                .into(binding.toolbarAvatar)
+        } else {
+            binding.toolbarAvatar.isVisible = false
+            binding.toolbarAvatarLetter.isVisible = true
+            binding.toolbarAvatarLetter.text = args.recipientName.firstOrNull()?.toString()?.uppercase() ?: ""
+        }
     }
 
     private fun setupRecyclerView(userId: String) {

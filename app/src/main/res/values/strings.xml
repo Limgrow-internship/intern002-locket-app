@@ -89,7 +89,7 @@
     <string name="signup_action_text">Sign up</string>
     <string name="login_prompt_full">Have an account? Log in or Sign up</string>
     <string name="login_footer_links">Terms of Use      |      Privacy Policy      |      Restore</string>
-    <string name="email_headline">Change your email</string>
+    <string name="email_headline">Enter your email</string>
     <string name="email_hint">Enter your email here</string>
     <string name="terms_and_privacy_notice">By tapping Continue, you agree to our Terms of Service and Privacy Policy.</string>
     <string name="button_continue">Continue</string>

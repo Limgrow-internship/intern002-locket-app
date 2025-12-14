@@ -184,7 +184,7 @@
                 android:layout_width="40dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/ic_calendar_connector"
+                android:src="@drawable/ic_calendar_connector_1"
                 android:scaleType="fitCenter" />
 
             <androidx.cardview.widget.CardView
@@ -227,7 +227,7 @@
                 android:layout_width="40dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/ic_calendar_connector"
+                android:src="@drawable/ic_calendar_connector_2"
                 android:scaleType="fitCenter" />
 
             <LinearLayout

@@ -1,6 +1,8 @@
 package com.intern002.locketapp.ui.screen.settings.change
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +27,6 @@ class ChangeEmailFragment : Fragment() {
     private var _binding: FragmentChangeEmailBinding? = null
     private val binding get() = _binding!!
 
-    // Thêm ViewModel
     private val viewModel: ChangeEmailViewModel by viewModels()
 
     override fun onCreateView(
@@ -40,28 +41,58 @@ class ChangeEmailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupViews()
         setupClickListeners()
-        observeViewModel() // Thêm hàm lắng nghe ViewModel
+        observeViewModel()
+    }
+
+    private fun setupViews() {
+        binding.buttonSave.isEnabled = false
+        binding.buttonSave.alpha = 0.5f
+
+        binding.tvErrorMessage.isVisible = false
+
+        binding.emailEditText.onFocusChangeListener = View.OnFocusChangeListener {
+            _, hasFocus ->
+            if (hasFocus) {
+                binding.emailLayout.suffixText = "@gmail.com"
+            } else {
+                binding.emailLayout.suffixText = null
+            }
+        }
+
+        binding.emailEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val email = s.toString().trim()
+                val isValid = email.isNotBlank()
+
+                if (binding.tvErrorMessage.isVisible) {
+                    binding.tvErrorMessage.isVisible = false
+                    viewModel.resetState()
+                }
+
+                binding.buttonSave.isEnabled = isValid
+                binding.buttonSave.alpha = if (isValid) 1.0f else 0.5f
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 
     private fun setupClickListeners() {
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().popBackStack()
+            findNavController().navigate(R.id.enterPasswordFragment)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            findNavController().popBackStack()
+            findNavController().navigate(R.id.enterPasswordFragment)
         }
 
-        // Thêm logic cho nút Save
         binding.buttonSave.setOnClickListener {
-            val newEmail = binding.emailEditText.text.toString().trim()
-            if (newEmail.isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()) {
-                viewModel.updateEmail(newEmail)
-            } else {
-                // Hiển thị lỗi nếu email trống hoặc không hợp lệ
-                Toast.makeText(requireContext(), "Please enter a valid email", Toast.LENGTH_SHORT).show()
-            }
+            val newEmail = binding.emailEditText.text.toString().trim() + "@gmail.com"
+            viewModel.updateEmail(newEmail)
         }
     }
 
@@ -71,15 +102,24 @@ class ChangeEmailFragment : Fragment() {
                 binding.progressBar.isVisible = state is UpdateEmailState.Loading
                 binding.buttonSave.isEnabled = state !is UpdateEmailState.Loading
 
+                if (state !is UpdateEmailState.Error) {
+                    binding.tvErrorMessage.isVisible = false
+                }
+
                 when (state) {
                     is UpdateEmailState.Success -> {
                         Toast.makeText(requireContext(), "Email updated successfully!", Toast.LENGTH_SHORT).show()
                         findNavController().popBackStack(R.id.settingsFragment, false)
                     }
                     is UpdateEmailState.Error -> {
-                        Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_LONG).show()
+                        if (state.message == "EMAIL_EXISTS") {
+                            binding.tvErrorMessage.text = getString(R.string.invalid_email_error)
+                            binding.tvErrorMessage.isVisible = true
+                        } else {
+                            Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_LONG).show()
+                        }
                     }
-                    else -> {}
+                    else -> { }
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.intern002.locketapp.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -11,6 +12,11 @@ import com.intern002.locketapp.data.model.Message
 import com.intern002.locketapp.databinding.ItemMessageImageSentBinding
 import com.intern002.locketapp.databinding.ItemMessageReceivedBinding
 import com.intern002.locketapp.databinding.ItemMessageSentBinding
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class MessageAdapter(
     private var messages: MutableList<Message>,
@@ -84,24 +90,34 @@ class MessageAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    class SentTextViewHolder(private val binding: ItemMessageSentBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class SentTextViewHolder(private val binding: ItemMessageSentBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message) {
             binding.tvMessageBody.text = message.content
+            binding.tvTimestamp.isVisible = message.showTimestamp
+            if(message.showTimestamp) {
+                binding.tvTimestamp.text = message.displayTimestamp
+            }
         }
     }
 
-    class SentImageViewHolder(private val binding: ItemMessageImageSentBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class SentImageViewHolder(private val binding: ItemMessageImageSentBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message) {
             Glide.with(itemView.context).load(message.imageUrl).into(binding.ivMessageImage)
+            // Note: ItemMessageImageSentBinding does not have tv_timestamp. You might need to add it.
         }
     }
 
-    class ReceivedTextViewHolder(private val binding: ItemMessageReceivedBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ReceivedTextViewHolder(private val binding: ItemMessageReceivedBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message, avatarUrl: String?, name: String?) {
             binding.tvMessageBody.text = message.content
             binding.tvMessageBody.isVisible = true
             binding.cvImageContainer.isVisible = false
             updateAvatar(avatarUrl, name)
+
+            binding.tvTimestamp.isVisible = message.showTimestamp
+            if(message.showTimestamp) {
+                binding.tvTimestamp.text = message.displayTimestamp
+            }
         }
 
         private fun updateAvatar(avatarUrl: String?, name: String?) {
@@ -112,17 +128,22 @@ class MessageAdapter(
             } else {
                 binding.ivAvatar.isVisible = false
                 binding.tvAvatarLetter.isVisible = true
-                binding.tvAvatarLetter.text = name?.firstOrNull()?.toString() ?: ""
+                binding.tvAvatarLetter.text = name?.firstOrNull()?.toString()?.uppercase() ?: ""
             }
         }
     }
 
-    class ReceivedImageViewHolder(private val binding: ItemMessageReceivedBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ReceivedImageViewHolder(private val binding: ItemMessageReceivedBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message, avatarUrl: String?, name: String?) {
             Glide.with(itemView.context).load(message.imageUrl).into(binding.ivMessageImage)
             binding.tvMessageBody.isVisible = false
             binding.cvImageContainer.isVisible = true
             updateAvatar(avatarUrl, name)
+
+            binding.tvTimestamp.isVisible = message.showTimestamp
+            if(message.showTimestamp) {
+                binding.tvTimestamp.text = message.displayTimestamp
+            }
         }
 
         private fun updateAvatar(avatarUrl: String?, name: String?) {
@@ -133,7 +154,7 @@ class MessageAdapter(
             } else {
                 binding.ivAvatar.isVisible = false
                 binding.tvAvatarLetter.isVisible = true
-                binding.tvAvatarLetter.text = name?.firstOrNull()?.toString() ?: ""
+                binding.tvAvatarLetter.text = name?.firstOrNull()?.toString()?.uppercase() ?: ""
             }
         }
     }
@@ -144,7 +165,7 @@ class MessageDiffCallback(private val oldList: List<Message>, private val newLis
     override fun getNewListSize(): Int = newList.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].createdAt == newList[newItemPosition].createdAt
+        return oldList[oldItemPosition].localId == newList[newItemPosition].localId || oldList[oldItemPosition].createdAt == newList[newItemPosition].createdAt
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
