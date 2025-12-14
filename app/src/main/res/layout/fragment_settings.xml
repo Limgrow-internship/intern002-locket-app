@@ -209,7 +209,7 @@
                         android:layout_height="wrap_content"
                         android:padding="14dp">
                         <ImageView
-                            android:id="@+id/iv_change_app"
+                            android:id="@+id/ic_change_app"
                             android:layout_width="26dp"
                             android:layout_height="26dp"
                             android:layout_centerVertical="true"
@@ -218,7 +218,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/iv_change_app"
+                            android:layout_toEndOf="@id/ic_change_app"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="16dp"
                             android:text="@string/change_app_icon"
@@ -226,6 +226,7 @@
                             android:textSize="16sp"/>
 
                         <TextView
+                            android:id="@+id/iv_change_app"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
@@ -682,6 +683,7 @@
                             android:textColor="@android:color/white"
                             android:textSize="16sp"/>
                         <ImageView
+                            android:id="@+id/ic_report"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_arrow_forward"
@@ -715,6 +717,7 @@
                             android:textColor="@android:color/white"
                             android:textSize="16sp"/>
                         <ImageView
+                            android:id="@+id/ic_feedback"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_arrow_forward"

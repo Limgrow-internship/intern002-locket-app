@@ -63,7 +63,7 @@ class ChangeAppIconFragment : BottomSheetDialogFragment() {
         appIcons.add(AppIcon("blue_gradient", R.drawable.ic_app_icon_blue_gradient, false))
         appIcons.add(AppIcon("light_green_gradient", R.drawable.ic_app_icon_light_green_gradient, false))
         appIcons.add(AppIcon("purple_pink_gradient", R.drawable.ic_app_icon_purple_pink_gradient, false))
-        appIcons.add(AppIcon("dark_blue_gradient", R.drawable.ic_app_icon_dark_blue_gradient, false))
+        appIcons.add(AppIcon("dark_blue_gradient", R.drawable.ic_app_icon_light_white_gradient, false))
         appIcons.add(AppIcon("dark_purple_gradient", R.drawable.ic_app_icon_dark_purple_gradient, false))
     }
 

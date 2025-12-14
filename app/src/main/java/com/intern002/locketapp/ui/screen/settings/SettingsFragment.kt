@@ -76,7 +76,7 @@ class SettingsFragment : Fragment(), EditAvatarBottomSheetFragment.EditAvatarLis
     private fun setupClickListeners() {
         binding.btnBack.setOnClickListener { findNavController().popBackStack() }
         binding.btnWidget.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_addWidgetFragment) }
-        binding.btnLanguage.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_languageFragment) }
+        binding.btnLanguage.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_changeLanguageFragment) }
         binding.btnEditExtension.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_extensionsFragment) }
         binding.btnChangeName.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_changeUserNameFragment) }
         binding.btnChangeEmail.setOnClickListener { findNavController().navigate(R.id.action_settingsFragment_to_enterPasswordFragment) }
@@ -89,6 +89,16 @@ class SettingsFragment : Fragment(), EditAvatarBottomSheetFragment.EditAvatarLis
             val bottomSheet = EditAvatarBottomSheetFragment()
             bottomSheet.setEditAvatarListener(this)
             bottomSheet.show(childFragmentManager, EditAvatarBottomSheetFragment.TAG)
+        }
+
+        binding.icFeedback.setOnClickListener {
+            val feedbackBottomSheet = FeedbackBottomSheetFragment()
+            feedbackBottomSheet.show(childFragmentManager, FeedbackBottomSheetFragment.TAG)
+        }
+
+        binding.icReport.setOnClickListener {
+            val reportProblemBottomSheet = ReportProblemBottomSheetFragment()
+            reportProblemBottomSheet.show(childFragmentManager, ReportProblemBottomSheetFragment.TAG)
         }
     }
 

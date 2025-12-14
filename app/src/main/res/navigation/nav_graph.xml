@@ -78,6 +78,12 @@
     </fragment>
 
     <fragment
+        android:id="@+id/changeLanguageFragment"
+        android:name="com.intern002.locketapp.ui.screen.language.ChangeLanguageFragment"
+        android:label="fragment_change_language"
+        tools:layout="@layout/fragment_change_language" />
+
+    <fragment
         android:id="@+id/nativeAdFragment"
         android:name="com.intern002.locketapp.ads.NativeAdFragment"
         android:label="fragment_native_ad"
@@ -306,6 +312,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_languageFragment"
             app:destination="@id/languageFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_changeLanguageFragment"
+            app:destination="@id/changeLanguageFragment" />
         <action
             android:id="@+id/action_settingsFragment_to_loginFragment"
             app:destination="@id/LoginFragment"

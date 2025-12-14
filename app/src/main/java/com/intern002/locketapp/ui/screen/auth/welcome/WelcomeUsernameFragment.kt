@@ -50,7 +50,6 @@ class WelcomeUsernameFragment : Fragment() {
                     } else {
                         binding.imageAvatar.isVisible = true
                         binding.textAvatarInitial.isVisible = false
-                        // Use Glide to load the image
                         Glide.with(requireContext())
                             .load(userProfile.avatarUrl)
                             .placeholder(R.drawable.bg_selected)
