@@ -1,7 +1,14 @@
 package com.intern002.locketapp.data.remote.api
 
 import com.intern002.locketapp.BuildConfig
-import com.intern002.locketapp.data.remote.model.auth.*
+import com.intern002.locketapp.data.remote.dto.ForgotPasswordRequest
+import com.intern002.locketapp.data.remote.dto.ResetPasswordRequest
+import com.intern002.locketapp.data.remote.dto.VerifyOtpRequest
+import com.intern002.locketapp.data.remote.model.auth.CompleteGoogleRegistrationRequest
+import com.intern002.locketapp.data.remote.model.auth.GoogleLoginRequest
+import com.intern002.locketapp.data.remote.model.auth.LoginRequest
+import com.intern002.locketapp.data.remote.model.auth.RefreshRequest
+import com.intern002.locketapp.data.remote.model.auth.RegisterRequest
 import com.intern002.locketapp.data.remote.response.AuthResponse
 import com.intern002.locketapp.data.remote.response.CheckEmailResponse
 import com.intern002.locketapp.di.SessionManager
@@ -62,5 +69,26 @@ class AuthApi @Inject constructor(
             contentType(ContentType.Application.Json)
             setBody(request)
         }.body()
+    }
+
+    suspend fun forgotPassword(email: String): HttpResponse {
+        return client().post("$baseUrl/auth/forgot-password") {
+            contentType(ContentType.Application.Json)
+            setBody(ForgotPasswordRequest(email))
+        }
+    }
+
+    suspend fun verifyOtp(email: String, otp: String): HttpResponse {
+        return client().post("$baseUrl/auth/verify-otp") {
+            contentType(ContentType.Application.Json)
+            setBody(VerifyOtpRequest(email, otp))
+        }
+    }
+
+    suspend fun resetPassword(email: String, otp: String, pass: String): HttpResponse {
+        return client().post("$baseUrl/auth/reset-password") {
+            contentType(ContentType.Application.Json)
+            setBody(ResetPasswordRequest(email, otp, pass))
+        }
     }
 }

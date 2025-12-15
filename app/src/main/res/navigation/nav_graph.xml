@@ -30,7 +30,7 @@
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"/>
+            app:popExitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_mainContainerFragment_to_FriendsFragment"
             app:destination="@id/FriendsFragment" />
@@ -40,7 +40,7 @@
         android:id="@+id/gridPostFragment"
         android:name="com.intern002.locketapp.ui.screen.grid.GridPostFragment"
         android:label="GridPostFragment"
-        tools:layout="@layout/fragment_grid_post" >
+        tools:layout="@layout/fragment_grid_post">
         <action
             android:id="@+id/action_gridPostFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
@@ -173,6 +173,9 @@
             android:id="@+id/action_LoginPasswordFragment_to_mainActivity"
             app:destination="@id/main_activity" />
         <action
+            android:id="@+id/action_LoginPasswordFragment_to_ForgotPasswordOtpFragment"
+            app:destination="@id/ForgotPasswordOtpFragment" />
+        <action
             android:id="@+id/action_LoginPasswordFragment_to_mainContainerFragment"
             app:destination="@id/mainContainerFragment"
             app:popUpTo="@id/nav_graph"
@@ -180,9 +183,42 @@
     </fragment>
 
     <fragment
+        android:id="@+id/ForgotPasswordOtpFragment"
+        android:name="com.intern002.locketapp.ui.screen.auth.forgot.ForgotPasswordOtpFragment"
+        tools:layout="@layout/fragment_forgot_password_otp">
+        <argument
+            android:name="email"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_ForgotPasswordOtpFragment_to_ResetPasswordFragment"
+            app:destination="@id/ResetPasswordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ResetPasswordFragment"
+        android:name="com.intern002.locketapp.ui.screen.auth.forgot.ResetPasswordFragment"
+        tools:layout="@layout/fragment_reset_password">
+
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <argument
+            android:name="otp"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_ResetPasswordFragment_to_LoginEmailFragment"
+            app:destination="@id/LoginEmailFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
         android:id="@+id/SignupEmailFragment"
         android:name="com.intern002.locketapp.ui.screen.auth.signup.SignupEmailFragment"
-        android:label="fragment_signup_email" >
+        android:label="fragment_signup_email"
+        tools:layout="@layout/fragment_signup_email">
         <action
             android:id="@+id/action_SignupEmailFragment_to_SignupPasswordFragment"
             app:destination="@id/SignupPasswordFragment" />
@@ -419,7 +455,7 @@
     <fragment
         android:id="@+id/blockedUsersFragment"
         android:name="com.intern002.locketapp.ui.screen.settings.BlockedUsersFragment"
-        android:label="BlockedUsersFragment" 
+        android:label="BlockedUsersFragment"
         tools:layout="@layout/fragment_blocked" />
 
     <activity

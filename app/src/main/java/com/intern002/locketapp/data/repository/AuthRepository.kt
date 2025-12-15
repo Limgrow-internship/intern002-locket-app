@@ -5,11 +5,17 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.intern002.locketapp.data.prefs.AuthManager
 import com.intern002.locketapp.data.remote.api.AuthApi
 import com.intern002.locketapp.data.remote.api.UserApi
-import com.intern002.locketapp.data.remote.model.auth.*
+import com.intern002.locketapp.data.remote.model.auth.CompleteGoogleRegistrationRequest
+import com.intern002.locketapp.data.remote.model.auth.GoogleLoginRequest
+import com.intern002.locketapp.data.remote.model.auth.GoogleRegistrationInfo
+import com.intern002.locketapp.data.remote.model.auth.LoginRequest
+import com.intern002.locketapp.data.remote.model.auth.RefreshRequest
+import com.intern002.locketapp.data.remote.model.auth.RegisterRequest
 import com.intern002.locketapp.data.remote.response.AuthResponse
 import com.intern002.locketapp.utils.Result
-import io.ktor.client.call.*
-import io.ktor.http.*
+import io.ktor.client.call.body
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -40,7 +46,12 @@ class AuthRepository @Inject constructor(
         }
     }
 
-    suspend fun register(email: String, username: String, password: String, birthday: String): Result<AuthResponse> {
+    suspend fun register(
+        email: String,
+        username: String,
+        password: String,
+        birthday: String
+    ): Result<AuthResponse> {
         userRepository.clearCurrentUserProfile()
         return try {
             val request = RegisterRequest(email, username, password, birthday)
@@ -79,10 +90,12 @@ class AuthRepository @Inject constructor(
                     registerFcmToken() // Register FCM token reliably
                     Result.Success(authResponse)
                 }
+
                 HttpStatusCode.Accepted -> {
                     val registrationInfo = response.body<GoogleRegistrationInfo>()
                     Result.RegistrationRequired(registrationInfo)
                 }
+
                 else -> {
                     Result.Error(response.status.description)
                 }
@@ -92,7 +105,11 @@ class AuthRepository @Inject constructor(
         }
     }
 
-    suspend fun completeGoogleRegistration(idToken: String, username: String, birthday: String): Result<AuthResponse> {
+    suspend fun completeGoogleRegistration(
+        idToken: String,
+        username: String,
+        birthday: String
+    ): Result<AuthResponse> {
         userRepository.clearCurrentUserProfile()
         return try {
             val request = CompleteGoogleRegistrationRequest(idToken, username, birthday)
@@ -111,6 +128,48 @@ class AuthRepository @Inject constructor(
             val response = authApi.refreshToken(request)
             authManager.saveTokens(response.accessToken, response.refreshToken)
             Result.Success(response)
+        } catch (e: Exception) {
+            Result.Error(e.message ?: "An unknown error occurred")
+        }
+    }
+
+    suspend fun requestOtp(email: String): Result<Unit> {
+        return try {
+            val response = authApi.forgotPassword(email)
+            if (response.status.isSuccess()) {
+                Result.Success(Unit)
+            } else {
+                Result.Error("Xin OTP thất bại")
+            }
+        } catch (e: Exception) {
+            Result.Error(e.message ?: "An unknown error occurred")
+
+        }
+    }
+
+    // 2. Verify OTP
+    suspend fun verifyOtp(email: String, otp: String): Result<Unit> {
+        return try {
+            val response = authApi.verifyOtp(email, otp)
+            if (response.status.isSuccess()) {
+                Result.Success(Unit)
+            } else {
+                Result.Error("Nhập OTP thất bại")
+            }
+        } catch (e: Exception) {
+            Result.Error(e.message ?: "An unknown error occurred")
+        }
+    }
+
+    // 3. Reset Pass
+    suspend fun resetPassword(email: String, otp: String, newPass: String): Result<Unit> {
+        return try {
+            val response = authApi.resetPassword(email, otp, newPass)
+            if (response.status.isSuccess()) {
+                Result.Success(Unit)
+            } else {
+                Result.Error("Đặt lại mật khẩu thất bại")
+            }
         } catch (e: Exception) {
             Result.Error(e.message ?: "An unknown error occurred")
         }

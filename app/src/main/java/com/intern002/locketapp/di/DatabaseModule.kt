@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.intern002.locketapp.data.local.dao.ConversationDao
 import com.intern002.locketapp.data.local.LocketAppDatabase
-import com.intern002.locketapp.data.local.dao.MessageDao
 import com.intern002.locketapp.data.local.dao.PostDao
+import com.intern002.locketapp.data.local.dao.MessageDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

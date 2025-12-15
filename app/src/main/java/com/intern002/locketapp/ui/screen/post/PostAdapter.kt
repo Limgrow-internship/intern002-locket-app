@@ -39,7 +39,10 @@ class PostAdapter(
         val post = list[position]
 
         val isMine = post.authorId == currentUserId
-
+        android.util.Log.d(
+            "DEBUG_POST",
+            "Item $position: User=${post.userName}, Time=${post.createdAt}, ID=${post.authorId}"
+        )
         with(holder.binding) {
             tvUsername.text = if (isMine) "You" else post.userName
             tvTimeAgo.text = TimeUtils.getTimeAgo(post.createdAt)
